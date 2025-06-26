@@ -3,7 +3,9 @@
     "type": "module",
     "scripts": {
         "build": "vite build",
-        "dev": "vite"
+        "dev": "vite",
+        "build-css": "tailwindcss -i ./resources/css/app.css -o ./public/css/app.css --watch",
+        "build-css-prod": "tailwindcss -i ./resources/css/app.css -o ./public/css/app.css --minify"
     },
     "dependencies": {
         "@tailwindcss/vite": "^4.1.10",
