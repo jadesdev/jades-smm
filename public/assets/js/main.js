@@ -1,4 +1,5 @@
-document.addEventListener('DOMContentLoaded', function() {
+(function() {
+    "use strict";
     // Mobile Menu Toggle
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileSidebar = document.getElementById('mobile-sidebar');
@@ -57,7 +58,8 @@ document.addEventListener('DOMContentLoaded', function() {
     const htmlElement = document.documentElement;
 
     // Check for saved theme preference or default to light mode
-    const currentTheme = localStorage.getItem('color-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+    const currentTheme = localStorage.getItem('color-theme') ||
+        (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
 
     if (currentTheme === 'dark') {
         htmlElement.classList.add('dark');
@@ -79,4 +81,4 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-});
+})();

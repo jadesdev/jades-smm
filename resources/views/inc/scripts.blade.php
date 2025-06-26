@@ -34,35 +34,33 @@
     });
     document.addEventListener('livewire:navigating', () => {
         JDLoader.open('.loader-mask');
-        (function() {
-            try {
-                const theme = localStorage.getItem('zenlab-theme');
-                if (theme === 'dark') {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                }
-            } catch (e) {
-                // fallback
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-        })();
+
+        applyThemeFromLocalStorage();
     })
     document.addEventListener('livewire:navigated', () => {
         JDLoader.close('.loader-mask');
-        (function() {
-            try {
-                const theme = localStorage.getItem('zenlab-theme');
-                if (theme === 'dark') {
-                    document.documentElement.setAttribute('data-theme', 'dark');
-                } else {
-                    document.documentElement.setAttribute('data-theme', 'light');
-                }
-            } catch (e) {
-                // fallback
-                document.documentElement.setAttribute('data-theme', 'light');
-            }
-        })();
+        applyThemeFromLocalStorage();
+
+        updateActiveNavItem();
+    })
+
+    function applyThemeFromLocalStorage() {
+        const theme = localStorage.getItem('color-theme') ||
+            (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+        const html = document.documentElement;
+        const icon = document.getElementById('dark-mode-icon');
+
+        if (theme === 'dark') {
+            html.classList.add('dark');
+            icon?.classList.replace('fa-moon', 'fa-sun');
+        } else {
+            html.classList.remove('dark');
+            icon?.classList.replace('fa-sun', 'fa-moon');
+        }
+    }
+
+    function updateActiveNavItem() {
         const currentUrl = window.location.href.split(/[?#]/)[0];
         const navItems = document.querySelectorAll('.nav-menu__item');
 
@@ -71,16 +69,16 @@
             if (!link) return;
 
             const linkPath = new URL(link.href);
-
-            if (linkPath == currentUrl) {
+            if (linkPath.href === currentUrl) {
                 item.classList.add('activePage');
             } else {
                 item.classList.remove('activePage');
             }
         });
-    })
+    }
 
     function openLink(url, target = '_self') {
         window.open(url, target);
     }
+    document.addEventListener('DOMContentLoaded', applyThemeFromLocalStorage);
 </script>

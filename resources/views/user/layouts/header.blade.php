@@ -26,8 +26,8 @@
 
             <!-- Dark Mode Toggle -->
             <button id="dark-mode-toggle"
-                class="relative p-2 rounded-full text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors">
-                <i id="dark-mode-icon" class="fas fa-moon text-lg"></i>
+                class="relative p-2 rounded-lg text-gray-400 dark:text-yellow-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors">
+                <i id="dark-mode-icon" class="fas fa-moon text-lg " ></i>
             </button>
             <!-- Notifications -->
             <button

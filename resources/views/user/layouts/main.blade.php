@@ -14,13 +14,18 @@
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
     <script>
-        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
-                '(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
+        (function() {
+            const theme = localStorage.getItem('color-theme') ||
+                (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+            if (theme === 'dark') {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        })();
     </script>
+
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="{{ static_asset('css/vendors.css') }}">
 
@@ -61,10 +66,10 @@
     </div>
 
     <script src="{{ static_asset('js/vendors.js') }}"></script>
-    <script src="{{ static_asset('js/main.js') }}"></script>
     @livewireScripts()
     {{-- <script src="{{ asset('vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
         data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script> --}}
+    <script src="{{ static_asset('js/main.js') }}"></script>
     @stack('scripts')
     @yield('scripts')
     @include('inc.scripts')
