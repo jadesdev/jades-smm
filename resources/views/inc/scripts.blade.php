@@ -1,46 +1,77 @@
 <script type="text/javascript">
     @if (Session::get('success'))
-        toastr.success('{{ Session::get('success') }}', 'Successful');
+        JDVToast.success('{{ Session::get('success') }}');
     @endif
     @if (Session::get('error'))
-        toastr.error('{{ Session::get('error') }}', 'Error');
+        JDVToast.error('{{ Session::get('error') }}');
     @endif
     @if (count($errors) > 0)
-        // console.log('{!! implode('<br>', $errors->all()) !!}');
-        toastr.error('{!! implode('<br>', $errors->all()) !!}', 'Error');
+        JDVToast.error('{!! implode('<br>', $errors->all()) !!}');
     @endif
 
     function copyFunction(element) {
         var aux = document.createElement("input");
-        // Assign it the value of the specified element
         aux.setAttribute("value", element);
         document.body.appendChild(aux);
         aux.select();
         document.execCommand("copy");
         document.body.removeChild(aux);
 
-        toastr.info('Copied Successfully', "Success");
+        JDVToast.success('Copied Successfully');
     }
+
+    // Fixed event listener - the issue was probably timing
     document.addEventListener('DOMContentLoaded', function() {
+        // Make sure Toast is available globally for Livewire events
+        window.JDVToast = JDVToast;
+
         window.addEventListener('alert', event => {
-            event.detail.forEach(({
-                type,
-                message,
-                title
-            }) => {
-                toastr[type](message, title ?? 'Successful');
-            });
+            if (event.detail && Array.isArray(event.detail)) {
+                event.detail.forEach(({
+                    type,
+                    message,
+                    title
+                }) => {
+                    // Call the appropriate Toast method
+                    switch (type) {
+                        case 'success':
+                            JDVToast.success(message, null, {
+                                title
+                            });
+                            break;
+                        case 'error':
+                            JDVToast.error(message, null, {
+                                title
+                            });
+                            break;
+                        case 'warning':
+                            JDVToast.warning(message, null, {
+                                title
+                            });
+                            break;
+                        case 'info':
+                            JDVToast.info(message, null, {
+                                title
+                            });
+                            break;
+                        default:
+                            JDVToast.info(message, null, {
+                                title
+                            });
+                    }
+                });
+            }
         });
     });
+
     document.addEventListener('livewire:navigating', () => {
         JDLoader.open('.loader-mask');
-
         applyThemeFromLocalStorage();
     })
+
     document.addEventListener('livewire:navigated', () => {
         JDLoader.close('.loader-mask');
         applyThemeFromLocalStorage();
-
         updateActiveNavItem();
         highlightActiveFooterLink();
     })
@@ -98,6 +129,7 @@
     function openLink(url, target = '_self') {
         window.open(url, target);
     }
+
     document.addEventListener('DOMContentLoaded', applyThemeFromLocalStorage);
     document.addEventListener('DOMContentLoaded', highlightActiveFooterLink);
     document.addEventListener('DOMContentLoaded', updateActiveNavItem);
