@@ -13,6 +13,14 @@
     @yield('meta')
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
+    <script>
+        if (localStorage.getItem('color-theme') === 'dark' || (!('color-theme' in localStorage) && window.matchMedia(
+                '(prefers-color-scheme: dark)').matches)) {
+            document.documentElement.classList.add('dark');
+        } else {
+            document.documentElement.classList.remove('dark');
+        }
+    </script>
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="{{ static_asset('css/vendors.css') }}">
 
@@ -23,12 +31,12 @@
     @livewireStyles()
 </head>
 
-<body class="bg-gray-100">
-    <div class="flex h-screen overflow-hidden">
+<body class="bg-gray-100 dark:bg-gray-900 transition-colors duration-200">
+    <div class="flex h-screen overflow-hidden ">
         @include('user.layouts.sidebar')
 
         <!-- Mobile sidebar overlay -->
-        <div id="mobile-sidebar-overlay" class="fixed inset-0 z-40 hidden md:hidden"
+        <div id="mobile-sidebar-overlay" class="fixed inset-0 z-40 hidden lg:hidden"
             style="background-color: rgba(243, 244, 246, 0.35);"></div>
 
         <!-- Mobile sidebar -->

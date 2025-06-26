@@ -50,4 +50,33 @@ document.addEventListener('DOMContentLoaded', function() {
             userDropdown.classList.add('hidden');
         });
     });
+
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('dark-mode-toggle');
+    const darkModeIcon = document.getElementById('dark-mode-icon');
+    const htmlElement = document.documentElement;
+
+    // Check for saved theme preference or default to light mode
+    const currentTheme = localStorage.getItem('color-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
+    if (currentTheme === 'dark') {
+        htmlElement.classList.add('dark');
+        darkModeIcon.classList.remove('fa-moon');
+        darkModeIcon.classList.add('fa-sun');
+    }
+
+    darkModeToggle.addEventListener('click', function() {
+        htmlElement.classList.toggle('dark');
+
+        if (htmlElement.classList.contains('dark')) {
+            localStorage.setItem('color-theme', 'dark');
+            darkModeIcon.classList.remove('fa-moon');
+            darkModeIcon.classList.add('fa-sun');
+        } else {
+            localStorage.setItem('color-theme', 'light');
+            darkModeIcon.classList.remove('fa-sun');
+            darkModeIcon.classList.add('fa-moon');
+        }
+    });
+
 });

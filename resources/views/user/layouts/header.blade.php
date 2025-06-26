@@ -1,11 +1,11 @@
-<header class="bg-white shadow-sm">
+<header class="bg-white dark:bg-gray-700 shadow-sm">
     <div class="px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
-        <h1 class="text-xl font-semibold text-gray-900">Dashboard</h1>
+        <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">Dashboard</h1>
         <div class="flex items-center space-x-4">
             <!-- Currency Selector (Desktop) -->
             <div class="hidden md:flex items-center">
                 <select
-                    class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white px-3 py-1">
+                    class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
@@ -16,7 +16,7 @@
             <!-- Language Selector (Desktop) -->
             <div class="hidden md:flex items-center">
                 <select
-                    class="text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white px-3 py-1">
+                    class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
                     <option value="en">EN</option>
                     <option value="es">ES</option>
                     <option value="fr">FR</option>
@@ -24,9 +24,14 @@
                 </select>
             </div>
 
+            <!-- Dark Mode Toggle -->
+            <button id="dark-mode-toggle"
+                class="relative p-2 rounded-full text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 transition-colors">
+                <i id="dark-mode-icon" class="fas fa-moon text-lg"></i>
+            </button>
             <!-- Notifications -->
             <button
-                class="relative p-2 rounded-full text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                class="relative p-2 rounded-full text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500">
                 <i class="fas fa-bell text-lg"></i>
                 <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
             </button>
@@ -42,45 +47,42 @@
 
                 <!-- Dropdown Menu -->
                 <div id="user-dropdown"
-                    class="hidden absolute right-0 mt-2 w-56 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
-                    <div class="px-4 py-2 border-b border-gray-200">
-                        <p class="text-sm font-medium text-gray-900">John Doe</p>
-                        <p class="text-xs text-gray-500">john@example.com</p>
+                    class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
+                    <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">John Doe</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">john@example.com</p>
                     </div>
 
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fas fa-user mr-3 text-gray-400"></i>
                         Profile
                     </a>
 
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fas fa-wallet mr-3 text-gray-400"></i>
                         Billing
                     </a>
 
-                    <a href="#"
-                        class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fas fa-cog mr-3 text-gray-400"></i>
                         Settings
                     </a>
 
                     <!-- Mobile Currency & Language -->
-                    <div class="md:hidden border-t border-gray-200 mt-1">
+                    <div class="md:hidden border-t border-gray-200 dark:border-gray-700 mt-1">
                         <div class="px-4 py-2">
-                            <p class="text-xs font-medium text-gray-500 uppercase tracking-wider mb-2">
+                            <p class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
                                 Preferences</p>
                             <div class="space-y-2">
                                 <select
-                                    class="w-full text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                    class="w-full text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                                     <option value="USD">USD</option>
                                     <option value="EUR">EUR</option>
                                     <option value="GBP">GBP</option>
                                     <option value="NGN">NGN</option>
                                 </select>
                                 <select
-                                    class="w-full text-sm border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500">
+                                    class="w-full text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-indigo-500 focus:border-indigo-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
                                     <option value="en">English</option>
                                     <option value="es">Spanish</option>
                                     <option value="fr">French</option>
@@ -90,9 +92,8 @@
                         </div>
                     </div>
 
-                    <div class="border-t border-gray-200 mt-1">
-                        <a href="#"
-                            class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                    <div class="border-t border-gray-200 dark:border-gray-700 mt-1">
+                        <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fas fa-sign-out-alt mr-3 text-gray-400"></i>
                             Sign Out
                         </a>
