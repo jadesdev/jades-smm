@@ -25,7 +25,7 @@
             <!-- Left Side - Logo -->
             <div class="flex items-center">
                 <h1 class="text-xl font-bold text-gray-900">
-                    <i class="fas fa-chart-line text-primary-600 mr-2"></i>
+                    <i class="fad fa-chart-line text-primary-600 mr-2"></i>
                     SMM Dashboard
                 </h1>
             </div>
@@ -63,36 +63,36 @@
                             <p class="text-sm font-medium text-gray-900">John Doe</p>
                             <p class="text-xs text-gray-500">Admin</p>
                         </div>
-                        <i class="fas fa-chevron-down text-gray-400 text-xs"></i>
+                        <i class="fad fa-chevron-down text-gray-400 text-xs"></i>
                     </button>
 
                     <!-- Dropdown Menu -->
                     <div id="user-dropdown"
                         class="hidden absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 border border-gray-200">
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-user mr-3 text-gray-400"></i>
+                            <i class="fad fa-user mr-3 text-gray-400"></i>
                             Profile
                         </a>
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-cog mr-3 text-gray-400"></i>
+                            <i class="fad fa-cog mr-3 text-gray-400"></i>
                             Settings
                         </a>
                         <div class="lg:hidden">
                             <hr class="my-1">
                             <a href="#"
                                 class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-dollar-sign mr-3 text-gray-400"></i>
+                                <i class="fad fa-dollar-sign mr-3 text-gray-400"></i>
                                 Currency
                             </a>
                             <a href="#"
                                 class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                <i class="fas fa-globe mr-3 text-gray-400"></i>
+                                <i class="fad fa-globe mr-3 text-gray-400"></i>
                                 Language
                             </a>
                         </div>
                         <hr class="my-1">
                         <a href="#" class="flex items-center px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                            <i class="fas fa-sign-out-alt mr-3 text-gray-400"></i>
+                            <i class="fad fa-sign-out-alt mr-3 text-gray-400"></i>
                             Sign Out
                         </a>
                     </div>
@@ -108,43 +108,43 @@
                     <nav class="flex-1 px-4 py-6 space-y-2">
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-md">
-                            <i class="fas fa-home w-5 mr-3"></i>
+                            <i class="fad fa-home w-5 mr-3"></i>
                             Dashboard
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-file-alt w-5 mr-3"></i>
+                            <i class="fad fa-file-alt w-5 mr-3"></i>
                             Content
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-share-alt w-5 mr-3"></i>
+                            <i class="fad fa-share-alt w-5 mr-3"></i>
                             Social Media
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-chart-bar w-5 mr-3"></i>
+                            <i class="fad fa-chart-bar w-5 mr-3"></i>
                             Analytics
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-calendar-alt w-5 mr-3"></i>
+                            <i class="fad fa-calendar-alt w-5 mr-3"></i>
                             Scheduler
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-users w-5 mr-3"></i>
+                            <i class="fad fa-users w-5 mr-3"></i>
                             Team
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-cogs w-5 mr-3"></i>
+                            <i class="fad fa-cogs w-5 mr-3"></i>
                             Settings
                         </a>
                     </nav>
@@ -162,7 +162,7 @@
                     <div class="flex justify-end p-4">
                         <button id="mobile-sidebar-close"
                             class="p-2 rounded-md text-gray-600 hover:text-gray-900 hover:bg-gray-100">
-                            <i class="fas fa-times text-lg"></i>
+                            <i class="fad fa-times text-lg"></i>
                         </button>
                     </div>
 
@@ -170,43 +170,43 @@
                     <nav class="flex-1 px-4 py-2 space-y-2">
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-primary-600 bg-primary-50 rounded-md">
-                            <i class="fas fa-home w-5 mr-3"></i>
+                            <i class="fad fa-home w-5 mr-3"></i>
                             Dashboard
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-file-alt w-5 mr-3"></i>
+                            <i class="fad fa-file-alt w-5 mr-3"></i>
                             Content
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-share-alt w-5 mr-3"></i>
+                            <i class="fad fa-share-alt w-5 mr-3"></i>
                             Social Media
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-chart-bar w-5 mr-3"></i>
+                            <i class="fad fa-chart-bar w-5 mr-3"></i>
                             Analytics
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-calendar-alt w-5 mr-3"></i>
+                            <i class="fad fa-calendar-alt w-5 mr-3"></i>
                             Scheduler
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-users w-5 mr-3"></i>
+                            <i class="fad fa-users w-5 mr-3"></i>
                             Team
                         </a>
 
                         <a href="#"
                             class="flex items-center px-3 py-2 text-sm font-medium text-gray-600 hover:text-gray-900 hover:bg-gray-50 rounded-md">
-                            <i class="fas fa-cogs w-5 mr-3"></i>
+                            <i class="fad fa-cogs w-5 mr-3"></i>
                             Settings
                         </a>
                     </nav>
@@ -225,28 +225,28 @@
         <nav class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 lg:hidden z-20">
             <div class="flex justify-around items-center py-2">
                 <a href="#" class="flex flex-col items-center py-2 px-3 text-primary-600">
-                    <i class="fas fa-home text-lg"></i>
+                    <i class="fad fa-home text-lg"></i>
                     <span class="text-xs mt-1">Dashboard</span>
                 </a>
 
                 <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-600">
-                    <i class="fas fa-file-alt text-lg"></i>
+                    <i class="fad fa-file-alt text-lg"></i>
                     <span class="text-xs mt-1">Content</span>
                 </a>
 
                 <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-600">
-                    <i class="fas fa-share-alt text-lg"></i>
+                    <i class="fad fa-share-alt text-lg"></i>
                     <span class="text-xs mt-1">Social</span>
                 </a>
 
                 <a href="#" class="flex flex-col items-center py-2 px-3 text-gray-600">
-                    <i class="fas fa-chart-bar text-lg"></i>
+                    <i class="fad fa-chart-bar text-lg"></i>
                     <span class="text-xs mt-1">Analytics</span>
                 </a>
 
                 <!-- Menu Toggle Button -->
                 <button id="mobile-menu-button" class="flex flex-col items-center py-2 px-3 text-gray-600">
-                    <i class="fas fa-bars text-lg"></i>
+                    <i class="fad fa-bars text-lg"></i>
                     <span class="text-xs mt-1">Menu</span>
                 </button>
             </div>

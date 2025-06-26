@@ -42,6 +42,7 @@
         applyThemeFromLocalStorage();
 
         updateActiveNavItem();
+        highlightActiveFooterLink();
     })
 
     function applyThemeFromLocalStorage() {
@@ -62,17 +63,34 @@
 
     function updateActiveNavItem() {
         const currentUrl = window.location.href.split(/[?#]/)[0];
-        const navItems = document.querySelectorAll('.nav-menu__item');
+        const sideLinks = document.querySelectorAll('.side-menu a');
 
-        navItems.forEach(item => {
-            const link = item.querySelector('a');
-            if (!link) return;
+        sideLinks.forEach(link => {
+            const linkUrl = new URL(link.href, window.location.origin).href;
 
-            const linkPath = new URL(link.href);
-            if (linkPath.href === currentUrl) {
-                item.classList.add('activePage');
+            if (linkUrl === currentUrl) {
+                link.classList.add('bg-primary-800', 'text-white', 'dark:bg-gray-700');
+                link.classList.remove('text-primary-200', 'hover:text-white');
             } else {
-                item.classList.remove('activePage');
+                link.classList.remove('bg-primary-800', 'text-white', 'dark:bg-gray-700');
+                link.classList.add('text-primary-200');
+            }
+        });
+    }
+
+    function highlightActiveFooterLink() {
+        const currentUrl = window.location.href.split(/[?#]/)[0];
+        const footerLinks = document.querySelectorAll('.footer-menu a');
+
+        footerLinks.forEach(link => {
+            const linkUrl = new URL(link.href, window.location.origin).href;
+
+            if (linkUrl === currentUrl) {
+                link.classList.add('text-primary-600', 'dark:text-primary-400');
+                link.classList.remove('text-gray-500', 'dark:text-gray-300');
+            } else {
+                link.classList.remove('text-primary-600', 'dark:text-primary-400');
+                link.classList.add('text-gray-500', 'dark:text-gray-300');
             }
         });
     }
@@ -81,4 +99,6 @@
         window.open(url, target);
     }
     document.addEventListener('DOMContentLoaded', applyThemeFromLocalStorage);
+    document.addEventListener('DOMContentLoaded', highlightActiveFooterLink);
+    document.addEventListener('DOMContentLoaded', updateActiveNavItem);
 </script>

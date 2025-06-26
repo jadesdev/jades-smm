@@ -27,7 +27,7 @@
     </script>
 
     <!-- Font Awesome 6 -->
-    <link rel="stylesheet" href="{{ static_asset('css/vendors.css') }}">
+    <link rel="stylesheet" href="{{ static_asset('css/vendors.min.css') }}">
 
     @vite(['resources/css/app.css', 'resources/js/app.js'])
 
@@ -59,13 +59,15 @@
                 <div class="py-6">
                     <div class="max-w-8xl mx-auto px-4 sm:px-6 lg:px-8">
                         @yield('content')
+
+                        {{ $slot ?? '' }}
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
-    <script src="{{ static_asset('js/vendors.js') }}"></script>
+    <script src="{{ static_asset('js/vendors.min.js') }}"></script>
     @livewireScripts()
     {{-- <script src="{{ asset('vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
         data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script> --}}

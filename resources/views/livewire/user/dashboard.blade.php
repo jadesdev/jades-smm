@@ -1,8 +1,9 @@
-@extends('user.layouts.main')
-@section('content')
+@section('title', $metaTitle)
+<div>
     <!-- Welcome Section -->
     <div class="mb-8">
-        <div class="bg-gradient-to-r from-primary-600 to-purple-600 rounded-lg p-6 text-white dark:bg-gradient-to-r dark:from-primary-800 dark:to-purple-800">
+        <div
+            class="bg-gradient-to-r from-primary-600 to-purple-600 rounded-lg p-6 text-white dark:bg-gradient-to-r dark:from-primary-800 dark:to-purple-800">
             <div class="flex items-center justify-between">
                 <div>
                     <h2 class="text-2xl font-bold mb-2">Welcome back, John!</h2>
@@ -106,4 +107,8 @@
             </div>
         </div>
     </div>
-@endsection
+</div>
+
+
+
+@include('layouts.meta')
