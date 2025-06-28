@@ -236,17 +236,10 @@
 
     {{-- modal --}}
 
-    <x-modal name="basic-modal" title="Basic Modal">
-        <p>This is a basic modal with some content.</p>
-    </x-modal>
-    <button x-on:click="$dispatch('open-modal', 'basic-modal')" class="bg-blue-500 text-white px-4 py-2 rounded">
-        Open Basic Modal
-    </button>
-
     <!-- Button to open the modal -->
-    <button x-data @click="$dispatch('open-modal', { name: 'confirm-deletion' })">
+    <x-button variant="danger" x-data @click="$dispatch('open-modal', { name: 'confirm-deletion' })">
         Delete Post
-    </button>
+    </x-button>
 
     <!-- The Modal Component -->
     <x-modal name="confirm-deletion" title="Confirm Deletion">
@@ -284,5 +277,17 @@
             </button>
         </x-slot>
     </x-modal>
+
+    <x-card>
+        <x-slot name="footer">
+            <h2 class="text-lg font-semibold text-gray-900">Card Header</h2>
+        </x-slot>
+        <x-slot name="header">
+            <h2 class="text-lg font-semibold text-gray-900">Card Header</h2>
+        </x-slot>
+        <div class="">
+            <p>Card Content</p>
+        </div>
+    </x-card>
 </div>
 @endsection

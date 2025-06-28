@@ -263,7 +263,7 @@
 @section('styles')
     <style>
         .gradient-bg {
-            background: linear-gradient(135deg, var(--color-primary-500) 0%, var(--color-primary-800) 100%);
+            background: linear-gradient(135deg, var(--color-primary-400) 0%, var(--color-primary-800) 100%);
         }
 
         .glass-effect {
