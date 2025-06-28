@@ -231,5 +231,58 @@
             </div>
         </div>
     </div>
+
+    <x-forms.input name="amount" label="Amount" placeholder="Amount" />
+
+    {{-- modal --}}
+
+    <x-modal name="basic-modal" title="Basic Modal">
+        <p>This is a basic modal with some content.</p>
+    </x-modal>
+    <button x-on:click="$dispatch('open-modal', 'basic-modal')" class="bg-blue-500 text-white px-4 py-2 rounded">
+        Open Basic Modal
+    </button>
+
+    <!-- Button to open the modal -->
+    <button x-data @click="$dispatch('open-modal', { name: 'confirm-deletion' })">
+        Delete Post
+    </button>
+
+    <!-- The Modal Component -->
+    <x-modal name="confirm-deletion" title="Confirm Deletion">
+        <p class="text-sm text-gray-600">
+            Are you sure you want to delete this post? This action cannot be undone.
+        </p>
+
+        <div class="mt-6 flex justify-end">
+            <x-button variant="secondary" x-on:click="$dispatch('close-modal', { name: 'confirm-deletion' })">
+                Cancel
+            </x-button>
+
+            <x-button variant="danger" class="ml-3">
+                Delete Post
+            </x-button>
+        </div>
+    </x-modal>
+
+    <!-- Open modal -->
+    <x-button x-data @click="$dispatch('open-modal', { name: 'confirm-action' })">
+        Open Modal
+    </x-button>
+
+    <!-- Modal component -->
+    <x-modal name="confirm-action" title="Confirmation" maxWidth="lg" position="top">
+        <p>Are you sure you want to perform this action?</p>
+
+        <x-slot name="footer">
+            <button x-on:click="$dispatch('close-modal', { name: 'confirm-action' })"
+                class="px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-md hover:bg-gray-200">
+                Cancel
+            </button>
+            <button class="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700">
+                Confirm
+            </button>
+        </x-slot>
+    </x-modal>
 </div>
 @endsection

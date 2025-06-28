@@ -1,8 +1,7 @@
 @section('title', $metaTitle)
 <div>
-    <x-forms.input name="amount" label="Amount" placeholder="Amount" />
-</div>
 
+</div>
 
 
 @include('layouts.meta')
