@@ -5,7 +5,7 @@
             <!-- Currency Selector (Desktop) -->
             <div class="hidden md:flex items-center">
                 <select
-                    class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
+                    class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
                     <option value="USD">USD</option>
                     <option value="EUR">EUR</option>
                     <option value="GBP">GBP</option>
@@ -16,7 +16,7 @@
             <!-- Language Selector (Desktop) -->
             <div class="hidden md:flex items-center">
                 <select
-                    class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
+                    class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
                     <option value="en">EN</option>
                     <option value="es">ES</option>
                     <option value="fr">FR</option>
@@ -79,14 +79,14 @@
                                 Preferences</p>
                             <div class="space-y-2">
                                 <select
-                                    class="w-full text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                                    class="w-full p-1 text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                     <option value="USD">USD</option>
                                     <option value="EUR">EUR</option>
                                     <option value="GBP">GBP</option>
                                     <option value="NGN">NGN</option>
                                 </select>
                                 <select
-                                    class="w-full text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100">
+                                    class="w-full p-1 text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-gray-100 dark:bg-gray-700 text-gray-900 dark:text-gray-100">
                                     <option value="en">English</option>
                                     <option value="es">Spanish</option>
                                     <option value="fr">French</option>
