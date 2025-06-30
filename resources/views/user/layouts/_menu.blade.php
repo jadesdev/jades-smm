@@ -43,7 +43,7 @@
     {{-- Referrals --}}
     <a href="{{ route('user.referrals') }}" wire:navigate
         class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-share mr-3 w-5"></i>
+        <i class="fad fa-users mr-3 w-5"></i>
         Referrals
     </a>
 

@@ -1,5 +1,5 @@
 @section('title', $metaTitle)
-<div class="mx-auto bg-white rounded-2xl">
+<div class="mx-auto bg-white dark:bg-gray-800 rounded-2xl">
     <!-- Balance Card -->
     <div class="gradient-bg rounded-2xl p-8 text-white mb-8 shadow-2xl">
         <div class="flex items-center justify-between mb-4">
@@ -35,13 +35,13 @@
     @endif
 
     <!-- Tab Navigation & Content -->
-    <div class="bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
         <!-- Tab Headers -->
-        <div class="flex border-b border-gray-200">
+        <div class="flex border-b border-gray-200 dark:border-gray-700">
             <button wire:click="changeTab('deposit')" @class([
                 'flex-1 px-6 py-4 text-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2',
                 'tab-active' => $activeTab === 'deposit',
-                'text-gray-600 hover:text-primary-600 hover:bg-gray-50' =>
+                'text-gray-600 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800' =>
                     $activeTab !== 'deposit',
             ])>
                 <i class="fad fa-credit-card w-5 h-5"></i>
@@ -51,7 +51,7 @@
             <button wire:click="changeTab('transactions')" @class([
                 'flex-1 px-6 py-4 text-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2',
                 'tab-active' => $activeTab === 'transactions',
-                'text-gray-600 hover:text-primary-600 hover:bg-gray-50' =>
+                'text-gray-600 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800' =>
                     $activeTab !== 'transactions',
             ])>
                 <i class="fad fa-arrow-up-right w-5 h-5"></i>
@@ -64,7 +64,7 @@
             <!-- Deposit Tab Content -->
             @if ($activeTab === 'deposit')
                 <div class="mx-auto">
-                    <h2 class="text-2xl font-bold text-gray-900 mb-6">Add Funds to Your Wallet</h2>
+                    <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Add Funds to Your Wallet</h2>
 
                     <form wire:submit="deposit">
                         <div class="space-y-6">
@@ -77,7 +77,7 @@
 
                                 <!-- Gateway Selection -->
                                 <div class="w-full md:w-1/2">
-                                    <label class="block text-sm font-semibold text-gray-700 mb-4">
+                                    <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">
                                         Select Payment Method
                                     </label>
                                     <div class="grid grid-cols-1 md:grid-cols-2 mb-2 gap-4">
@@ -85,16 +85,19 @@
                                             <label wire:click="selectGateway('{{ $key }}')"
                                                 @class([
                                                     'relative cursor-pointer p-4 border-2 rounded-xl transition-all hover:shadow-md',
-                                                    'gateway-selected border-primary-500 bg-primary-50' =>
+                                                    'gateway-selected border-primary-500 dark:border-primary-700 bg-primary-50 dark:bg-primary-900' =>
                                                         $selectedGateway === $key,
-                                                    'border-gray-200 hover:border-primary-300' => $selectedGateway !== $key,
+                                                    'border-gray-200 hover:border-primary-300 dark:border-gray-700 dark:hover:border-primary-500' =>
+                                                        $selectedGateway !== $key,
                                                 ])>
                                                 <div class="flex items-center space-x-3">
                                                     <span class="text-2xl"><i class="{{ $gateway['icon'] }}"></i></span>
                                                     <div class="flex-1">
-                                                        <div class="font-semibold text-gray-900">{{ $gateway['name'] }}
+                                                        <div class="font-semibold text-gray-900 dark:text-gray-200">
+                                                            {{ $gateway['name'] }}
                                                         </div>
-                                                        <div class="text-sm text-gray-500">Fee: {{ $gateway['fee'] }}
+                                                        <div class="text-sm text-gray-500 dark:text-gray-300">Fee:
+                                                            {{ $gateway['fee'] }}
                                                         </div>
                                                     </div>
                                                 </div>
@@ -123,28 +126,28 @@
                 <!-- Transactions Tab Content -->
                 <div>
                     <div class="flex justify-between items-center mb-6">
-                        <h2 class="text-xl font-bold text-gray-900">Transaction History</h2>
+                        <h2 class="text-xl font-bold text-gray-900 dark:text-gray-200">Transaction History</h2>
                         <button wire:click="clearFilters"
-                            class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-lg transition-colors">
+                            class="px-4 py-2 text-sm bg-gray-100 hover:bg-gray-200 dark:bg-gray-700 dark:hover:bg-gray-800 text-gray-700 dark:text-gray-200 rounded-lg transition-colors">
                             <i class="fad fa-filter-slash mr-1"></i>
                             <span class="md:block hidden">Clear Filters</span>
                         </button>
                     </div>
                     <!-- Filters Section -->
-                    <div class="bg-gray-50 rounded-xl p-3 mb-6 space-y-4">
+                    <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-3 mb-6 space-y-4">
                         <!-- Search and Quick Filters Row -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
                             <!-- Search -->
                             <div>
-                                <input type="text" wire:model.live.debounce.300ms="search"
-                                    placeholder="Search transactions..."
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-transparent">
+                                <x-forms.input type="text" wire:model.live.debounce.300ms="search" name="search"
+                                    placeholder="Search transactions...">
+                                </x-forms.input>
                             </div>
 
                             <!-- Type Filter -->
                             <div>
                                 <select wire:model.live="typeFilter"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400">
                                     <option value="">All Types</option>
                                     <option value="deposit">Deposit</option>
                                     <option value="withdraw">Withdraw</option>
@@ -156,7 +159,7 @@
                             <!-- Status Filter -->
                             <div>
                                 <select wire:model.live="statusFilter"
-                                    class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary-500">
+                                    class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400">
                                     <option value="">All Status</option>
                                     <option value="successful">Successful</option>
                                     <option value="pending">Pending</option>
@@ -169,7 +172,7 @@
                     <div class="space-y-4">
                         @forelse($this->transactions as $transaction)
                             <div
-                                class="bg-gray-50 rounded-xl p-5 px-3 hover:bg-gray-100 border border-primary-300 transition-all transaction-card">
+                                class="bg-gray-50 dark:bg-gray-700 rounded-xl p-5 px-3 hover:bg-gray-100 dark:hover:bg-gray-800 border border-primary-300 transition-all transaction-card">
                                 <div class="md:flex items-center justify-between">
                                     <div class="flex items-center space-x-4">
                                         <div @class([
@@ -193,11 +196,11 @@
                                                     default => 'text-gray-600',
                                                 };
                                             @endphp
-                                            <i class="fad {{ $iconClass }} w-5 h-5 {{ $iconColor }}"></i>
+                                            <i class="fad {{ $iconClass }} w-5 h-5 {{ $iconColor }} "></i>
                                         </div>
                                         <div class="flex items-center justify-between space-x-2">
                                             <span
-                                                class="font-semibold text-gray-900 capitalize">{{ $transaction['type'] }}</span>
+                                                class="font-semibold text-gray-900 dark:text-gray-100 capitalize">{{ $transaction['type'] }}</span>
                                             <span @class([
                                                 'text-right px-2 py-1 rounded-full text-xs font-medium border flex items-center',
                                                 'border-green-200' => $transaction['status'] === 'successful',
@@ -212,7 +215,7 @@
                                                         default => 'fa-money-bill',
                                                     };
                                                 @endphp
-                                                <i class="fad {{ $statusIcon }}"></i>
+                                                <i class="fad {{ $statusIcon }} dark:text-gray-200"></i>
                                                 <span class="ml-1">{{ $transaction['status'] }}</span>
                                             </span>
                                         </div>
@@ -227,23 +230,23 @@
                                         ])>
                                             ${{ number_format($transaction['amount'], 0) }}
                                         </div>
-                                        <div class="text-md text-gray-500">Fee:
+                                        <div class="text-md text-gray-500 dark:text-gray-300">Fee:
                                             ${{ number_format($transaction['fee'], 2) }}</div>
                                     </div>
                                 </div>
-                                <p>{{ $transaction['description'] }}</p>
+                                <p class="dark:text-gray-200">{{ $transaction['description'] }}</p>
 
                                 <div class="mt-4 flex items-center justify-between">
-                                    <div class="flex items-center space-x-2 text-sm text-gray-500">
+                                    <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-300">
                                         <span>TX ID: {{ $transaction['id'] }}</span>
                                         <button onclick="copyToClipboard('{{ $transaction['id'] }}')"
-                                            class="p-1 hover:bg-gray-200 rounded transition-colors copy-btn">
-                                            <i class="fad fa-clone w-3 h-3"></i>
+                                            class="p-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded transition-colors copy-btn">
+                                            <i class="fad fa-clone w-3 h-3 dark:text-gray-200"></i>
                                         </button>
                                         <span
                                             class="copied-indicator-{{ $transaction['id'] }} hidden text-green-600 text-xs">Copied!</span>
                                     </div>
-                                    <div class="text-sm text-gray-500">{{ $transaction['date'] }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-300">{{ $transaction['date'] }}</div>
                                 </div>
                             </div>
                         @empty
@@ -281,9 +284,21 @@
             color: var(--color-primary-500);
         }
 
+        .dark .tab-active {
+            border-bottom: 3px solid var(--color-primary-400);
+            background: #263050;
+            color: var(--color-primary-400);
+        }
+
         .gateway-selected {
             border-color: var(--color-primary-500) !important;
             background: #eef2ff !important;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .dark .gateway-selected {
+            border-color: var(--color-primary-400) !important;
+            background: #292c35 !important;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
         }
 
