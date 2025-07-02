@@ -24,7 +24,7 @@ class Profile extends Component
     public function mount()
     {
         // set meta
-        $this->metaTitle = "Profile";
+        $this->metaTitle = "Account";
     }
 
     public function render()
