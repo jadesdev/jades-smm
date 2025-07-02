@@ -17,7 +17,8 @@ class Select extends Component
         public array $options = [],
         public bool $required = false,
         public string $placeholder = 'Select an option...',
-        public mixed $value = null
+        public mixed $value = null,
+        public string $help = '',
     ) {}
 
     /**

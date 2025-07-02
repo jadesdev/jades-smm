@@ -7,7 +7,7 @@ use Livewire\Component;
 use Livewire\Attributes\Layout;
 
 #[Layout('user.layouts.main')]
-class Tickets extends Component
+class Ticket extends Component
 {
     use LivewireToast;
 
@@ -21,14 +21,14 @@ class Tickets extends Component
 
     public string $metaImage;
 
-    public function mount()
+    public function mount($id)
     {
         // set meta
-        $this->metaTitle = "Tickets";
+        $this->metaTitle = "Ticket Details";
     }
 
     public function render()
     {
-        return view('livewire.support.tickets');
+        return view('livewire.support.ticket');
     }
 }

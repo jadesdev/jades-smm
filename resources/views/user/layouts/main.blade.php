@@ -33,6 +33,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet" />
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
         rel="stylesheet" />
+    <link rel="stylesheet" href="{{ static_asset('css/main.css') }}">
     @yield('styles')
     @stack('styles')
     @livewireStyles()
