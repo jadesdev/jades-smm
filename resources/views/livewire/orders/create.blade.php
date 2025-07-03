@@ -1,7 +1,6 @@
 @section('title', $metaTitle)
-<div class="grid grid-cols-1 md:grid-cols-2 gap-4 pb-10">
-
-    <div class="bg-white dark:bg-gray-800 rounded-3xl  overflow-hidden">
+<div class="grid grid-cols-1 md:grid-cols-5 gap-4 pb-10">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden md:col-span-3">
         <div class="p-4 pb-0">
             <div class="flex space-x-6">
                 <x-button variant="primary" type="button" size="sm">
@@ -104,8 +103,7 @@
             </form>
         </div>
     </div>
-
-    <div class="space-y-6 mb-6">
+    <div class="space-y-6 mb-6 md:col-span-2">
         <!-- Service Details Panel -->
         <div id="serviceDetails"
             class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-100 dark:to-indigo-100 rounded-2xl p-6 border border-purple-200">

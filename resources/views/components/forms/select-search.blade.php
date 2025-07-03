@@ -13,46 +13,6 @@
 @once
     @push('styles')
         <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.css" rel="stylesheet">
-        <style>
-            .ts-control {
-                border-radius: 0.5rem !important;
-                border-color: #d1d5db !important;
-                padding: 0.5rem 0.75rem !important;
-                transition: border-color .15s ease-in-out, box-shadow .15s ease-in-out;
-            }
-
-            .is-focused .ts-control {
-                border-color: #3b82f6 !important;
-                box-shadow: 0 0 0 0.2rem rgb(59 130 246 / 25%) !important;
-            }
-
-            .dark .ts-control {
-                background-color: #374151 !important;
-                /* dark:bg-gray-700 */
-                border-color: #4b5563 !important;
-                color: #e5e7eb !important;
-            }
-            .ts-dropdown, .ts-control, .ts-control input {
-                color: #141516 !important;
-            }
-            .dark .ts-dropdown, .ts-control, .ts-control input {
-                color: #d1d5db !important;
-            }
-
-            .dark .ts-dropdown {
-                background: #374151;
-                border-color: #4b5563;
-            }
-
-            .dark .ts-dropdown .option {
-                color: #d1d5db;
-            }
-
-            .dark .ts-dropdown .option:hover,
-            .dark .ts-dropdown .active {
-                background-color: #4b5563;
-            }
-        </style>
     @endpush
 
     @push('scripts')
