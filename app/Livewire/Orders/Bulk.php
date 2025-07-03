@@ -13,7 +13,7 @@ class Bulk extends Component
 
 
     // meta
-    public string $metaTitle;
+    public string $metaTitle = "Bulk Order";
 
     public string $metaDescription;
 
@@ -21,11 +21,7 @@ class Bulk extends Component
 
     public string $metaImage;
 
-    public function mount()
-    {
-        // set meta
-        $this->metaTitle = "Bulk";
-    }
+    public function mount() {}
 
     public function render()
     {

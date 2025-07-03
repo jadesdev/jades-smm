@@ -11,19 +11,18 @@
 </x-forms.form-field>
 
 @once
-    @push('styles')
-        <link href="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/css/tom-select.bootstrap5.css" rel="stylesheet">
-    @endpush
 
     @push('scripts')
-        <script src="https://cdn.jsdelivr.net/npm/tom-select@2.2.2/dist/js/tom-select.complete.min.js"></script>
-
         <script>
             function selectSearch(config) {
                 return {
                     selectedValue: config.selectedValue,
-
                     init() {
+                        // Check if TomSelect is already initialized
+                        if (this.$refs.select.tomselect) {
+                            return;
+                        }
+
                         const tom = new TomSelect(this.$refs.select, {
                             items: [this.selectedValue],
                             placeholder: config.placeholder,

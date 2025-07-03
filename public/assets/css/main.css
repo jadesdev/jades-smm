@@ -53,6 +53,16 @@
     color: #d1d5db !important;
 }
 
+.dark .ts-control .item,
+.dark .ts-control>input {
+    color: #e4e5e7 !important;
+}
+
+.ts-control .item,
+.ts-control>input {
+    color: #141516 !important;
+}
+
 .dark .ts-dropdown {
     background: #374151;
     border-color: #4b5563;

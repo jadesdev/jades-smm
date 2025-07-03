@@ -2,12 +2,12 @@
 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 pb-10">
     <div class="bg-white dark:bg-gray-800 rounded-3xl overflow-hidden md:col-span-3">
         <div class="p-4 pb-0">
-            <div class="flex space-x-6">
+            <div class="flex space-x-4">
                 <x-button variant="primary" type="button" size="sm">
-                    <i class="fa fa-plus"></i> New Order
+                    <i class="fa fa-plus mr-2"></i> New Order
                 </x-button>
-                <x-button variant="info" outline type="button" size="sm">
-                    <i class="fa fa-list"></i> Mass Order
+                <x-button wire:navigate href="{{ route('user.orders.bulk') }}" variant="primary" outline type="button" size="sm">
+                    <i class="fa fa-list mr-2"></i> Bulk Order
                 </x-button>
             </div>
             <h1 class="text-xl font-bold text-slate-800 dark:text-slate-200 mt-3 border-b border-slate-200 pb-3">
