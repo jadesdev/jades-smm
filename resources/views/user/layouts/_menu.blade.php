@@ -1,7 +1,7 @@
 <nav class="flex-1 px-2 py-4 space-y-1 side-menu">
     {{-- Dashboard --}}
     <a href="{{ route('user.dashboard') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md bg-primary-800 dark:bg-gray-700 text-white">
+        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
         <i class="fad fa-home mr-3 w-5"></i>
         Dashboard
     </a>
