@@ -13,7 +13,7 @@ class Create extends Component
 
 
     // meta
-    public string $metaTitle;
+    public string $metaTitle = "Create Order";
 
     public string $metaDescription;
 
@@ -21,11 +21,7 @@ class Create extends Component
 
     public string $metaImage;
 
-    public function mount()
-    {
-        // set meta
-        $this->metaTitle = "Create";
-    }
+    public function mount() {}
 
     public function render()
     {

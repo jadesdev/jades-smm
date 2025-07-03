@@ -2,7 +2,7 @@
 
 <div class="mb-4">
     @if ($label)
-        <label for="{{ $name }}" class="block text-md font-medium text-gray-700 dark:text-gray-200 mb-2">
+        <label for="{{ $name }}" class="block text-md font-semibold text-gray-700 dark:text-gray-200 mb-2">
             {{ $label }}
             @if ($required)
                 <span class="text-red-500">*</span>
