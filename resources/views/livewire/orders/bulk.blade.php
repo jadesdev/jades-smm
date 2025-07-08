@@ -21,16 +21,12 @@
                     <ul class="text-sm text-blue-700 space-y-1 mb-3">
                         <li>• @lang('Enter each order on a new line')</li>
                         <li>• @lang('Use format: service_id | url | quantity')</li>
-                        <li>• @lang('Separate each field with a pipe symbol (|)')</li>
-                        <li>• @lang('Maximum 1000 orders per submission')</li>
                     </ul>
                     <div class="bg-blue-100 rounded-lg p-3">
                         <p class="text-xs font-medium text-blue-800 mb-1">@lang('Example:')</p>
                         <code class="text-xs text-blue-700">
                             1 | https://www.instagram.com/p/abc123 | 1000<br>
-                            2 | https://www.tiktok.com/@username | 500<br>
-                            3 | https://www.youtube.com/watch?v=xyz789 | 2000 <br>
-                            4 | https://facebook.com/username | 100
+                            2 | https://www.tiktok.com/@username | 500
                         </code>
                     </div>
                 </div>

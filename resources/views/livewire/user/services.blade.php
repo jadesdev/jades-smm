@@ -22,201 +22,59 @@
     </div>
 
     <div class="space-y-4">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
-            <button class="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                onclick="toggleSection('jadesmm')">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-6 bg-purple-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                        <span class="text-purple-600 dark:text-gray-300 text-sm">🚀</span>
-                    </div>
-                    <span class="font-semibold text-gray-800 dark:text-gray-100">JadeSMM - Top Performing Services</span>
-                </div>
-                <i class="fas fa-chevron-down text-xs transition-transform dark:text-gray-300" id="jadesmm-icon"></i>
-            </button>
-            <div id="jadesmm-content" class="hidden border-t border-gray-100 dark:border-gray-600 p-6">
-                <p class="text-gray-600 dark:text-gray-300">Top performing services content would go here...</p>
-            </div>
-        </div>
+        <x-service-category id="jadesmm" title="JadeSMM - Top Performing Services" icon="🚀"
+            iconBg="bg-purple-100 dark:bg-gray-700" iconText="text-purple-600 dark:text-gray-300">
+            <p class="text-gray-600 dark:text-gray-300">Top performing services content would go here...</p>
+        </x-service-category>
 
-        <!-- Instagram Cheapest Services -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
-            <button class="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                onclick="toggleSection('instagram-cheap')">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-6 bg-pink-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                        <span class="text-pink-600 dark:text-gray-300 text-sm">📷</span>
-                    </div>
-                    <span class="font-semibold text-gray-800 dark:text-gray-100">Instagram Cheapest Services</span>
-                </div>
-                <i class="fas fa-chevron-down text-xs transition-transform dark:text-gray-300" id="instagram-cheap-icon"></i>
-            </button>
-            <div id="instagram-cheap-content" class="hidden border-t border-gray-100 dark:border-gray-600 p-6">
-                <p class="text-gray-600 dark:text-gray-300">Instagram cheapest services content would go here...</p>
-            </div>
-        </div>
+        <x-service-category id="instagram-cheap" title="Instagram Cheapest Services" icon="📷"
+            iconBg="bg-pink-100 dark:bg-gray-700" iconText="text-pink-600 dark:text-gray-300">
+            <p class="text-gray-600 dark:text-gray-300">Instagram cheapest services content would go here...</p>
+        </x-service-category>
 
-        <!-- Instagram Followers - Flag OFF (Expanded) -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
-            <button class="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                onclick="toggleSection('instagram-followers')">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-6 bg-pink-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                        <span class="text-pink-600 dark:text-gray-300 text-sm">👥</span>
-                    </div>
-                    <span class="font-semibold text-gray-800 dark:text-gray-100">Instagram Followers - Flag OFF</span>
-                </div>
-                <i class="fas fa-chevron-up text-xs transition-transform dark:text-gray-300" id="instagram-followers-icon"></i>
-            </button>
+        <x-service-category id="instagram-followers" title="Instagram Followers - Flag OFF" icon="👥"
+            iconBg="bg-pink-100 dark:bg-gray-700" iconText="text-pink-600 dark:text-gray-300">
+            <x-service-table :services="[
+                [
+                    'id' => '8960',
+                    'name' => 'Instagram Followers - [ 10k/day ] [ NR ] [ Flag Off Only ] Instant',
+                    'rate' => '$1.20',
+                    'min' => '100',
+                    'max' => '100,000',
+                    'desc' => 'Instagram Followers - [ 10k/day ] [ NR ] [ Flag Off Only ] Instant',
+                ],
+                [
+                    'id' => '7458',
+                    'name' => 'Instagram Followers - Smart Boost [20k-30k/day] | 30 days Refill | Flag Off',
+                    'rate' => '$1.308',
+                    'min' => '10',
+                    'max' => '10,000,000',
+                    'desc' => ('Instagram Followers - Smart Boost [20k-30k/day] | 30 days Refill | Flag Off.
+                     This service is great for people who want to boost their Instagram followers quickly and safely. 
+                     It is a Smart Boost service which means that it will automatically detect your Instagram account\'s pace and adjust the speed of followers accordingly. 
+                     It also has a 30 day refill warranty which means that if you lose any followers within 30 days of your purchase, we will refund them for free. 
+                     This service is also flagged off which means that it is not marked as spam by Instagram and is therefore much safer than other services.'),
+                ],
+                [
+                    'id' => '7460',
+                    'name' => 'Instagram Followers - Smart Boost [20k-30k/day] | 90 days Refill | Flag Off',
+                    'rate' => '$1.39',
+                    'min' => '10',
+                    'max' => '10,000,000',
+                    'desc' => 'Instagram Followers - Smart Boost [20k-30k/day] | 90 days Refill | Flag Off',
+                ],
+            ]" />
+        </x-service-category>
 
-            <!-- Expanded Content with Responsive Table -->
-            <div id="instagram-followers-content" class="dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
-                <div class="responsive-table overflow-x-auto">
-                    <table class="w-full min-w-full">
-                        <thead class="bg-gray-100 dark:bg-gray-600">
-                            <tr>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">ID</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Service</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Rate per 1000</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Min Order</th>
-                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700 dark:text-gray-300">Max Order</th>
-                                <th class="px-4 py-3 text-end text-sm font-medium text-gray-700 dark:text-gray-300">Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody class="divide-y divide-gray-100 dark:divide-gray-700">
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-300" data-label="ID">⭐ 8960</td>
-                                <td class="px-4 py-4" data-label="Service">
-                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Instagram Followers - [ 10k/day ] [
-                                        NR ] [ Flag Off Only ] Instant</div>
-                                </td>
-                                <td class="px-4 py-4" data-label="Rate per 1000">
-                                    <span
-                                        class="inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">$1.20</span>
-                                </td>
-                                <td class="px-4 py-4" data-label="Min Order">
-                                    <span
-                                        class="inline-block bg-green-100 dark:bg-green-800 text-green-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">100</span>
-                                </td>
-                                <td class="px-4 py-4" data-label="Max Order">
-                                    <span
-                                        class="inline-block bg-purple-100 dark:bg-purple-800 text-primary-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">100,000</span>
-                                </td>
-                                <td class="px-4 py-4 actions-cell text-end" data-label="Actions">
-                                    <div class="flex flex-col sm:flex-row gap-2 justify-end">
-                                        <button
-                                            class="bg-primary text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-primary-800 dark:hover:bg-primary-700 transition-colors whitespace-nowrap">
-                                            View
-                                        </button>
-                                        <button
-                                            class="bg-green-600 text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-green-700 dark:hover:bg-green-600 transition-colors whitespace-nowrap">
-                                            Buy
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
+        <x-service-category id="youtube" title="YouTube Services" icon="📺" iconBg="bg-red-100 dark:bg-gray-700"
+            iconText="text-red-600 dark:text-gray-300">
+            <p class="text-gray-600 dark:text-gray-300">YouTube services content would go here...</p>
+        </x-service-category>
 
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-300" data-label="ID">⭐ 7458</td>
-                                <td class="px-4 py-4" data-label="Service">
-                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Instagram Followers - Smart Boost
-                                        [20k-30k/day] | 30 days Refill | Flag Off</div>
-                                </td>
-                                <td class="px-4 py-4" data-label="Rate per 1000">
-                                    <span
-                                        class="inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">$1.308</span>
-                                </td>
-                                <td class="px-4 py-4" data-label="Min Order">
-                                    <span
-                                        class="inline-block bg-green-100 dark:bg-green-800 text-green-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">10</span>
-                                </td>
-                                <td class="px-4 py-4" data-label="Max Order">
-                                    <span
-                                        class="inline-block bg-purple-100 dark:bg-purple-800 text-primary-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">10,000,000</span>
-                                </td>
-                                <td class="px-4 py-4 actions-cell" data-label="Actions">
-                                    <div class="flex flex-col sm:flex-row gap-2 justify-end">
-                                        <button
-                                            class="bg-primary text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-primary-800 dark:hover:bg-primary-700 transition-colors whitespace-nowrap">
-                                            View
-                                        </button>
-                                        <button
-                                            class="bg-green-600 text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-green-700 dark:hover:bg-green-600 transition-colors whitespace-nowrap">
-                                            Buy
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-
-                            <tr class="hover:bg-gray-50 dark:hover:bg-gray-700">
-                                <td class="px-4 py-4 text-sm text-gray-600 dark:text-gray-300" data-label="ID">⭐ 7460</td>
-                                <td class="px-4 py-4" data-label="Service">
-                                    <div class="text-sm font-medium text-gray-900 dark:text-gray-100">Instagram Followers - Smart Boost
-                                        [20k-30k/day] | 90 days Refill | Flag Off</div>
-                                </td>
-                                <td class="px-4 py-4" data-label="Rate per 1000">
-                                    <span
-                                        class="inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">$1.39</span>
-                                </td>
-                                <td class="px-4 py-4" data-label="Min Order">
-                                    <span
-                                        class="inline-block bg-green-100 dark:bg-green-800 text-green-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">10</span>
-                                </td>
-                                <td class="px-4 py-4" data-label="Max Order">
-                                    <span
-                                        class="inline-block bg-purple-100 dark:bg-purple-800 text-primary-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">10,000,000</span>
-                                </td>
-                                <td class="px-4 py-4 actions-cell" data-label="Actions">
-                                    <div class="flex flex-col sm:flex-row gap-2 justify-end">
-                                        <button
-                                            class="bg-primary text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-primary-800 dark:hover:bg-primary-700 transition-colors whitespace-nowrap">
-                                            View
-                                        </button>
-                                        <button
-                                            class="bg-green-600 text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-green-700 dark:hover:bg-green-600 transition-colors whitespace-nowrap">
-                                            Buy
-                                        </button>
-                                    </div>
-                                </td>
-                            </tr>
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        </div>
-
-        <!-- YouTube Services -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
-            <button class="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                onclick="toggleSection('youtube')">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-6 bg-red-100 dark:bg-gray-700 rounded-full flex items-center justify-center">
-                        <span class="text-red-600 dark:text-gray-300 text-sm">📺</span>
-                    </div>
-                    <span class="font-semibold text-gray-800 dark:text-gray-100">YouTube Services</span>
-                </div>
-                <i class="fas fa-chevron-down text-xs transition-transform dark:text-gray-300" id="youtube-icon"></i>
-            </button>
-            <div id="youtube-content" class="hidden border-t border-gray-100 dark:border-gray-600 p-6">
-                <p class="text-gray-600 dark:text-gray-300">YouTube services content would go here...</p>
-            </div>
-        </div>
-
-        <!-- TikTok Services -->
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow-sm dark:shadow-lg border border-gray-200 dark:border-gray-700">
-            <button class="w-full px-4 py-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
-                onclick="toggleSection('tiktok')">
-                <div class="flex items-center gap-3">
-                    <div class="w-6 h-6 bg-black rounded-full flex items-center justify-center">
-                        <span class="text-white text-sm">🎵</span>
-                    </div>
-                    <span class="font-semibold text-gray-800 dark:text-gray-100">TikTok Services</span>
-                </div>
-                <i class="fas fa-chevron-down text-xs transition-transform dark:text-gray-300" id="tiktok-icon"></i>
-            </button>
-            <div id="tiktok-content" class="hidden border-t border-gray-100 dark:border-gray-600 p-6">
-                <p class="text-gray-600 dark:text-gray-300">TikTok services content would go here...</p>
-            </div>
-        </div>
+        <x-service-category id="tiktok" title="TikTok Services" icon="🎵" iconBg="bg-black dark:bg-gray-700"
+            iconText="text-white dark:text-gray-300">
+            <p class="text-gray-600 dark:text-gray-300">TikTok services content would go here...</p>
+        </x-service-category>
 
     </div>
 </div>
@@ -255,23 +113,5 @@
             }
         }
     </style>
-    <script>
-        function toggleSection(sectionId) {
-            const content = document.getElementById(sectionId + '-content');
-            const icon = document.getElementById(sectionId + '-icon');
-
-            if (content.classList.contains('hidden')) {
-                content.classList.remove('hidden');
-                icon.classList.remove('fa-chevron-down');
-                icon.classList.add('fa-chevron-up');
-                icon.style.transform = 'rotate(180deg)';
-            } else {
-                content.classList.add('hidden');
-                icon.classList.remove('fa-chevron-up');
-                icon.classList.add('fa-chevron-down');
-                icon.style.transform = 'rotate(0deg)';
-            }
-        }
-    </script>
 @endassets
 @include('layouts.meta')
