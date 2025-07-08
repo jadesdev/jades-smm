@@ -29,7 +29,8 @@
                         <code class="text-xs text-blue-700">
                             1 | https://www.instagram.com/p/abc123 | 1000<br>
                             2 | https://www.tiktok.com/@username | 500<br>
-                            3 | https://www.youtube.com/watch?v=xyz789 | 2000
+                            3 | https://www.youtube.com/watch?v=xyz789 | 2000 <br>
+                            4 | https://facebook.com/username | 100
                         </code>
                     </div>
                 </div>
