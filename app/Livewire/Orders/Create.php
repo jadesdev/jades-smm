@@ -3,17 +3,16 @@
 namespace App\Livewire\Orders;
 
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Create extends Component
 {
     use LivewireToast;
 
-
     // meta
-    public string $metaTitle = "Create Order";
+    public string $metaTitle = 'Create Order';
 
     public string $metaDescription;
 

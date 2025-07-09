@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Auth;
 
+use App\Traits\LivewireToast;
 use Illuminate\Auth\Events\Lockout;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\RateLimiter;
@@ -10,13 +11,13 @@ use Illuminate\Support\Str;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Validate;
-use App\Traits\LivewireToast;
 use Livewire\Component;
 
 #[Layout('components.layouts.auth')]
 class Login extends Component
 {
     use LivewireToast;
+
     #[Validate('required|string|email')]
     public string $email = '';
 
@@ -49,7 +50,7 @@ class Login extends Component
 
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
-        
+
         $this->successAlert('Successfully logged in!');
         $this->redirectIntended(default: route('user.dashboard', absolute: false), navigate: true);
     }
@@ -80,6 +81,6 @@ class Login extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
+        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
 }

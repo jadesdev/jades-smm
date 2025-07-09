@@ -2,12 +2,11 @@
 
 namespace App\Livewire\User;
 
-use App\Models\User;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Referrals extends Component
@@ -16,10 +15,15 @@ class Referrals extends Component
 
     // Referral data
     public string $referralLink = '';
+
     public int $referralCount = 0;
+
     public int $referralRate = 3; // Default 3%
+
     public float $minWithdrawal = 10.00;
+
     public float $totalEarned = 0;
+
     public Collection $recentReferrals;
 
     // UI State
@@ -27,8 +31,11 @@ class Referrals extends Component
 
     // Meta
     public string $metaTitle = 'Referral Program';
+
     public string $metaDescription = 'Invite friends and earn commissions on their purchases';
+
     public string $metaKeywords = 'referrals, invite friends, earn money, affiliate program';
+
     public string $metaImage = '';
 
     public function mount(): void
@@ -39,8 +46,7 @@ class Referrals extends Component
     protected function loadReferralData(): void
     {
         $user = Auth::user();
-
-        $this->referralLink = route('register') . '?ref=' . $user->username;
+        $this->referralLink = route('register').'?ref='.urlencode($user->username);
         $this->loadReferrals();
         $this->calculateStats();
         $this->isLoading = false;
@@ -56,7 +62,6 @@ class Referrals extends Component
         $this->referralCount = count($this->recentReferrals);
         $this->totalEarned = collect($this->recentReferrals)->sum('bonus');
     }
-
 
     public function render()
     {

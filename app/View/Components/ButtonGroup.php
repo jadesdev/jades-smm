@@ -2,8 +2,6 @@
 
 namespace App\View\Components;
 
-use Closure;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class ButtonGroup extends Component
@@ -38,7 +36,7 @@ class ButtonGroup extends Component
 
     public function getButtonClasses(): string
     {
-        if (!$this->attached) {
+        if (! $this->attached) {
             return '';
         }
 

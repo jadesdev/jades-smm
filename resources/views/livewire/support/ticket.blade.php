@@ -34,13 +34,13 @@
                                 class="text-xs text-gray-500 dark:text-gray-400">{{ $message->created_at->diffForHumans() }}</span>
                         </div>
                         <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 max-w-md">
-                            <p class="text-gray-800 dark:text-gray-200">{!! nl2br($message->message) !!}</p>
+                            <p class="text-gray-800 dark:text-gray-200">{!! nl2br(e($message->message)) !!}</p>
                             @if ($message->image)
                                 <div class="mt-2">
                                     <a data-fancybox="chat-{{ $message->ticket_id ?? 'default' }}"
-                                        href="{{ my_asset($message->image) }}"
+                                        href="{{ $message->image_url }}"
                                         data-caption="{{ show_datetime($message->created_at) }}">
-                                        <img src="{{ my_asset($message->image) }}" alt="Uploaded Image"
+                                        <img src="{{ $message->image_url }}" alt="Uploaded Image"
                                             class="rounded-md max-w-full h-auto"
                                             style="max-height: 300px; cursor: pointer;">
                                     </a>
@@ -59,13 +59,13 @@
                             <span class="font-medium text-gray-900 dark:text-white">You</span>
                         </div>
                         <div class="bg-primary-500 dark:bg-primary-700 text-white rounded-lg p-3 max-w-md">
-                            <p>{!! nl2br($message->message) !!}</p>
+                            <p>{!! nl2br(e($message->message)) !!}</p>
                             @if ($message->image)
                                 <div class="mt-2">
                                     <a data-fancybox="chat-{{ $message->ticket_id ?? 'default' }}"
-                                        href="{{ my_asset($message->image) }}"
+                                        href="{{ ($message->image_url) }}"
                                         data-caption="{{ show_datetime($message->created_at) }}">
-                                        <img src="{{ my_asset($message->image) }}" alt="Uploaded Image"
+                                        <img src="{{ ($message->image_url) }}" alt="Uploaded Image"
                                             class="rounded-md max-w-full h-auto"
                                             style="max-height: 300px; cursor: pointer;">
                                     </a>
@@ -82,7 +82,7 @@
         @endforeach
     </div>
     <!-- Reply Input -->
-    @if ($ticket->status !== App\Models\SupportTicket::STATUS_CLOSED)
+    @if ($ticket->status !== 'closed')
         <form wire:submit.prevent="sendMessage" class="border-t border-gray-200 dark:border-gray-700 p-4">
             <div class="flex space-x-3">
                 <div class="flex-1">
@@ -94,28 +94,36 @@
                     @enderror
                 </div>
             </div>
-            <div class="flex items-center justify-between mt-3">
-                <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-                    <label for="image-upload" class="cursor-pointer hover:text-primary-500 transition-colors">
+            <div
+                class="flex flex-col md:flex-row md:items-center justify-between mt-4 space-y-4 md:space-y-0 md:space-x-4">
+                <!-- Attachment Section -->
+                <div class="flex items-center space-x-3 text-sm text-gray-500 dark:text-gray-400">
+                    <label for="image-upload"
+                        class="cursor-pointer hover:text-primary-500 transition-colors flex items-center space-x-2">
                         <i class="fa fa-paperclip"></i>
-                        <span>Attach file</span>
+                        <span>Attach image</span>
                         <input type="file" id="image-upload" wire:model="image" accept="image/*" class="hidden">
                     </label>
+
                     @if ($image)
-                        <div class="mt-2">
-                            <img src="{{ $image->temporaryUrl() }}" class="h-40 w-40 object-cover rounded-lg"
-                                style="max-height: 300px; cursor: pointer;">
+                        <div class="items-center space-x-2">
+                            <img src="{{ $image->temporaryUrl() }}"
+                                class="h-34 w-34 object-cover rounded-md border border-gray-300 dark:border-gray-600 shadow-sm"
+                                alt="Preview">
                         </div>
-                        <p class="text-green-500 text-xs">File selected: {{ $image->getClientOriginalName() }}</p>
                     @endif
+
                     @error('image')
                         <span class="text-red-500 text-xs">{{ $message }}</span>
                     @enderror
                 </div>
-                <div class="flex space-x-2">
-                    @if ($ticket->status === App\Models\SupportTicket::STATUS_OPEN)
+
+                <!-- Action Buttons -->
+                <div class="flex space-x-3 justify-end mt-auto">
+                    @if ($ticket->status === 'open')
                         <x-modal name="close-ticket" title="Close Ticket" maxWidth="sm">
                             <p>Are you sure you want to close this ticket?</p>
+
                             <x-slot name="footer">
                                 <button wire:click="closeTicket"
                                     class="px-4 py-2 bg-primary-500 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors">
@@ -128,6 +136,7 @@
                             Close Ticket
                         </button>
                     @endif
+
                     <button type="submit" wire:loading.attr="disabled" wire:target="sendMessage"
                         class="px-4 py-2 bg-primary-500 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors disabled:opacity-50">
                         <span wire:loading.remove wire:target="sendMessage">Send Reply</span>
@@ -135,6 +144,7 @@
                     </button>
                 </div>
             </div>
+
         </form>
     @else
         <div class="border-t border-gray-200 dark:border-gray-700 p-4">

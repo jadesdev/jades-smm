@@ -22,26 +22,27 @@
                         if (this.$refs.select.tomselect) {
                             return;
                         }
-
-                        const tom = new TomSelect(this.$refs.select, {
-                            items: [this.selectedValue],
-                            placeholder: config.placeholder,
-                            create: false,
-
-                            onChange: (value) => {
-                                this.selectedValue = value;
-
-                                const selectedOption = tom.getOption(value);
-
-                                this.$dispatch('option-selected', {
-                                    value: value,
-                                    text: selectedOption ? selectedOption.innerText : '',
-                                    dataset: selectedOption ? selectedOption.dataset : {}
-                                });
-
-                                this.$dispatch('input', value);
-                            }
-                        });
+                        let tom;
+                        try {
+                            tom = new TomSelect(this.$refs.select, {
+                                items: [this.selectedValue],
+                                placeholder: config.placeholder,
+                                create: false,  
+                                onChange: (value) => {
+                                    this.selectedValue = value;
+                                    const selectedOption = tom.getOption(value);
+                                    this.$dispatch('option-selected', {
+                                        value: value,
+                                        text: selectedOption ? selectedOption.innerText : '',
+                                        dataset: selectedOption ? selectedOption.dataset : {}
+                                    });
+                                    this.$dispatch('input', value);
+                                }
+                            });
+                        } catch (error) {
+                            console.error('TomSelect initialization failed:', error);
+                            return;
+                        }
 
                         this.$watch('selectedValue', (newValue) => {
                             tom.setValue(newValue, true);

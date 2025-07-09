@@ -13,7 +13,7 @@ use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasUlids;
+    use HasFactory, HasUlids, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -26,7 +26,6 @@ class User extends Authenticatable
         'username',
         'phone',
         'password',
-        'api_token',
         'ref_id',
     ];
 
@@ -60,7 +59,7 @@ class User extends Authenticatable
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 
@@ -73,6 +72,7 @@ class User extends Authenticatable
     {
         return $this->hasMany(User::class, 'ref_id');
     }
+
     /**
      * Get all support tickets for this user
      */
@@ -94,7 +94,6 @@ class User extends Authenticatable
      */
     public function openSupportTickets(): HasMany
     {
-        return $this->hasMany(SupportTicket::class)
-            ->where('status', SupportTicket::STATUS_OPEN);
+        return $this->hasMany(SupportTicket::class)->open();
     }
 }

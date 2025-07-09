@@ -161,12 +161,29 @@
                     const input = this.$refs.referralInput;
                     if (input) {
                         input.select();
-                        input.setSelectionRange(0, 99999); // For mobile
-                        navigator.clipboard.writeText(input.value).then(() => {
-                            this.copied = true;
-                            setTimeout(() => this.copied = false, 2000);
-                        });
+                        input.setSelectionRange(0, 99999);
+
+                        if (navigator.clipboard && navigator.clipboard.writeText) {
+                            navigator.clipboard.writeText(input.value).then(() => {
+                                this.copied = true;
+                                setTimeout(() => this.copied = false, 2000);
+                                JDVToast.success('Link copied to clipboard!');
+                            }).catch(() => {
+                                this.fallbackCopy(input);
+                            });
+                        } else {
+                            this.fallbackCopy(input);
+                        }
+                    }
+                },
+                fallbackCopy(input) {
+                    try {
+                        document.execCommand('copy');
+                        this.copied = true;
+                        setTimeout(() => this.copied = false, 2000);
                         JDVToast.success('Link copied to clipboard!');
+                    } catch (err) {
+                        JDVToast.error('Failed to copy link. Please select and copy manually.');
                     }
                 }
             }

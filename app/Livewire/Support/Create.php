@@ -6,9 +6,9 @@ use App\Models\SupportMessage;
 use App\Models\SupportTicket;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Facades\Auth;
+use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithFileUploads;
-use Livewire\Attributes\Layout;
 use Stevebauman\Purify\Facades\Purify;
 
 #[Layout('user.layouts.main')]
@@ -47,19 +47,30 @@ class Create extends Component
 
     // Form fields
     public $tickets;
+
     public $subject = 'Order Inquiry';
+
     public $orderid = '';
+
     public $want = '';
+
     public $payment = '';
+
     public $transactionId = '';
+
     public $addamount = '';
+
     public $message = '';
+
     public $image;
 
     // Meta
-    public string $metaTitle = "Create Support Ticket";
+    public string $metaTitle = 'Create Support Ticket';
+
     public string $metaDescription = '';
+
     public string $metaKeywords = '';
+
     public string $metaImage = '';
 
     // Validation rules
@@ -90,12 +101,6 @@ class Create extends Component
         $this->validateOnly($propertyName);
     }
 
-    public function removeAttachment($index)
-    {
-        if (isset($this->attachments[$index])) {
-            unset($this->attachments[$index]);
-        }
-    }
     public function isOrderInquiry()
     {
         return in_array($this->subject, ['Order Inquiry']);
@@ -121,13 +126,13 @@ class Create extends Component
         $concatenatedMessage = '';
 
         if ($this->isOrderInquiry()) {
-            $concatenatedMessage = "Order number: " . $this->orderid . "\n";
-            $concatenatedMessage .= "Request: " . $this->want . "\n";
+            $concatenatedMessage = 'Order number: '.$this->orderid."\n";
+            $concatenatedMessage .= 'Request: '.$this->want."\n";
             $concatenatedMessage .= $this->message;
         } elseif ($this->isPaymentNotification()) {
-            $concatenatedMessage = "Payment Method: " . $this->payment . "\n";
-            $concatenatedMessage .= "Sender Name: " . $this->transactionId . "\n";
-            $concatenatedMessage .= "Amount: " . $this->addamount . "\n";
+            $concatenatedMessage = 'Payment Method: '.$this->payment."\n";
+            $concatenatedMessage .= 'Sender Name: '.$this->transactionId."\n";
+            $concatenatedMessage .= 'Amount: '.$this->addamount."\n";
             $concatenatedMessage .= $this->message;
         } else {
             $concatenatedMessage = $this->message;
@@ -136,7 +141,7 @@ class Create extends Component
         return $concatenatedMessage;
     }
 
-    function loadTickets()
+    public function loadTickets()
     {
         $this->tickets = SupportTicket::where('user_id', Auth::id())->orderBy('updated_at', 'desc')->with(['latestMessage', 'lastMessage'])->get();
     }
@@ -166,7 +171,7 @@ class Create extends Component
                 'user_id' => $user->id,
                 'message' => Purify::clean($messageContent),
                 'type' => $this->image ? SupportMessage::TYPE_IMAGE : SupportMessage::TYPE_TEXT,
-                'image' => $imagePath ? 'support/' . basename($imagePath) : null,
+                'image' => $imagePath ? basename($imagePath) : null,
                 'is_admin' => false,
             ]);
 
@@ -176,7 +181,7 @@ class Create extends Component
             $this->successAlert('Support ticket created successfully! We will respond within 24 hours.');
             $this->redirect(route('user.support.view', $ticket->id), navigate: true);
         } catch (\Exception $e) {
-            \Log::error('Support ticket creation failed: ' . $e->getMessage());
+            \Log::error('Support ticket creation failed: '.$e->getMessage());
             $this->errorAlert('Failed to create support ticket. Please try again.');
         }
     }
@@ -189,6 +194,7 @@ class Create extends Component
     public function render()
     {
         $this->loadTickets();
+
         return view('livewire.support.create');
     }
 }

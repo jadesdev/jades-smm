@@ -228,7 +228,7 @@
                                             'text-yellow-600' => $transaction['status'] === 'pending',
                                             'text-red-600' => $transaction['status'] === 'failed',
                                         ])>
-                                            ${{ number_format($transaction['amount'], 0) }}
+                                            ${{ number_format($transaction['amount'], 2) }}
                                         </div>
                                         <div class="text-md text-gray-500 dark:text-gray-300">Fee:
                                             ${{ number_format($transaction['fee'], 2) }}</div>
@@ -309,18 +309,19 @@
         }
     </style>
 @endsection
-
-<script>
-    function copyToClipboard(text) {
-        navigator.clipboard.writeText(text).then(function() {
-            // Show copied indicator
-            const indicator = document.querySelector('.copied-indicator-' + text);
-            if (indicator) {
-                indicator.classList.remove('hidden');
-                setTimeout(() => {
-                    indicator.classList.add('hidden');
-                }, 2000);
-            }
-        });
-    }
-</script>
+@push('scripts')
+    <script>
+        function copyToClipboard(text) {
+            navigator.clipboard.writeText(text).then(function() {
+                // Show copied indicator  
+                const indicator = document.querySelector('.copied-indicator-' + text);
+                if (indicator) {
+                    indicator.classList.remove('hidden');
+                    setTimeout(() => {
+                        indicator.classList.add('hidden');
+                    }, 2000);
+                }
+            });
+        }
+    </script>
+@endpush

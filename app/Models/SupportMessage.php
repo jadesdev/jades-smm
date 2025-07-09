@@ -4,9 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Storage;
 
 class SupportMessage extends Model
 {
@@ -25,7 +23,9 @@ class SupportMessage extends Model
         'image',
         'is_admin',
     ];
+
     const TYPE_TEXT = 'text';
+
     const TYPE_IMAGE = 'image';
 
     /**
@@ -50,7 +50,7 @@ class SupportMessage extends Model
     public function getSenderName(): string
     {
         if ($this->is_admin) {
-            return $this->user ? $this->user->name . ' (Admin)' : 'Admin';
+            return $this->user ? $this->user->name.' (Admin)' : 'Admin';
         }
 
         return $this->user ? $this->user->name : 'User';
@@ -61,19 +61,19 @@ class SupportMessage extends Model
      */
     public function hasImage(): bool
     {
-        return $this->type === self::TYPE_IMAGE && !empty($this->image);
+        return $this->type === self::TYPE_IMAGE && ! empty($this->image);
     }
 
     /**
      * Get full image URL
      */
-    public function getImageUrl(): ?string
+    protected function getImageUrlAttribute(): ?string
     {
-        if (!$this->hasImage()) {
+        if (! $this->hasImage()) {
             return null;
         }
 
-        return Storage::url('support/' . $this->image);
+        return my_asset($this->image);
     }
 
     /**
@@ -89,7 +89,7 @@ class SupportMessage extends Model
      */
     public function isFromUser(): bool
     {
-        return !$this->is_admin;
+        return ! $this->is_admin;
     }
 
     /**

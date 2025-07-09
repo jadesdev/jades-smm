@@ -4,11 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Str;
 
 class SupportTicket extends Model
 {
@@ -28,8 +26,11 @@ class SupportTicket extends Model
     ];
 
     const STATUS_OPEN = 'open';
+
     const STATUS_PENDING = 'pending';
+
     const STATUS_RESOLVED = 'resolved';
+
     const STATUS_CLOSED = 'closed';
 
     public static function getStatuses()
@@ -56,6 +57,7 @@ class SupportTicket extends Model
     {
         return $query->whereIn('status', [self::STATUS_OPEN, self::STATUS_PENDING]);
     }
+
     /**
      * Scope for filtering by status
      */
@@ -76,6 +78,7 @@ class SupportTicket extends Model
     {
         return in_array($this->status, [self::STATUS_OPEN, self::STATUS_PENDING]);
     }
+
     /**
      * Get messages ordered by creation date
      */
@@ -93,6 +96,7 @@ class SupportTicket extends Model
         return $this->hasOne(SupportMessage::class, 'ticket_id')
             ->latest();
     }
+
     public function lastMessage(): HasOne
     {
         return $this->hasOne(SupportMessage::class, 'ticket_id')->textMessages()->latest();
@@ -111,9 +115,10 @@ class SupportTicket extends Model
     {
         $this->update([
             'last_reply' => $by,
-            'status' => $by === 'admin' ? self::STATUS_RESOLVED : self::STATUS_OPEN
+            'status' => $by === 'admin' ? self::STATUS_RESOLVED : self::STATUS_OPEN,
         ]);
     }
+
     /**
      * Get status badge color
      */
@@ -127,6 +132,7 @@ class SupportTicket extends Model
             default => 'gray'
         };
     }
+
     /**
      * Generate unique ticket code
      */
@@ -135,17 +141,20 @@ class SupportTicket extends Model
         $year = date('Y');
         $prefix = "TKT-{$year}-";
 
-        $lastTicket = self::where('code', 'like', $prefix . '%')
-            ->orderBy('code', 'desc')
-            ->first();
+        return \DB::transaction(function () use ($prefix) {
+            $lastTicket = self::where('code', 'like', $prefix . '%')
+                ->lockForUpdate()
+                ->orderBy('code', 'desc')
+                ->first();
 
-        if ($lastTicket) {
-            $lastNumber = (int) substr($lastTicket->code, strlen($prefix));
-            $newNumber = $lastNumber + 1;
-        } else {
-            $newNumber = 1;
-        }
+            if ($lastTicket) {
+                $lastNumber = (int) substr($lastTicket->code, strlen($prefix));
+                $newNumber = $lastNumber + 1;
+            } else {
+                $newNumber = 1;
+            }
 
-        return $prefix . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+            return $prefix . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+        });
     }
 }

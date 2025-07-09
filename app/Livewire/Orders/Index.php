@@ -3,10 +3,9 @@
 namespace App\Livewire\Orders;
 
 use App\Traits\LivewireToast;
-use Livewire\Component;
+use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\Url;
-use Str;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Index extends Component
@@ -14,6 +13,7 @@ class Index extends Component
     use LivewireToast;
 
     public $status = 'all';
+
     public $statuses = [
         'all',
         'pending',
@@ -23,13 +23,15 @@ class Index extends Component
         'in progress',
         'canceled',
     ];
+
     public $search = '';
 
-    protected $queryString = [ 'search'];
-    // meta
-    public string $metaTitle = "Order History";
+    protected $queryString = ['search', 'status'];
 
-    public string $metaDescription = "Order History";
+    // meta
+    public string $metaTitle = 'Order History';
+
+    public string $metaDescription = 'Order History';
 
     public string $metaKeywords;
 
@@ -38,9 +40,9 @@ class Index extends Component
     public function updateStatus($status)
     {
         $this->status = $status;
-        $this->metaTitle = Str::title($status). " Orders";
+        $this->metaTitle = Str::title($status).' Orders';
     }
-    
+
     public function mount($status = 'all')
     {
         $this->updateStatus($status);

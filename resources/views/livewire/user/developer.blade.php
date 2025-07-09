@@ -242,7 +242,7 @@
     </x-developer.doc-section>
     <!-- Download Button -->
     <div class="text-center mb-6">
-        <a href="/example.txt" target="_blank"
+        <a href="{{ static_asset('example.txt') }}" target="_blank" rel="noopener noreferrer"  
             class="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 dark:bg-primary-500 dark:hover:bg-primary-600 text-white font-medium rounded-lg transition-colors duration-200 shadow-sm hover:shadow-md">
             <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"

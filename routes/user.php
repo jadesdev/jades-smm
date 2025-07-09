@@ -1,16 +1,16 @@
 <?php
 
-use App\Livewire\Orders\Create as OrdersCreate;
 use App\Livewire\Orders\Bulk as OrdersBulk;
+use App\Livewire\Orders\Create as OrdersCreate;
 use App\Livewire\Orders\Index as OrdersIndex;
 use App\Livewire\Support\Create as Support;
 use App\Livewire\Support\Ticket as SupportView;
 use App\Livewire\User\Dashboard;
+use App\Livewire\User\Developer;
 use App\Livewire\User\Profile;
 use App\Livewire\User\Referrals;
-use App\Livewire\User\Wallet;
 use App\Livewire\User\Services;
-use App\Livewire\User\Developer;
+use App\Livewire\User\Wallet;
 
 Route::get('/', Dashboard::class)->name('index');
 Route::get('dashboard', Dashboard::class)->name('dashboard');

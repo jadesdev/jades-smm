@@ -36,7 +36,12 @@ class Menu extends Component
 
     public function positionClass(): string
     {
+        if (!is_numeric($this->offsetY)) {
+            $this->offsetY = '4'; // fallback to default
+        }
+
         $baseClass = $this->position === 'top' ? 'bottom-full mb-' : 'top-full mt-';
+
         return $baseClass . $this->offsetY;
     }
 
@@ -54,7 +59,9 @@ class Menu extends Component
 
     public function arrowClass(): string
     {
-        if (!$this->arrow) return '';
+        if (! $this->arrow) {
+            return '';
+        }
 
         $position = $this->position === 'top' ? 'top-full' : 'bottom-full';
         $arrowPosition = $this->position === 'top' ? 'border-t-white border-b-transparent' : 'border-b-white border-t-transparent';

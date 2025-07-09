@@ -16,7 +16,6 @@ class Item extends Component
         public bool $disabled = false,
         public bool $active = false,
         public string $variant = 'default', // default, danger, success
-        public bool $divider = false,
     ) {}
 
     public function variantClass(): string
@@ -34,7 +33,9 @@ class Item extends Component
 
     public function activeClass(): string
     {
-        if (!$this->active) return '';
+        if (! $this->active) {
+            return '';
+        }
 
         return [
             'default' => 'bg-gray-100 text-gray-900',

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->ulid('id')->primary();
-            $table->ulid('ref_id')->index()->nullable();
+            $table->foreignUlid('ref_id')->nullable()->constrained('users', 'id')->onDelete('set null');
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->text('address')->nullable();
             $table->decimal('balance', 20, 5)->default(0);
-            $table->double('bonus',20,5)->default(0);
+            $table->decimal('bonus', 20, 5)->default(0);
             $table->string('api_token', 80)->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamp('email_verified_at')->nullable();

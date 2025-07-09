@@ -112,7 +112,7 @@
                                 </p>
                             </div>
                         </div>
-                        {{-- Service Details Grid --}}
+                        {{-- Service Details Grid (Intentionally hidden for future use or pending requirements) --}}  
                         <div class="grid-cols-1 md:grid-cols-2 gap-4 hidden">
                             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                 <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Order Limits</h4>

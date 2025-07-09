@@ -2,14 +2,13 @@
 
 namespace App\Livewire\User;
 
-use App\Models\User;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Profile extends Component
@@ -18,17 +17,23 @@ class Profile extends Component
 
     // Profile form
     public string $name = '';
+
     public string $username = '';
+
     public string $phone = '';
+
     public string $email = '';
 
     // Password change form
     public string $current_password = '';
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     // Delete account
     public string $delete_password = '';
+
     public bool $confirmingUserDeletion = false;
 
     // API
@@ -36,8 +41,11 @@ class Profile extends Component
 
     // Meta
     public string $metaTitle = 'Account';
+
     public string $metaDescription = 'Manage your account settings';
+
     public string $metaKeywords = 'profile, account, settings, password, api';
+
     public string $metaImage = '';
 
     public function mount(): void
@@ -63,7 +71,7 @@ class Profile extends Component
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('users', 'username')->ignore(Auth::id())
+                Rule::unique('users', 'username')->ignore(Auth::id()),
             ],
             'phone' => ['nullable', 'string', 'max:20'],
         ]);
@@ -92,12 +100,13 @@ class Profile extends Component
 
     public function generateApiKey(): void
     {
-        $apiKey = 'jds_' . Str::random(32);
-        
+        $token = Auth::user()->username.Str::random(12);
+
+        $apiKey = bin2hex($token);
         Auth::user()->update([
             'api_token' => $apiKey,
         ]);
-        
+
         $this->api_token = $apiKey;
         $this->successAlert('New API key generated successfully!');
     }
@@ -116,7 +125,7 @@ class Profile extends Component
         ]);
 
         $user = Auth::user();
-        
+
         Auth::logout();
         $user->delete();
 
