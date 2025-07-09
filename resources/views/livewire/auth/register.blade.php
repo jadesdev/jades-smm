@@ -37,6 +37,31 @@
                     <x-forms.input wire:model="password_confirmation" type="password" name="password_confirmation"
                         label="Confirm Password" placeholder="••••••••" :required="true" autocomplete="new-password" />
 
+                    <!-- Referral Code -->
+                    @if ($referral_code)
+                        <div class="rounded-md bg-blue-50 dark:bg-blue-900/30 p-4">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <svg class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm font-medium text-blue-800 dark:text-blue-200">
+                                        Referred by: {{ $referral_code }}
+                                    </p>
+                                </div>
+                                <input type="hidden" wire:model="referral_code" />
+                            </div>
+                        </div>
+                    @else
+                        <x-forms.input wire:model.live.debounce.500ms="referral_code" name="referral_code"
+                            label="Referral Code (Optional)" placeholder="Enter referral code" :required="false" />
+                    @endif
+
+                    <!-- Terms and Conditions -->
                     <div class="flex items-start">
                         <div class="flex h-5 items-center">
                             <x-forms.checkbox class="mt-4" wire:model="terms" name="terms" id="terms"

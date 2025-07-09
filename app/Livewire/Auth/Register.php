@@ -28,6 +28,8 @@ class Register extends Component
 
     public bool $terms = false;
 
+    public string $referral_code = '';
+
     /**
      * Handle an incoming registration request.
      */
@@ -39,11 +41,16 @@ class Register extends Component
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
             'terms' => ['accepted'],
+            'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
         ], [
             'terms.accepted' => 'You must accept the terms and conditions to register.'
         ]);
 
         $validated['password'] = Hash::make($validated['password']);
+        $referUser = User::where('username', $this->referral_code)->first();
+        if ($referUser) {
+            $validated['ref_id'] = $referUser->id;
+        }
 
         event(new Registered(($user = User::create($validated))));
 
@@ -51,5 +58,23 @@ class Register extends Component
 
         $this->successAlert('Registration successful! Welcome to our platform.');
         $this->redirect(route('user.dashboard', absolute: false), navigate: true);
+    }
+
+    /**
+     * Mount the component with referral code from URL if present
+     */
+    public function mount(): void
+    {
+        $this->referral_code = request()->query('ref', '');
+    }
+
+    /**
+     * Validate referral code
+     */
+    public function updatedReferralCode($value)
+    {
+        $this->validateOnly('referral_code', [
+            'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
+        ]);
     }
 }

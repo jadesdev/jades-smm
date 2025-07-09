@@ -2,7 +2,10 @@
 
 namespace App\Livewire\User;
 
+use App\Models\User;
 use App\Traits\LivewireToast;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
@@ -11,75 +14,52 @@ class Referrals extends Component
 {
     use LivewireToast;
 
-    public $referralLink;
-    public $referralCount;
-    public $referralRate;
-    public $minWithdrawal;
-    public $recentReferrals = [];
-    // meta
-    public string $metaTitle;
+    // Referral data
+    public string $referralLink = '';
+    public int $referralCount = 0;
+    public int $referralRate = 3; // Default 3%
+    public float $minWithdrawal = 10.00;
+    public float $totalEarned = 0;
+    public Collection $recentReferrals;
 
-    public string $metaDescription;
+    // UI State
+    public bool $isLoading = true;
 
-    public string $metaKeywords;
+    // Meta
+    public string $metaTitle = 'Referral Program';
+    public string $metaDescription = 'Invite friends and earn commissions on their purchases';
+    public string $metaKeywords = 'referrals, invite friends, earn money, affiliate program';
+    public string $metaImage = '';
 
-    public string $metaImage;
-
-    public function loadReferrals()
+    public function mount(): void
     {
-        return [
-            [
-                'username' => 'john_doe',
-                'email' => 'john@example.com',
-                'avatar' => null,
-                'created_at' => now()->subDays(2),
-                'status' => 'active',
-                'earned' => 15.5,
-            ],
-            [
-                'username' => 'jane_smith',
-                'email' => 'jane@example.com',
-                'avatar' => 'https://randomuser.me/api/portraits/women/22.jpg',
-                'created_at' => now()->subDays(5),
-                'status' => 'active',
-                'earned' => 8.25,
-            ],
-            [
-                'username' => 'pending_user',
-                'email' => 'pending@example.com',
-                'avatar' => null,
-                'created_at' => now()->subDays(1),
-                'status' => 'pending',
-                'earned' => 0.0,
-            ],
-            [
-                'username' => 'inactive_amy',
-                'email' => 'amy@example.com',
-                'avatar' => 'https://randomuser.me/api/portraits/women/63.jpg',
-                'created_at' => now()->subWeeks(2),
-                'status' => 'inactive',
-                'earned' => 42.75,
-            ],
-            [
-                'username' => 'mike_tyson',
-                'email' => 'mike@example.com',
-                'avatar' => null,
-                'created_at' => now()->subDays(3),
-                'status' => 'active',
-                'earned' => 27.3,
-            ],
-        ];
+        $this->loadReferralData();
     }
-    public function mount()
+
+    protected function loadReferralData(): void
     {
-        // set meta
-        $this->metaTitle = "Referrals";
+        $user = Auth::user();
+
+        $this->referralLink = route('register') . '?ref=' . $user->username;
+        $this->loadReferrals();
+        $this->calculateStats();
+        $this->isLoading = false;
+    }
+
+    protected function loadReferrals(): void
+    {
+        $this->recentReferrals = Auth::user()->referrals()->get();
+    }
+
+    protected function calculateStats(): void
+    {
+        $this->referralCount = count($this->recentReferrals);
+        $this->totalEarned = collect($this->recentReferrals)->sum('bonus');
     }
 
 
     public function render()
     {
-        $this->recentReferrals = $this->loadReferrals();
         return view('livewire.user.referrals');
     }
 }
