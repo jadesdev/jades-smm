@@ -3,11 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\Transaction;
-use App\Services\PaystackService;
-use App\Services\FlutterwaveService;
-use App\Services\PayPalService;
 use App\Services\CryptomusService;
 use App\Services\DepositService;
+use App\Services\FlutterwaveService;
+use App\Services\PayPalService;
+use App\Services\PaystackService;
 use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Http\Request;
@@ -17,7 +17,7 @@ class PaymentController extends Controller
 {
     use ApiResponse;
 
-    function initPaystack($data)
+    public function initPaystack($data)
     {
         try {
             $paystack = app(PaystackService::class);
@@ -101,16 +101,18 @@ class PaymentController extends Controller
                 $transaction = Transaction::findOrFail($metadata['trx_id']);
                 $depositService = app(DepositService::class);
                 $depositService->completeDeposit($transaction);
+
                 return $this->callbackResponse('success', 'Payment was successful', route('user.wallet'));
             }
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
         } catch (Exception $exception) {
-            Log::error('Paystack callback error: ' . $exception->getMessage());
+            Log::error('Paystack callback error: '.$exception->getMessage());
 
             return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
         }
     }
+
     public function flutterSuccess(Request $request)
     {
         if ($request->status == 'cancelled') {
@@ -125,6 +127,7 @@ class PaymentController extends Controller
             $transaction = Transaction::findOrFail($metadata['trx_id']);
             $depositService = app(DepositService::class);
             $depositService->completeDeposit($transaction);
+
             return $this->callbackResponse('success', 'Payment was successful', route('user.wallet'));
         }
 
@@ -149,6 +152,7 @@ class PaymentController extends Controller
             $transaction = Transaction::where('code', $code)->firstOrFail();
             $depositService = app(DepositService::class);
             $depositService->completeDeposit($transaction);
+
             return $this->callbackResponse('success', 'Payment was successful', route('user.wallet'));
         }
 

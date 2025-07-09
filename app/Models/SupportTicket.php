@@ -142,7 +142,7 @@ class SupportTicket extends Model
         $prefix = "TKT-{$year}-";
 
         return \DB::transaction(function () use ($prefix) {
-            $lastTicket = self::where('code', 'like', $prefix . '%')
+            $lastTicket = self::where('code', 'like', $prefix.'%')
                 ->lockForUpdate()
                 ->orderBy('code', 'desc')
                 ->first();
@@ -154,7 +154,7 @@ class SupportTicket extends Model
                 $newNumber = 1;
             }
 
-            return $prefix . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
+            return $prefix.str_pad($newNumber, 3, '0', STR_PAD_LEFT);
         });
     }
 }

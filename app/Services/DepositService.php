@@ -21,10 +21,8 @@ class DepositService
     /**
      * Initiate a new deposit
      *
-     * @param float $amount
-     * @param string $gateway
-     * @param User $user
      * @return mixed
+     *
      * @throws Exception
      */
     public function initiateDeposit(float $amount, string $gateway, ?User $user = null)
@@ -67,17 +65,13 @@ class DepositService
 
             return $this->initiateGatewayPayment($gateway, $paymentData);
         } catch (Exception $exception) {
-            Log::error('Deposit initiation failed: ' . $exception->getMessage());
+            Log::error('Deposit initiation failed: '.$exception->getMessage());
             throw new Exception('Unable to process deposit. Please try again.');
         }
     }
 
     /**
      * Calculate deposit fee based on gateway
-     *
-     * @param float $amount
-     * @param string $gateway
-     * @return float
      */
     protected function calculateDepositFee(float $amount, string $gateway): float
     {
@@ -89,9 +83,8 @@ class DepositService
     /**
      * Initialize payment with the selected gateway
      *
-     * @param string $gateway
-     * @param array $paymentData
      * @return mixed
+     *
      * @throws Exception
      */
     protected function initiateGatewayPayment(string $gateway, array $paymentData)
@@ -107,9 +100,6 @@ class DepositService
 
     /**
      * Complete a successful deposit
-     *
-     * @param Transaction $transaction
-     * @return void
      */
     public function completeDeposit(Transaction $transaction): void
     {
@@ -123,14 +113,14 @@ class DepositService
             if ($transaction->status != 'successful') {
                 $transaction->update([
                     'status' => 'successful',
-                    'new_balance' => $user->balance
+                    'new_balance' => $user->balance,
                 ]);
             }
 
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to complete deposit: ' . $e->getMessage());
+            Log::error('Failed to complete deposit: '.$e->getMessage());
             throw $e;
         }
     }
@@ -144,14 +134,14 @@ class DepositService
             if ($transaction->status != 'failed') {
                 $transaction->update([
                     'status' => 'failed',
-                    'new_balance' => $user->balance
+                    'new_balance' => $user->balance,
                 ]);
             }
 
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to fail deposit: ' . $e->getMessage());
+            Log::error('Failed to fail deposit: '.$e->getMessage());
             throw $e;
         }
     }

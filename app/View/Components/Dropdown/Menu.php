@@ -36,13 +36,13 @@ class Menu extends Component
 
     public function positionClass(): string
     {
-        if (!is_numeric($this->offsetY)) {
+        if (! is_numeric($this->offsetY)) {
             $this->offsetY = '4'; // fallback to default
         }
 
         $baseClass = $this->position === 'top' ? 'bottom-full mb-' : 'top-full mt-';
 
-        return $baseClass . $this->offsetY;
+        return $baseClass.$this->offsetY;
     }
 
     public function widthClass(): string

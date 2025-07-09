@@ -56,25 +56,25 @@ class Wallet extends Component
             'name' => 'PayPal',
             'fee' => '0.00%',
             'icon' => 'fab fa-paypal',
-            'image' => "paypal.png"
+            'image' => 'paypal.png',
         ],
         'flutterwave' => [
             'name' => 'Flutterwave',
             'fee' => '0.00%',
             'icon' => 'fab fa-card',
-            'image' => "card.png"
+            'image' => 'card.png',
         ],
         'paystack' => [
             'name' => 'Paystack',
             'fee' => '0.00%',
             'icon' => 'fa fa-card',
-            'image' => "card.png"
+            'image' => 'card.png',
         ],
         'crypto' => [
             'name' => 'Crypto',
             'fee' => '0.00%',
             'icon' => 'fab fa-bitcoin',
-            'image' => "cryptomus.png"
+            'image' => 'cryptomus.png',
         ],
     ];
 
@@ -84,12 +84,11 @@ class Wallet extends Component
             ->select('service')
             ->distinct()
             ->pluck('service')
-            ->mapWithKeys(fn($service) => [$service => ucfirst($service)])
+            ->mapWithKeys(fn ($service) => [$service => ucfirst($service)])
             ->toArray();
 
         return ['' => 'All Services'] + $services;
     }
-
 
     public function getTransactionsProperty()
     {
@@ -125,7 +124,7 @@ class Wallet extends Component
 
     public function updatedSelectedGateway($value)
     {
-        if (!array_key_exists($value, $this->gateways)) {
+        if (! array_key_exists($value, $this->gateways)) {
             $this->selectedGateway = '';
             $this->addError('selectedGateway', 'Invalid payment gateway selected.');
         }
@@ -158,6 +157,7 @@ class Wallet extends Component
 
         try {
             $depositService = app(DepositService::class);
+
             return $depositService->initiateDeposit(
                 amount: (float) $this->amount,
                 gateway: $this->selectedGateway,
@@ -165,7 +165,7 @@ class Wallet extends Component
             );
             $this->successAlert('Deposit successful!');
         } catch (Exception $exception) {
-            Log::error('Deposit failed: ' . $exception->getMessage());
+            Log::error('Deposit failed: '.$exception->getMessage());
             $this->errorAlert($exception->getMessage() ?: 'Unable to process your payment at this time. Please try again later.');
         }
     }
@@ -173,7 +173,7 @@ class Wallet extends Component
     public function getDepositButtonTextProperty()
     {
         if ($this->amount) {
-            return 'Deposit ₦' . number_format(floatval($this->amount), 2);
+            return 'Deposit ₦'.number_format(floatval($this->amount), 2);
         }
 
         return 'Deposit ₦0.00';

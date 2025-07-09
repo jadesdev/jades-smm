@@ -81,10 +81,12 @@ class Ticket extends Component
             $this->dispatch('ticket-updated');
         }
     }
+
     public function getIsClosedProperty()
     {
         return $this->ticket->status === SupportTicket::STATUS_CLOSED;
     }
+
     public function loadMessages()
     {
         $this->ticketmessages = $this->ticket->messages()->orderBy('created_at', 'asc')->get();
@@ -112,9 +114,10 @@ class Ticket extends Component
         if ($this->image) {
             try {
                 $storedPath = $this->image->store('support', 'uploads');
-                $imagePath = 'support/' . basename($storedPath);
+                $imagePath = 'support/'.basename($storedPath);
             } catch (\Exception $e) {
                 $this->errorAlert('Failed to upload image');
+
                 return;
             }
         }

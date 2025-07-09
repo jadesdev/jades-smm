@@ -67,6 +67,7 @@ class Modal extends Component
             'bottom' => 'items-end pb-20',
         ][$this->position] ?? 'items-center';
     }
+
     public function containerClass(): string
     {
         $zIndexClass = match ($this->zIndex) {
@@ -78,8 +79,8 @@ class Modal extends Component
             default => 'z-50',
         };
         $classes = "fixed inset-0 {$zIndexClass} flex px-4 py-6 sm:px-0 "
-            . $this->maxHeightClass()
-            . $this->positionClass();
+            .$this->maxHeightClass()
+            .$this->positionClass();
 
         if ($this->scrollable) {
             $classes .= ' overflow-y-auto';
@@ -93,8 +94,8 @@ class Modal extends Component
         $overlayClass = match ($this->overlayColor) {
             'black/50' => 'bg-black/50',
             'black/75' => 'bg-black/75',
-            'gray/50'  => 'bg-gray-500/50',
-            default    => 'bg-black/50',
+            'gray/50' => 'bg-gray-500/50',
+            default => 'bg-black/50',
         };
         $classes = "fixed inset-0 {$overlayClass}";
 
@@ -104,7 +105,6 @@ class Modal extends Component
 
         return $classes;
     }
-
 
     public function animationEnterClasses(): array
     {

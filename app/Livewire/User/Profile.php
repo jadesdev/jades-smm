@@ -101,7 +101,7 @@ class Profile extends Component
 
     public function generateApiKey(): void
     {
-        $token = Auth::user()->username . Str::random(12);
+        $token = Auth::user()->username.Str::random(12);
 
         $apiKey = bin2hex($token);
         Auth::user()->update([
@@ -129,19 +129,19 @@ class Profile extends Component
 
         try {
             DB::transaction(function () use ($user) {
-                // Delete user's support messages  
+                // Delete user's support messages
                 $user->supportMessages()->delete();
 
-                // Delete user's support tickets (and their related messages)  
+                // Delete user's support tickets (and their related messages)
                 $user->supportTickets()->delete();
 
-                // Logout user  
+                // Logout user
                 Auth::logout();
 
-                // Delete the user  
+                // Delete the user
                 $user->delete();
 
-                // Invalidate session  
+                // Invalidate session
                 session()->invalidate();
                 session()->regenerateToken();
             });
@@ -149,6 +149,7 @@ class Profile extends Component
             $this->successAlert('Account deleted successfully!');
         } catch (\Exception $e) {
             $this->errorAlert('Failed to delete account. Please try again.');
+
             return;
         }
 
