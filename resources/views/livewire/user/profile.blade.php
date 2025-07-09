@@ -9,7 +9,7 @@
                 @csrf
                 <x-forms.input name="name" label="Name" placeholder="Enter your name" :required="true" />
                 <x-forms.input name="username" label="Username" placeholder="Enter your username" :required="true" />
-                <x-forms.input name="" label="Email" placeholder="Enter your email" readonly />
+                <x-forms.input name="" label="Email" value="{{ Auth::user()->email }}" placeholder="Enter your email" readonly />
                 <x-forms.input name="phone" label="Phone" placeholder="Enter your phone" :required="true" />
 
                 <x-button type="submit" variant="primary" class="w-full justify-center">
