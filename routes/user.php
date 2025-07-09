@@ -27,6 +27,6 @@ Route::get('developer', Developer::class)->name('developer');
 
 Route::get('support', Support::class)->name('support');
 Route::get('support/create', Support::class)->name('support.create');
-Route::get('support/ticket/{id}', SupportView::class)->name('support.view');
+Route::get('support/ticket/{code}', SupportView::class)->name('support.view');
 
 Route::get('logout', App\Livewire\Actions\Logout::class)->name('logout');

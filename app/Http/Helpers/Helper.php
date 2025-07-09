@@ -130,46 +130,6 @@ function text_trimer($string, $length = null)
     return Str::limit($string, $length);
 }
 
-// Generate a URL-friendly "slug" from a given string
-function slug($string)
-{
-    // Use Str::slug to generate a URL-friendly slug
-    return Illuminate\Support\Str::slug($string);
-}
-
-// Create a unique slug for a given name and model
-function uniqueSlug($name, $model)
-{
-    // Generate a slug from the provided name
-    $slug = Str::slug($name);
-
-    // Check if the generated slug already exists in the model's table
-    $allSlugs = checkRelatedSlugs($slug, $model);
-
-    if (! $allSlugs->contains('slug', $slug)) {
-        // If the slug is unique, return it
-        return $slug;
-    }
-
-    // If the slug already exists, append a number to make it unique
-    $i = 1;
-    do {
-        $newSlug = $slug . '-' . $i;
-
-        if (! $allSlugs->contains('slug', $newSlug)) {
-            return $newSlug;
-        }
-
-        $i++;
-    } while (true);
-}
-
-// Check for existing slugs related to the provided slug and model
-function checkRelatedSlugs(string $slug, $model)
-{
-    // Use DB::table to query the model's table for slugs starting with the provided slug
-    return DB::table($model)->where('slug', 'LIKE', $slug . '%')->get();
-}
 
 // Generate a random alphanumeric string of a specified length
 function getTrx($length = 15): string

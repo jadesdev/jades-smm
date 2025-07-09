@@ -3,6 +3,7 @@
 namespace App\Livewire\User;
 
 use App\Traits\LivewireToast;
+use Auth;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
@@ -11,12 +12,12 @@ class Wallet extends Component
 {
     use LivewireToast;
 
-    public $activeTab = 'deposit';
+    public $tab = 'deposit';
     public $amount = '';
     public $selectedGateway = '';
     public $showBalance = true;
-    public $balance = 1425.75;
-    public $referralBalance = 425.75;
+    public $balance = 0;
+    public $referralBalance = 0;
 
     // Transaction filters
     public $search = '';
@@ -166,7 +167,7 @@ class Wallet extends Component
         return !empty($this->amount) && !empty($this->selectedGateway) && floatval($this->amount) > 0;
     }
 
-    protected $queryString = ['activeTab'];
+    protected $queryString = ['tab'];
     // meta
     public string $metaTitle = 'Wallet';
 
@@ -178,15 +179,19 @@ class Wallet extends Component
 
     public function changeTab($tab)
     {
-        $this->activeTab = $tab;
+        $this->tab = $tab;
     }
 
-    public function mount() {}
+    public function mount() {
+        $user = Auth::user();
+        $this->balance = $user->balance;
+        $this->referralBalance = $user->referral_balance;
+    }
 
     public function render()
     {
         $this->metaTitle = "Wallet";
-        if ($this->activeTab === 'transactions') {
+        if ($this->tab === 'transactions') {
             $this->metaTitle = 'Transactions';
         }
         return view('livewire.user.wallet');
