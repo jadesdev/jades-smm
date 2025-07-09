@@ -2,7 +2,7 @@
     <h4 class="text-lg font-semibold text-gray-900 dark:text-white mb-3">Example response</h4>
 
     <button
-        x-on:click="navigator.clipboard.writeText($refs.code.innerText); copied = true; JDVToast.success('Copied Successfully'); setTimeout(() => copied = false, 2000);"
+        x-on:click="navigator.clipboard.writeText($refs.code.textContent); copied = true; JDVToast.success('Copied Successfully'); setTimeout(() => copied = false, 2000);"
         class="absolute top-14 right-4 bg-gray-700 hover:bg-gray-600 text-gray-300 text-xs font-semibold py-1 px-2 rounded-md transition-all"
         title="Copy to clipboard"
         >

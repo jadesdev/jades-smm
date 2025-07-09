@@ -1,6 +1,6 @@
 @if ($isLink())
     <a href="{{ $href }}" {{ $attributes->merge(['class' => $getClasses()]) }}
-        @if ($disabled) aria-disabled="true" tabindex="-1" @endif>
+        @if ($disabled) aria-disabled="true" disabled tabindex="-1" @endif>
         @if ($loading)
             <svg class="{{ $getSpinnerClasses() }} mr-2" fill="none" viewBox="0 0 24 24">
                 <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4">

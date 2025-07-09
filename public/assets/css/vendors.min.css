@@ -20613,7 +20613,7 @@
     font-family: inherit;
     font-size: inherit;
     line-height: 1.5;
-    font-smoothing: inherit;
+    -webkit-font-smoothing: inherit;
 }
 
 .ts-control,
@@ -20836,7 +20836,7 @@
     overflow-y: auto;
     overflow-x: hidden;
     max-height: 200px;
-    overflow-scrolling: touch;
+    -webkit-overflow-scrolling: touch;
     scroll-behavior: smooth;
 }
 

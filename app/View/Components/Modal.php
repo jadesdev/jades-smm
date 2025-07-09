@@ -13,13 +13,13 @@ class Modal extends Component
         public string $maxWidth = 'lg',
         public bool $closeable = true,
         public string $position = 'top', // top, center, bottom
-        public bool $persistent = false, 
+        public bool $persistent = false,
         public bool $blur = true,
         public string $overlayColor = 'black/50',
-        public bool $scrollable = false, 
+        public bool $scrollable = false,
         public string $animation = 'slide', // scale, slide, fade
         public string $maxHeight = 'auto',
-        public int $zIndex = 50, 
+        public int $zIndex = 50,
     ) {}
 
     public function maxWidthClass(): string
@@ -67,10 +67,19 @@ class Modal extends Component
             'bottom' => 'items-end pb-20',
         ][$this->position] ?? 'items-center';
     }
-
     public function containerClass(): string
     {
-        $classes = "fixed inset-0 z-{$this->zIndex} flex px-4 py-6 sm:px-0 " . $this->maxHeightClass() . $this->positionClass();
+        $zIndexClass = match ($this->zIndex) {
+            10 => 'z-10',
+            20 => 'z-20',
+            30 => 'z-30',
+            40 => 'z-40',
+            50 => 'z-50',
+            default => 'z-50',
+        };
+        $classes = "fixed inset-0 {$zIndexClass} flex px-4 py-6 sm:px-0 "
+            . $this->maxHeightClass()
+            . $this->positionClass();
 
         if ($this->scrollable) {
             $classes .= ' overflow-y-auto';
@@ -81,7 +90,13 @@ class Modal extends Component
 
     public function overlayClass(): string
     {
-        $classes = "fixed inset-0 bg-{$this->overlayColor}";
+        $overlayClass = match ($this->overlayColor) {
+            'black/50' => 'bg-black/50',
+            'black/75' => 'bg-black/75',
+            'gray/50'  => 'bg-gray-500/50',
+            default    => 'bg-black/50',
+        };
+        $classes = "fixed inset-0 {$overlayClass}";
 
         if ($this->blur) {
             $classes .= ' backdrop-blur-sm';
@@ -90,24 +105,25 @@ class Modal extends Component
         return $classes;
     }
 
+
     public function animationEnterClasses(): array
     {
         return [
             'scale' => [
                 'start' => 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
-                'end' => 'opacity-100 translate-y-0 sm:scale-100'
+                'end' => 'opacity-100 translate-y-0 sm:scale-100',
             ],
             'slide' => [
                 'start' => 'opacity-0 translate-x-full',
-                'end' => 'opacity-100 translate-x-0'
+                'end' => 'opacity-100 translate-x-0',
             ],
             'fade' => [
                 'start' => 'opacity-0',
-                'end' => 'opacity-100'
+                'end' => 'opacity-100',
             ],
         ][$this->animation] ?? [
             'start' => 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
-            'end' => 'opacity-100 translate-y-0 sm:scale-100'
+            'end' => 'opacity-100 translate-y-0 sm:scale-100',
         ];
     }
 
@@ -116,19 +132,19 @@ class Modal extends Component
         return [
             'scale' => [
                 'start' => 'opacity-100 translate-y-0 sm:scale-100',
-                'end' => 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
+                'end' => 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
             ],
             'slide' => [
                 'start' => 'opacity-100 translate-x-0',
-                'end' => 'opacity-0 translate-x-full'
+                'end' => 'opacity-0 translate-x-full',
             ],
             'fade' => [
                 'start' => 'opacity-100',
-                'end' => 'opacity-0'
+                'end' => 'opacity-0',
             ],
         ][$this->animation] ?? [
             'start' => 'opacity-100 translate-y-0 sm:scale-100',
-            'end' => 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95'
+            'end' => 'opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95',
         ];
     }
 

@@ -2,8 +2,6 @@
 
 namespace App\View\Components;
 
-use Closure;
-use Illuminate\Contracts\View\View;
 use Illuminate\View\Component;
 
 class Button extends Component
@@ -36,7 +34,7 @@ class Button extends Component
             'sm' => 'px-3 py-2 text-sm',
             'md' => 'px-4 py-2.5 text-sm',
             'lg' => 'px-5 py-3 text-base',
-            'xl' => 'px-6 py-3.5 text-base'
+            'xl' => 'px-6 py-3.5 text-base',
         ];
 
         // Variant classes
@@ -51,7 +49,7 @@ class Button extends Component
         return implode(' ', [
             $baseClasses,
             $sizeClasses[$this->size] ?? $sizeClasses['md'],
-            $variantClasses
+            $variantClasses,
         ]);
     }
 
@@ -65,7 +63,7 @@ class Button extends Component
             'warning' => 'bg-yellow-500 hover:bg-yellow-600 text-white focus:ring-yellow-500',
             'info' => 'bg-cyan-600 hover:bg-cyan-700 text-white focus:ring-cyan-500',
             'light' => 'bg-gray-100 hover:bg-gray-200 text-gray-900 focus:ring-gray-500',
-            'dark' => 'bg-gray-900 hover:bg-gray-800 text-white focus:ring-gray-500'
+            'dark' => 'bg-gray-900 hover:bg-gray-800 text-white focus:ring-gray-500',
         ];
 
         return $variants[$this->variant] ?? $variants['primary'];
@@ -81,7 +79,7 @@ class Button extends Component
             'warning' => 'border-2 border-yellow-500 text-yellow-600 hover:bg-yellow-500 hover:text-white focus:ring-yellow-500',
             'info' => 'border-2 border-cyan-600 text-cyan-600 hover:bg-cyan-600 hover:text-white focus:ring-cyan-500',
             'light' => 'border-2 border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
-            'dark' => 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-500'
+            'dark' => 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-500',
         ];
 
         return $variants[$this->variant] ?? $variants['primary'];
@@ -97,7 +95,7 @@ class Button extends Component
             'warning' => 'text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-500',
             'info' => 'text-cyan-600 hover:bg-cyan-50 focus:ring-cyan-500',
             'light' => 'text-gray-500 hover:bg-gray-50 focus:ring-gray-500',
-            'dark' => 'text-gray-900 hover:bg-gray-100 focus:ring-gray-500'
+            'dark' => 'text-gray-900 hover:bg-gray-100 focus:ring-gray-500',
         ];
 
         return $variants[$this->variant] ?? $variants['primary'];
@@ -105,7 +103,7 @@ class Button extends Component
 
     public function isLink(): bool
     {
-        return !empty($this->href);
+        return ! empty($this->href);
     }
 
     public function getIconClasses(): string
@@ -115,7 +113,7 @@ class Button extends Component
             'sm' => 'w-4 h-4',
             'md' => 'w-4 h-4',
             'lg' => 'w-5 h-5',
-            'xl' => 'w-5 h-5'
+            'xl' => 'w-5 h-5',
         ];
 
         return $sizeMap[$this->size] ?? $sizeMap['md'];
@@ -128,9 +126,9 @@ class Button extends Component
             'sm' => 'w-4 h-4',
             'md' => 'w-4 h-4',
             'lg' => 'w-5 h-5',
-            'xl' => 'w-5 h-5'
+            'xl' => 'w-5 h-5',
         ];
 
-        return 'animate-spin ' . ($sizeMap[$this->size] ?? $sizeMap['md']);
+        return 'animate-spin '.($sizeMap[$this->size] ?? $sizeMap['md']);
     }
 }

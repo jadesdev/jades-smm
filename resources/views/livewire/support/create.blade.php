@@ -38,7 +38,7 @@
                 <label for="image" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">
                     Attach Image (optional)
                 </label>
-                <input type="file" wire:model="image" id="image" accept="image/*"
+                <input type="file" wire:model="image" id="image" accept="image/jpeg,image/png,image/gif,image/webp"
                     class="w-full px-3 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:text-white">
                 @error('image')
                     <span class="text-red-500 text-sm">{{ $message }}</span>
@@ -69,8 +69,9 @@
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-xl font-semibold text-gray-800 dark:text-gray-200">Support Tickets</h3>
             <span
-                class="bg-blue-100 dark:bg-blue-700 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full">12
-                Active</span>
+                class="bg-blue-100 dark:bg-blue-700 text-blue-800 dark:text-blue-200 text-sm font-medium px-3 py-1 rounded-full">
+                {{ $tickets->where('status', 'active')->count() }} Active
+            </span>
         </div>
 
         @forelse ($tickets as $ticket)

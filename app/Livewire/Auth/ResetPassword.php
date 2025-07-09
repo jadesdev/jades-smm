@@ -6,7 +6,6 @@ use App\Traits\LivewireToast;
 use Illuminate\Auth\Events\PasswordReset;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
-use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
@@ -17,6 +16,7 @@ use Livewire\Component;
 class ResetPassword extends Component
 {
     use LivewireToast;
+
     #[Locked]
     public string $token = '';
 

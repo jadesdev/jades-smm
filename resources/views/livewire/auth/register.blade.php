@@ -70,7 +70,7 @@
                         <div class="ml-3 text-sm">
                             <label for="terms" class="text-gray-600 dark:text-gray-300">
                                 I agree to the
-                                <a href="#"
+                                <a href="{{ route('terms') }}"
                                     class="font-medium text-primary-600 hover:underline dark:text-primary-500">
                                     Terms of Service
                                 </a>.

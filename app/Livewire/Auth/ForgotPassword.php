@@ -2,15 +2,16 @@
 
 namespace App\Livewire\Auth;
 
+use App\Traits\LivewireToast;
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use App\Traits\LivewireToast;
 
 #[Layout('components.layouts.auth')]
 class ForgotPassword extends Component
 {
     use LivewireToast;
+
     public string $email = '';
 
     /**
