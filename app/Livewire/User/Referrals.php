@@ -46,7 +46,11 @@ class Referrals extends Component
     protected function loadReferralData(): void
     {
         $user = Auth::user();
-        $this->referralLink = route('register').'?ref='.urlencode($user->username);
+        if (!$user || !$user->username) {
+            $this->isLoading = false;
+            return;
+        }
+        $this->referralLink = route('register') . '?ref=' . urlencode($user->username);
         $this->loadReferrals();
         $this->calculateStats();
         $this->isLoading = false;
