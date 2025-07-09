@@ -5,10 +5,12 @@ namespace App\Livewire\Auth;
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use App\Traits\LivewireToast;
 
 #[Layout('components.layouts.auth')]
 class ForgotPassword extends Component
 {
+    use LivewireToast;
     public string $email = '';
 
     /**
@@ -22,6 +24,6 @@ class ForgotPassword extends Component
 
         Password::sendResetLink($this->only('email'));
 
-        session()->flash('status', __('A reset link will be sent if the account exists.'));
+        $this->successAlert('A reset link will be sent if the account exists.');
     }
 }

@@ -79,39 +79,4 @@
     </div>
 </div>
 
-@assets
-    <style>
-        /* Custom responsive table styles */
-        @media (max-width: 768px) {
-            .responsive-table {
-                display: block;
-                overflow-x: auto;
-                white-space: nowrap;
-            }
-
-            .mobile-stack {
-                display: block !important;
-            }
-
-            .mobile-stack td {
-                display: block;
-                text-align: left;
-                border: none;
-                padding: 0.25rem 0;
-            }
-
-            .mobile-stack td:before {
-                content: attr(data-label) ": ";
-                font-weight: bold;
-                color: #374151;
-            }
-
-            .mobile-stack .actions-cell {
-                border-bottom: 1px solid #e5e7eb;
-                padding-bottom: 1rem;
-                margin-bottom: 1rem;
-            }
-        }
-    </style>
-@endassets
 @include('layouts.meta')

@@ -5,119 +5,191 @@
     <div class="border-b border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-start justify-between">
             <div>
-                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">#TKT-2024-001</h2>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Order Inquiry</p>
+                <h2 class="text-xl font-semibold text-gray-900 dark:text-white">#{{ $ticket->code }}</h2>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">{{ $ticket->subject }}</p>
             </div>
             <div class="text-end">
                 <span
-                    class="bg-green-100 dark:bg-green-800 text-green-800 dark:text-green-200 text-sm font-medium px-3 py-1 rounded-full">Open</span>
-                <p class="font-medium ml-2 dark:text-white">2 hours ago</p>
+                    class="bg-{{ $ticket->status_color }}-100 dark:bg-{{ $ticket->status_color }}-800 text-{{ $ticket->status_color }}-800 dark:text-{{ $ticket->status_color }}-200 text-sm font-medium px-3 py-1 rounded-full">{{ $ticket->status }}</span>
+                <p class="font-medium ml-2 dark:text-white">{{ $ticket->updated_at->diffForHumans() }}</p>
             </div>
         </div>
     </div>
 
     <!-- Chat Messages -->
-    <div class="p-6 space-y-6 h-[calc(80vh-290px)] md:h-[calc(87vh-300px)] overflow-y-auto custom-scrollbar">
-        <!-- User Message -->
-        <div class="flex items-start space-x-3">
-            <div
-                class="w-8 h-8 bg-primary-500 dark:bg-primary-700 rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="text-white text-sm font-medium">U</span>
-            </div>
-            <div class="flex-1">
-                <div class="flex items-center space-x-2 mb-1">
-                    <span class="font-medium text-gray-900 dark:text-white">You</span>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">2 hours ago</span>
+    <div class="p-6 space-y-6 h-[calc(80vh-290px)] md:h-[calc(87vh-300px)] overflow-y-auto custom-scrollbar"
+        id="messages-container">
+        @foreach ($ticketmessages as $message)
+            @if ($message->is_admin)
+                <!-- Admin Message -->
+                <div class="flex items-start space-x-3">
+                    <div
+                        class="w-8 h-8 bg-green-500 dark:bg-green-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm font-medium">ST</span>
+                    </div>
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span class="font-medium text-gray-900 dark:text-white">Support Team</span>
+                            <span
+                                class="text-xs text-gray-500 dark:text-gray-400">{{ $message->created_at->diffForHumans() }}</span>
+                        </div>
+                        <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 max-w-md">
+                            <p class="text-gray-800 dark:text-gray-200">{!! nl2br($message->message) !!}</p>
+                            @if ($message->image)
+                                <div class="mt-2">
+                                    <a data-fancybox="chat-{{ $message->ticket_id ?? 'default' }}"
+                                        href="{{ my_asset($message->image) }}"
+                                        data-caption="{{ show_datetime($message->created_at) }}">
+                                        <img src="{{ my_asset($message->image) }}" alt="Uploaded Image"
+                                            class="rounded-md max-w-full h-auto"
+                                            style="max-height: 300px; cursor: pointer;">
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
                 </div>
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 max-w-md">
-                    <p class="text-gray-800 dark:text-gray-200">I think there is an error in my order, can you check it?
-                        The quantity doesn't match what I ordered and the total amount seems incorrect.</p>
+            @else
+                <!-- User Reply -->
+                <div class="flex items-start space-x-3 justify-end">
+                    <div class="flex-1 flex flex-col items-end">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <span
+                                class="text-xs text-gray-500 dark:text-gray-400">{{ $message->created_at->diffForHumans() }}</span>
+                            <span class="font-medium text-gray-900 dark:text-white">You</span>
+                        </div>
+                        <div class="bg-primary-500 dark:bg-primary-700 text-white rounded-lg p-3 max-w-md">
+                            <p>{!! nl2br($message->message) !!}</p>
+                            @if ($message->image)
+                                <div class="mt-2">
+                                    <a data-fancybox="chat-{{ $message->ticket_id ?? 'default' }}"
+                                        href="{{ my_asset($message->image) }}"
+                                        data-caption="{{ show_datetime($message->created_at) }}">
+                                        <img src="{{ my_asset($message->image) }}" alt="Uploaded Image"
+                                            class="rounded-md max-w-full h-auto"
+                                            style="max-height: 300px; cursor: pointer;">
+                                    </a>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                    <div
+                        class="w-8 h-8 bg-primary-500 dark:bg-primary-700 rounded-full flex items-center justify-center flex-shrink-0">
+                        <span class="text-white text-sm font-medium">US</span>
+                    </div>
                 </div>
-            </div>
-        </div>
-
-        <!-- Admin Reply -->
-        <div class="flex items-start space-x-3 justify-end">
-            <div class="flex-1 flex flex-col items-end">
-                <div class="flex items-center space-x-2 mb-1">
-                    <span class="text-xs text-gray-500 dark:text-gray-400">1 hour ago</span>
-                    <span class="font-medium text-gray-900 dark:text-white">Support Team</span>
-                </div>
-                <div class="bg-primary-500 dark:bg-primary-700 text-white rounded-lg p-3 max-w-md">
-                    <p>Hello! Thank you for reaching out. I've reviewed your order #ORD-12345 and I can see the
-                        discrepancy you mentioned. Let me investigate this further and get back to you with a solution.
-                    </p>
-                </div>
-            </div>
-            <div
-                class="w-8 h-8 bg-green-500 dark:bg-green-700 rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="text-white text-sm font-medium">S</span>
-            </div>
-        </div>
-
-        <!-- User Follow-up -->
-        <div class="flex items-start space-x-3">
-            <div
-                class="w-8 h-8 bg-primary-500 dark:bg-primary-700 rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="text-white text-sm font-medium">U</span>
-            </div>
-            <div class="flex-1">
-                <div class="flex items-center space-x-2 mb-1">
-                    <span class="font-medium text-gray-900 dark:text-white">You</span>
-                    <span class="text-xs text-gray-500 dark:text-gray-400">45 minutes ago</span>
-                </div>
-                <div class="bg-gray-50 dark:bg-gray-800 rounded-lg p-3 max-w-md">
-                    <p class="text-gray-800 dark:text-gray-200">Thank you for the quick response! I'll wait for your
-                        update.</p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Admin Final Reply -->
-        <div class="flex items-start space-x-3 justify-end">
-            <div class="flex-1 flex flex-col items-end">
-                <div class="flex items-center space-x-2 mb-1">
-                    <span class="text-xs text-gray-500 dark:text-gray-400">30 minutes ago</span>
-                    <span class="font-medium text-gray-900 dark:text-white">Support Team</span>
-                </div>
-                <div class="bg-primary-500 dark:bg-primary-700 text-white rounded-lg p-3 max-w-md">
-                    <p>Good news! I've corrected the order details and processed a refund for the difference. You should
-                        see the adjustment in your account within 24 hours. Is there anything else I can help you with?
-                    </p>
-                </div>
-            </div>
-            <div
-                class="w-8 h-8 bg-green-500 dark:bg-green-700 rounded-full flex items-center justify-center flex-shrink-0">
-                <span class="text-white text-sm font-medium">S</span>
-            </div>
-        </div>
+            @endif
+        @endforeach
     </div>
-
     <!-- Reply Input -->
-    <div class="border-t border-gray-200 dark:border-gray-700 p-4">
-        <div class="flex space-x-3">
-            <div class="flex-1">
-                <x-forms.textarea name="message" label="" placeholder="Type your reply..." :rows="2"
-                    class="resize-none" />
+    @if ($ticket->status !== App\Models\SupportTicket::STATUS_CLOSED)
+        <form wire:submit.prevent="sendMessage" class="border-t border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex space-x-3">
+                <div class="flex-1">
+                    <textarea wire:model="message" placeholder="Type your reply..." rows="2"
+                        class="w-full resize-none border border-gray-300 dark:border-gray-700 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-primary-500 dark:bg-gray-800 dark:text-white"
+                        required></textarea>
+                    @error('message')
+                        <span class="text-red-500 text-sm">{{ $message }}</span>
+                    @enderror
+                </div>
             </div>
-        </div>
-        <div class="flex items-center justify-between mt-3">
-            <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
-                <i class="fa fa-paperclip"></i>
-                <span>Attach file</span>
+            <div class="flex items-center justify-between mt-3">
+                <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-400">
+                    <label for="image-upload" class="cursor-pointer hover:text-primary-500 transition-colors">
+                        <i class="fa fa-paperclip"></i>
+                        <span>Attach file</span>
+                        <input type="file" id="image-upload" wire:model="image" accept="image/*" class="hidden">
+                    </label>
+                    @if ($image)
+                        <div class="mt-2">
+                            <img src="{{ $image->temporaryUrl() }}" class="h-40 w-40 object-cover rounded-lg"
+                                style="max-height: 300px; cursor: pointer;">
+                        </div>
+                        <p class="text-green-500 text-xs">File selected: {{ $image->getClientOriginalName() }}</p>
+                    @endif
+                    @error('image')
+                        <span class="text-red-500 text-xs">{{ $message }}</span>
+                    @enderror
+                </div>
+                <div class="flex space-x-2">
+                    @if ($ticket->status === App\Models\SupportTicket::STATUS_OPEN)
+                        <x-modal name="close-ticket" title="Close Ticket" maxWidth="sm">
+                            <p>Are you sure you want to close this ticket?</p>
+                            <x-slot name="footer">
+                                <button wire:click="closeTicket"
+                                    class="px-4 py-2 bg-primary-500 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors">
+                                    Close Ticket
+                                </button>
+                            </x-slot>
+                        </x-modal>
+                        <button x-on:click="$dispatch('open-modal', { name: 'close-ticket' })"
+                            class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
+                            Close Ticket
+                        </button>
+                    @endif
+                    <button type="submit" wire:loading.attr="disabled" wire:target="sendMessage"
+                        class="px-4 py-2 bg-primary-500 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors disabled:opacity-50">
+                        <span wire:loading.remove wire:target="sendMessage">Send Reply</span>
+                        <span wire:loading wire:target="sendMessage">Sending...</span>
+                    </button>
+                </div>
             </div>
-            <div class="flex space-x-2">
-                <button
-                    class="px-4 py-2 border border-gray-300 dark:border-gray-700 text-gray-700 dark:text-white rounded-lg hover:bg-gray-50 dark:hover:bg-gray-800 transition-colors">
-                    Close Ticket
-                </button>
-                <button
+        </form>
+    @else
+        <div class="border-t border-gray-200 dark:border-gray-700 p-4">
+            <div class="flex items-center justify-between">
+                <span class="text-gray-500 dark:text-gray-400">This ticket is closed.</span>
+                <x-modal name="reopen-ticket" title="Reopen Ticket" maxWidth="sm">
+                    <p>Are you sure you want to reopen this ticket?</p>
+                    <x-slot name="footer">
+                        <button wire:click="openTicket"
+                            class="px-4 py-2 bg-primary-500 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors">
+                            Reopen Ticket
+                        </button>
+                    </x-slot>
+                </x-modal>
+                <button x-on:click="$dispatch('open-modal', { name: 'reopen-ticket' })"
                     class="px-4 py-2 bg-primary-500 dark:bg-primary-700 text-white rounded-lg hover:bg-primary-600 dark:hover:bg-primary-800 transition-colors">
-                    Send Reply
+                    Reopen Ticket
                 </button>
             </div>
         </div>
-    </div>
+    @endif
 </div>
 
 @include('layouts.meta')
+@push('scripts')
+    <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.umd.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui@5.0/dist/fancybox/fancybox.css" />
+    <script>
+        Fancybox.bind("[data-fancybox]", {
+
+        });
+
+        function scrollToBottom() {
+            const container = document.getElementById('messages-container');
+            if (container) {
+                container.scrollTop = container.scrollHeight;
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            scrollToBottom();
+        });
+
+        document.addEventListener('message-sent', () => {
+            setTimeout(scrollToBottom, 100);
+            Fancybox.bind("[data-fancybox]", {
+
+            });
+        });
+
+        document.addEventListener('ticket-updated', () => {
+            setTimeout(scrollToBottom, 100);
+            Fancybox.bind("[data-fancybox]", {
+
+            });
+        });
+    </script>
+@endpush

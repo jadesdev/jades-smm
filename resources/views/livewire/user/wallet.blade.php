@@ -40,9 +40,9 @@
         <div class="flex border-b border-gray-200 dark:border-gray-700">
             <button wire:click="changeTab('deposit')" @class([
                 'flex-1 px-6 py-4 text-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2',
-                'tab-active' => $activeTab === 'deposit',
+                'tab-active' => $tab === 'deposit',
                 'text-gray-600 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800' =>
-                    $activeTab !== 'deposit',
+                    $tab !== 'deposit',
             ])>
                 <i class="fad fa-credit-card w-5 h-5"></i>
                 <span>Deposit</span>
@@ -50,9 +50,9 @@
 
             <button wire:click="changeTab('transactions')" @class([
                 'flex-1 px-6 py-4 text-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2',
-                'tab-active' => $activeTab === 'transactions',
+                'tab-active' => $tab === 'transactions',
                 'text-gray-600 hover:text-primary-600 hover:bg-gray-50 dark:text-gray-300 dark:hover:text-primary-400 dark:hover:bg-gray-800' =>
-                    $activeTab !== 'transactions',
+                    $tab !== 'transactions',
             ])>
                 <i class="fad fa-arrow-up-right w-5 h-5"></i>
                 <span>Transactions</span>
@@ -62,7 +62,7 @@
         <!-- Tab Content -->
         <div class="p-8">
             <!-- Deposit Tab Content -->
-            @if ($activeTab === 'deposit')
+            @if ($tab === 'deposit')
                 <div class="mx-auto">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Add Funds to Your Wallet</h2>
 
@@ -246,7 +246,8 @@
                                         <span
                                             class="copied-indicator-{{ $transaction['id'] }} hidden text-green-600 text-xs">Copied!</span>
                                     </div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-300">{{ $transaction['date'] }}</div>
+                                    <div class="text-sm text-gray-500 dark:text-gray-300">{{ $transaction['date'] }}
+                                    </div>
                                 </div>
                             </div>
                         @empty
