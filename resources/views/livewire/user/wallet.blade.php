@@ -27,16 +27,7 @@
         </div>
     </div>
 
-    <!-- Flash Message -->
-    @if (session()->has('message'))
-        <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-4">
-            {{ session('message') }}
-        </div>
-    @endif
-
-    <!-- Tab Navigation & Content -->
     <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl overflow-hidden">
-        <!-- Tab Headers -->
         <div class="flex border-b border-gray-200 dark:border-gray-700">
             <button wire:click="changeTab('deposit')" @class([
                 'flex-1 px-6 py-4 text-lg font-semibold transition-all duration-300 flex items-center justify-center space-x-2',
@@ -59,9 +50,7 @@
             </button>
         </div>
 
-        <!-- Tab Content -->
         <div class="p-8">
-            <!-- Deposit Tab Content -->
             @if ($tab === 'deposit')
                 <div class="mx-auto">
                     <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Add Funds to Your Wallet</h2>
@@ -69,36 +58,41 @@
                     <form wire:submit="deposit">
                         <div class="space-y-6">
                             <div class="md:flex md:space-x-6 space-y-6 md:space-y-0">
-                                <!-- Amount Input -->
                                 <div class="w-full md:w-1/2">
                                     <x-forms.input type="number" label="Amount" name="amount" wire:model.live="amount"
                                         placeholder="0.00" min="1" step="0.01" class="py-4" />
                                 </div>
 
-                                <!-- Gateway Selection -->
                                 <div class="w-full md:w-1/2">
                                     <label class="block text-sm font-semibold text-gray-700 dark:text-gray-200 mb-4">
                                         Select Payment Method
                                     </label>
                                     <div class="grid grid-cols-1 md:grid-cols-2 mb-2 gap-4">
                                         @foreach ($gateways as $key => $gateway)
-                                            <label wire:click="selectGateway('{{ $key }}')"
-                                                @class([
-                                                    'relative cursor-pointer p-4 border-2 rounded-xl transition-all hover:shadow-md',
-                                                    'gateway-selected border-primary-500 dark:border-primary-700 bg-primary-50 dark:bg-primary-900' =>
-                                                        $selectedGateway === $key,
-                                                    'border-gray-200 hover:border-primary-300 dark:border-gray-700 dark:hover:border-primary-500' =>
-                                                        $selectedGateway !== $key,
+                                            <label class="relative cursor-pointer">
+                                                <input type="radio" name="gateway" value="{{ $key }}"
+                                                    wire:model.live="selectedGateway" class="sr-only peer">
+                                                <div @class([
+                                                    'p-4 border-2 rounded-xl transition-all duration-300 hover:shadow-md',
+                                                    'peer-checked:border-primary-500 peer-checked:dark:border-primary-400 peer-checked:bg-primary-50 peer-checked:dark:bg-primary-900/50 peer-checked:shadow-lg peer-checked:scale-105 peer-checked:gateway-selected',
+                                                    'border-gray-200 hover:border-primary-300 dark:border-gray-700 dark:hover:border-primary-500',
                                                 ])>
-                                                <div class="flex items-center space-x-3">
-                                                    <span class="text-2xl"><i class="{{ $gateway['icon'] }}"></i></span>
-                                                    <div class="flex-1">
-                                                        <div class="font-semibold text-gray-900 dark:text-gray-200">
-                                                            {{ $gateway['name'] }}
+                                                    <div class="flex items-center space-x-3 ggs">
+                                                        <span class="text-2xl">
+                                                            <img src="{{ static_asset('payments/' . $gateway['image']) }}"
+                                                                alt="{{ $gateway['name'] }}" class="w-6 h-6">
+                                                        </span>
+                                                        <div class="flex-1">
+                                                            <div
+                                                                class="font-semibold text-gray-900 dark:text-gray-200 peer-checked:text-primary-600 peer-checked:dark:text-primary-400">
+                                                                {{ $gateway['name'] }}
+                                                            </div>
+                                                            <div
+                                                                class="text-sm text-gray-500 dark:text-gray-300 peer-checked:text-primary-500 peer-checked:dark:text-primary-300">
+                                                                Fee: {{ $gateway['fee'] }}
+                                                            </div>
                                                         </div>
-                                                        <div class="text-sm text-gray-500 dark:text-gray-300">Fee:
-                                                            {{ $gateway['fee'] }}
-                                                        </div>
+
                                                     </div>
                                                 </div>
                                             </label>
@@ -110,7 +104,6 @@
                                 </div>
                             </div>
 
-                            <!-- Submit Button -->
                             <button type="submit" @disabled(!$this->isDepositValid) @class([
                                 'w-full font-semibold py-4 px-6 rounded-xl transition-all duration-200',
                                 'bg-primary text-white hover:shadow-lg transform hover:scale-105' =>
@@ -123,7 +116,6 @@
                     </form>
                 </div>
             @else
-                <!-- Transactions Tab Content -->
                 <div>
                     <div class="flex justify-between items-center mb-6">
                         <h2 class="text-xl font-bold text-gray-900 dark:text-gray-200">Transaction History</h2>
@@ -133,30 +125,21 @@
                             <span class="md:block hidden">Clear Filters</span>
                         </button>
                     </div>
-                    <!-- Filters Section -->
                     <div class="bg-gray-50 dark:bg-gray-700 rounded-xl p-3 mb-6 space-y-4">
-                        <!-- Search and Quick Filters Row -->
                         <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-                            <!-- Search -->
                             <div>
                                 <x-forms.input type="text" wire:model.live.debounce.300ms="search" name="search"
                                     placeholder="Search transactions...">
                                 </x-forms.input>
                             </div>
-
-                            <!-- Type Filter -->
                             <div>
                                 <select wire:model.live="typeFilter"
                                     class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400">
-                                    <option value="">All Types</option>
-                                    <option value="deposit">Deposit</option>
-                                    <option value="withdraw">Withdraw</option>
-                                    <option value="referral">Referral</option>
-                                    <option value="chargeback">Chargeback</option>
+                                    @foreach ($this->availableServices as $value => $label)
+                                        <option value="{{ $value }}">{{ $label }}</option>
+                                    @endforeach
                                 </select>
                             </div>
-
-                            <!-- Status Filter -->
                             <div>
                                 <select wire:model.live="statusFilter"
                                     class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400">
@@ -175,48 +158,20 @@
                                 class="bg-gray-50 dark:bg-gray-700 rounded-xl p-5 px-3 hover:bg-gray-100 dark:hover:bg-gray-800 border border-primary-300 transition-all transaction-card">
                                 <div class="md:flex items-center justify-between">
                                     <div class="flex items-center space-x-4">
-                                        <div @class([
-                                            'p-3 rounded-full',
-                                            'bg-green-100' => $transaction['status'] === 'successful',
-                                            'bg-yellow-100' => $transaction['status'] === 'pending',
-                                            'bg-red-100' => $transaction['status'] === 'failed',
-                                        ])>
-                                            @php
-                                                $iconClass = match ($transaction['type']) {
-                                                    'deposit' => 'fa-arrow-down-left',
-                                                    'withdraw' => 'fa-arrow-right-left',
-                                                    'chargeback' => 'fa-arrow-down-left',
-                                                    'referral' => 'fa-credit-card',
-                                                    default => 'fa-money-bill',
-                                                };
-                                                $iconColor = match ($transaction['status']) {
-                                                    'successful' => 'text-green-600',
-                                                    'pending' => 'text-yellow-600',
-                                                    'failed' => 'text-red-600',
-                                                    default => 'text-gray-600',
-                                                };
-                                            @endphp
-                                            <i class="fad {{ $iconClass }} w-5 h-5 {{ $iconColor }} "></i>
+                                        <div @class(['p-1 rounded-full'])>
+                                            <img src="{{ static_asset('services/' . $transaction->image) }}"
+                                                alt="" class="w-6 h-6 rounded-full">
                                         </div>
                                         <div class="flex items-center justify-between space-x-2">
                                             <span
-                                                class="font-semibold text-gray-900 dark:text-gray-100 capitalize">{{ $transaction['type'] }}</span>
+                                                class="font-semibold text-gray-900 dark:text-gray-100 capitalize">{{ $transaction->type }}</span>
                                             <span @class([
-                                                'text-right px-2 py-1 rounded-full text-xs font-medium border flex items-center',
-                                                'border-green-200' => $transaction['status'] === 'successful',
-                                                'border-yellow-200' => $transaction['status'] === 'pending',
-                                                'border-red-200' => $transaction['status'] === 'failed',
+                                                'text-right px-2 py-1 rounded-md text-xs font-medium border flex items-center',
+                                                'border-green-300 text-green-600' => $transaction->status === 'successful',
+                                                'border-amber-300 text-amber-600' => $transaction->status === 'pending',
+                                                'border-red-300 text-red-600' => $transaction->status === 'failed',
                                             ])>
-                                                @php
-                                                    $statusIcon = match ($transaction['status']) {
-                                                        'successful' => 'fa-money-bill',
-                                                        'pending' => 'fa-money-bill',
-                                                        'failed' => 'fa-money-bill',
-                                                        default => 'fa-money-bill',
-                                                    };
-                                                @endphp
-                                                <i class="fad {{ $statusIcon }} dark:text-gray-200"></i>
-                                                <span class="ml-1">{{ $transaction['status'] }}</span>
+                                                <span class="ml-1">{{ $transaction->status }}</span>
                                             </span>
                                         </div>
                                     </div>
@@ -224,29 +179,29 @@
                                     <div class="flex items-center justify-between md:grid md:text-right my-2 md:my-0">
                                         <div @class([
                                             'text-lg font-semibold',
-                                            'text-green-600' => $transaction['status'] === 'successful',
-                                            'text-yellow-600' => $transaction['status'] === 'pending',
-                                            'text-red-600' => $transaction['status'] === 'failed',
+                                            'text-green-600' => $transaction->type == 'credit',
+                                            'text-red-600' => $transaction->type == 'debit',
                                         ])>
-                                            ${{ number_format($transaction['amount'], 2) }}
+                                            {{ format_price($transaction->amount, 2) }}
                                         </div>
-                                        <div class="text-md text-gray-500 dark:text-gray-300">Fee:
-                                            ${{ number_format($transaction['fee'], 2) }}</div>
+                                        <div class="text-md text-gray-500 dark:text-gray-300">
+                                            Fee: {{ format_price($transaction->fee, 2) }}</div>
                                     </div>
                                 </div>
-                                <p class="dark:text-gray-200">{{ $transaction['description'] }}</p>
+                                <p class="dark:text-gray-200">{{ $transaction->message }}</p>
 
                                 <div class="mt-4 flex items-center justify-between">
                                     <div class="flex items-center space-x-2 text-sm text-gray-500 dark:text-gray-300">
-                                        <span>TX ID: {{ $transaction['id'] }}</span>
-                                        <button onclick="copyToClipboard('{{ $transaction['id'] }}')"
+                                        <span>TX ID: {{ $transaction->code }}</span>
+                                        <button onclick="copyToClipboard('{{ $transaction->code }}')"
                                             class="p-1 hover:bg-gray-200 dark:hover:bg-gray-800 rounded transition-colors copy-btn">
                                             <i class="fad fa-clone w-3 h-3 dark:text-gray-200"></i>
                                         </button>
                                         <span
-                                            class="copied-indicator-{{ $transaction['id'] }} hidden text-green-600 text-xs">Copied!</span>
+                                            class="copied-indicator-{{ $transaction->code }} hidden text-green-600 text-xs">Copied!</span>
                                     </div>
-                                    <div class="text-sm text-gray-500 dark:text-gray-300">{{ $transaction['date'] }}
+                                    <div class="text-sm text-gray-500 dark:text-gray-300">
+                                        {{ $transaction->created_at->format('Y-m-d') }}
                                     </div>
                                 </div>
                             </div>
@@ -256,8 +211,58 @@
                             </div>
                         @endforelse
                     </div>
+                    <div class="mt-4 ">
+                        {{ $this->transactions->links() }}
+                    </div>
                 </div>
             @endif
+        </div>
+
+        <div wire:loading wire:target="deposit">
+            <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                <div class="bg-white dark:bg-gray-800 rounded-2xl p-8 max-w-md mx-4 text-center shadow-2xl">
+                    <div class="mb-6">
+                        <div
+                            class="mx-auto w-16 h-16 bg-primary-100 dark:bg-primary-900 rounded-full flex items-center justify-center mb-4">
+                            <svg class="animate-spin h-8 w-8 text-primary-600 dark:text-primary-400"
+                                xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4"></circle>
+                                <path class="opacity-75" fill="currentColor"
+                                    d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
+                                </path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-bold text-gray-900 dark:text-gray-100 mb-2">Processing Payment
+                        </h3>
+                        <p class="text-gray-600 dark:text-gray-400">Please wait while we redirect you to the
+                            payment gateway...</p>
+                    </div>
+
+                    <div class="space-y-2 text-sm text-gray-500 dark:text-gray-400">
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-2 h-2 bg-primary-500 rounded-full animate-pulse"></div>
+                            <span>Preparing your payment</span>
+                        </div>
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-2 h-2 bg-primary-500 rounded-full animate-pulse"
+                                style="animation-delay: 0.2s">
+                            </div>
+                            <span>Connecting to payment gateway</span>
+                        </div>
+                        <div class="flex items-center justify-center space-x-2">
+                            <div class="w-2 h-2 bg-primary-500 rounded-full animate-pulse"
+                                style="animation-delay: 0.4s">
+                            </div>
+                            <span>Redirecting...</span>
+                        </div>
+                    </div>
+
+                    <div class="mt-6 text-xs text-gray-400 dark:text-gray-500">
+                        Do not close this window or refresh the page
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -313,7 +318,6 @@
     <script>
         function copyToClipboard(text) {
             navigator.clipboard.writeText(text).then(function() {
-                // Show copied indicator  
                 const indicator = document.querySelector('.copied-indicator-' + text);
                 if (indicator) {
                     indicator.classList.remove('hidden');

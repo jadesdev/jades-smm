@@ -2,15 +2,20 @@
 
 namespace App\Livewire\User;
 
+use App\Models\Transaction;
+use App\Services\DepositService;
 use App\Traits\LivewireToast;
 use Auth;
+use Exception;
+use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Livewire\WithPagination;
 
 #[Layout('user.layouts.main')]
 class Wallet extends Component
 {
-    use LivewireToast;
+    use LivewireToast, WithPagination;
 
     public $tab = 'deposit';
 
@@ -31,94 +36,86 @@ class Wallet extends Component
 
     public $typeFilter = '';
 
-    public $perPage = 10;
+    public $perPage = 30;
+
+    protected $queryString = ['tab'];
+
+    // meta
+    public string $metaTitle = 'Wallet';
+
+    public string $metaDescription;
+
+    public string $metaKeywords;
+
+    public string $metaImage;
+
+    public bool $processingPayment = false;
 
     public $gateways = [
         'paypal' => [
             'name' => 'PayPal',
             'fee' => '0.00%',
             'icon' => 'fab fa-paypal',
+            'image' => "paypal.png"
         ],
         'flutterwave' => [
             'name' => 'Flutterwave',
             'fee' => '0.00%',
-            'icon' => 'fab fa-paypal', // You might want to change this
+            'icon' => 'fab fa-card',
+            'image' => "card.png"
         ],
-        'stripe' => [
-            'name' => 'Stripe',
+        'paystack' => [
+            'name' => 'Paystack',
             'fee' => '0.00%',
-            'icon' => 'fab fa-stripe',
+            'icon' => 'fa fa-card',
+            'image' => "card.png"
+        ],
+        'crypto' => [
+            'name' => 'Crypto',
+            'fee' => '0.00%',
+            'icon' => 'fab fa-bitcoin',
+            'image' => "cryptomus.png"
         ],
     ];
 
+    public function getAvailableServicesProperty()
+    {
+        $services = Transaction::where('user_id', Auth::id())
+            ->select('service')
+            ->distinct()
+            ->pluck('service')
+            ->mapWithKeys(fn($service) => [$service => ucfirst($service)])
+            ->toArray();
+
+        return ['' => 'All Services'] + $services;
+    }
+
+
     public function getTransactionsProperty()
     {
-        return $transactions = [
-            [
-                'id' => '123456789',
-                'type' => 'deposit',
-                'amount' => 102,
-                'status' => 'successful',
-                'fee' => 0.00,
-                'date' => '2025-12-13',
-                'description' => 'Just a random message about the transaction. can be short or long',
-            ],
-            [
-                'id' => '987654321',
-                'type' => 'withdraw',
-                'amount' => 150,
-                'status' => 'pending',
-                'fee' => 5.00,
-                'date' => '2025-11-28',
-                'description' => 'Just a random message about the transaction. can be short or long',
-            ],
-            [
-                'id' => '123456789',
-                'type' => 'chargeback',
-                'amount' => -5,
-                'status' => 'failed',
-                'fee' => 0.00,
-                'date' => '2025-12-05',
-                'description' => 'Just a random message about the transaction. can be short or long',
-            ],
-            [
-                'id' => '123456789',
-                'type' => 'referral',
-                'amount' => 25,
-                'status' => 'successful',
-                'fee' => 0.00,
-                'date' => '2025-12-01',
-                'description' => 'Just a random message about the transaction. can be short or long',
-            ],
-        ];
-        // Apply filters
-        $filtered = collect($transactions);
+        $filtered = Transaction::where('user_id', Auth::user()->id)->orderBy('updated_at', 'desc');
 
         // Search filter
         if ($this->search) {
-            $filtered = $filtered->filter(function ($transaction) {
-                return str_contains(strtolower($transaction['id']), strtolower($this->search)) ||
-                    str_contains(strtolower($transaction['description']), strtolower($this->search)) ||
-                    str_contains(strtolower($transaction['gateway']), strtolower($this->search));
+            $filtered = $filtered->where(function ($query) {
+                $query->where('code', 'LIKE', "%{$this->search}%")
+                    ->orWhere('message', 'LIKE', "%{$this->search}%")
+                    ->orWhere('id', 'LIKE', "%{$this->search}%")
+                    ->orWhere('gateway', 'LIKE', "%{$this->search}%");
             });
         }
 
         // Type filter
         if ($this->typeFilter) {
-            $filtered = $filtered->filter(function ($transaction) {
-                return $transaction['type'] === $this->typeFilter;
-            });
+            $filtered = $filtered->where('service', $this->typeFilter);
         }
 
         // Status filter
         if ($this->statusFilter) {
-            $filtered = $filtered->filter(function ($transaction) {
-                return $transaction['status'] === $this->statusFilter;
-            });
+            $filtered = $filtered->where('status', $this->statusFilter);
         }
 
-        // Paginate (simple slice for demo - use real pagination in production)
-        return $filtered->take($this->perPage)->values()->all();
+        return $filtered->paginate($this->perPage);
     }
 
     public function toggleBalance()
@@ -126,9 +123,13 @@ class Wallet extends Component
         $this->showBalance = ! $this->showBalance;
     }
 
-    public function selectGateway($gateway)
+    public function updatedSelectedGateway($value)
     {
-        $this->selectedGateway = $gateway;
+        if (!array_key_exists($value, $this->gateways)) {
+            $this->selectedGateway = '';
+            $this->addError('selectedGateway', 'Invalid payment gateway selected.');
+        }
+        $this->selectedGateway = $value;
     }
 
     public function clearFilters()
@@ -143,8 +144,6 @@ class Wallet extends Component
 
     public function updatedAmount()
     {
-        // This fires automatically when amount changes
-        // You can add validation here if needed
         $this->amount = max(0, floatval($this->amount));
     }
 
@@ -152,46 +151,38 @@ class Wallet extends Component
     {
         // Validate
         $this->validate([
-            'amount' => 'required|numeric|min:1',
-            'selectedGateway' => 'required|in:paypal,flutterwave,stripe',
+            'amount' => 'required|numeric|min:100|max:100000',
+            'selectedGateway' => 'required|string',
         ]);
+        $this->processingPayment = true;
 
-        $this->successAlert('Deposit of $'.number_format($this->amount, 2).' via '.$this->gateways[$this->selectedGateway]['name'].' initiated!');
-
-        // Reset form
-        $this->reset(['amount', 'selectedGateway']);
-    }
-
-    public function copyTxId($txId)
-    {
-        // Emit event to handle copying on frontend
-        $this->dispatch('copy-to-clipboard', $txId);
+        try {
+            $depositService = app(DepositService::class);
+            return $depositService->initiateDeposit(
+                amount: (float) $this->amount,
+                gateway: $this->selectedGateway,
+                user: Auth::user()
+            );
+            $this->successAlert('Deposit successful!');
+        } catch (Exception $exception) {
+            Log::error('Deposit failed: ' . $exception->getMessage());
+            $this->errorAlert($exception->getMessage() ?: 'Unable to process your payment at this time. Please try again later.');
+        }
     }
 
     public function getDepositButtonTextProperty()
     {
         if ($this->amount) {
-            return 'Deposit $'.number_format(floatval($this->amount), 2);
+            return 'Deposit ₦' . number_format(floatval($this->amount), 2);
         }
 
-        return 'Deposit $0.00';
+        return 'Deposit ₦0.00';
     }
 
     public function getIsDepositValidProperty()
     {
         return ! empty($this->amount) && ! empty($this->selectedGateway) && floatval($this->amount) > 0;
     }
-
-    protected $queryString = ['tab'];
-
-    // meta
-    public string $metaTitle = 'Wallet';
-
-    public string $metaDescription;
-
-    public string $metaKeywords;
-
-    public string $metaImage;
 
     public function changeTab($tab)
     {

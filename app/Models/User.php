@@ -96,4 +96,20 @@ class User extends Authenticatable
     {
         return $this->hasMany(SupportTicket::class)->open();
     }
+
+    /**
+     * Get all transactions for this user
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Get all deposits for this user
+     */
+    public function deposits(): HasMany
+    {
+        return $this->hasMany(Transaction::class)->where('type', 'deposit');
+    }
 }
