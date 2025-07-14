@@ -24,17 +24,17 @@ class Menu extends Component
         public string $zIndex = '50',
         public bool $portal = false, // render in portal (useful for overflow containers)
     ) {
-        // Validate offsetX is numeric  
-        if (!is_numeric($this->offsetX)) {
+        // Validate offsetX is numeric
+        if (! is_numeric($this->offsetX)) {
             $this->offsetX = '0';
         }
 
-        // Validate zIndex is numeric  
-        if (!is_numeric($this->zIndex)) {
+        // Validate zIndex is numeric
+        if (! is_numeric($this->zIndex)) {
             $this->zIndex = '50';
         }
 
-        // Ensure delay is not negative  
+        // Ensure delay is not negative
         if ($this->delay < 0) {
             $this->delay = 150;
         }
@@ -57,7 +57,7 @@ class Menu extends Component
 
         $baseClass = $this->position === 'top' ? 'bottom-full mb-' : 'top-full mt-';
 
-        return $baseClass . $this->offsetY;
+        return $baseClass.$this->offsetY;
     }
 
     public function widthClass(): string
