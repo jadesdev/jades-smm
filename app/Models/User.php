@@ -3,15 +3,17 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+
+use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+    use HasFactory, HasUlids, Notifiable;
 
     /**
      * The attributes that are mass assignable.
@@ -21,7 +23,10 @@ class User extends Authenticatable
     protected $fillable = [
         'name',
         'email',
+        'username',
+        'phone',
         'password',
+        'ref_id',
     ];
 
     /**
@@ -56,5 +61,55 @@ class User extends Authenticatable
             ->explode(' ')
             ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
+    }
+
+    public function referrer()
+    {
+        return $this->belongsTo(User::class, 'ref_id');
+    }
+
+    public function referrals()
+    {
+        return $this->hasMany(User::class, 'ref_id');
+    }
+
+    /**
+     * Get all support tickets for this user
+     */
+    public function supportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class);
+    }
+
+    /**
+     * Get all support messages for this user
+     */
+    public function supportMessages(): HasMany
+    {
+        return $this->hasMany(SupportMessage::class);
+    }
+
+    /**
+     * Get open support tickets for this user
+     */
+    public function openSupportTickets(): HasMany
+    {
+        return $this->hasMany(SupportTicket::class)->open();
+    }
+
+    /**
+     * Get all transactions for this user
+     */
+    public function transactions(): HasMany
+    {
+        return $this->hasMany(Transaction::class);
+    }
+
+    /**
+     * Get all deposits for this user
+     */
+    public function deposits(): HasMany
+    {
+        return $this->hasMany(Transaction::class)->where('type', 'deposit');
     }
 }

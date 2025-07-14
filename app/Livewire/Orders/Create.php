@@ -3,17 +3,16 @@
 namespace App\Livewire\Orders;
 
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Create extends Component
 {
     use LivewireToast;
 
-
     // meta
-    public string $metaTitle;
+    public string $metaTitle = 'Create Order';
 
     public string $metaDescription;
 
@@ -21,11 +20,7 @@ class Create extends Component
 
     public string $metaImage;
 
-    public function mount()
-    {
-        // set meta
-        $this->metaTitle = "Create";
-    }
+    public function mount() {}
 
     public function render()
     {

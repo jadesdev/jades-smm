@@ -13,13 +13,13 @@ return [
     |
     */
 
-    'default' => env('FILESYSTEM_DISK', 'local'),
+    'default' => env('FILESYSTEM_DISK', 'uploads'),
 
     /*
     |--------------------------------------------------------------------------
     | Filesystem Disks
     |--------------------------------------------------------------------------
-    |
+    |oads
     | Below you may configure as many filesystem disks as necessary, and you
     | may even configure multiple disks for the same driver. Examples for
     | most supported storage drivers are configured here for reference.
@@ -59,6 +59,14 @@ return [
             'throw' => false,
             'report' => false,
         ],
+        'uploads' => [
+            'driver' => 'local',
+            'root' => public_path('uploads'),
+            'url' => env('APP_URL').'/uploads',
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
 
     ],
 
@@ -75,6 +83,7 @@ return [
 
     'links' => [
         public_path('storage') => storage_path('app/public'),
+        // public_path('uploads') => public_path('uploads'),
     ],
 
 ];

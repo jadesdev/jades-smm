@@ -311,6 +311,9 @@
     </script>
 
     @stack('scripts')
+    @livewireScripts()
+    {{-- <script src="{{ asset('vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
+        data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script> --}}
 </body>
 
 </html>

@@ -3,14 +3,13 @@
 namespace App\Livewire\User;
 
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Developer extends Component
 {
     use LivewireToast;
-
 
     // meta
     public string $metaTitle;
@@ -24,7 +23,7 @@ class Developer extends Component
     public function mount()
     {
         // set meta
-        $this->metaTitle = "Developer";
+        $this->metaTitle = 'Developer';
     }
 
     public function render()

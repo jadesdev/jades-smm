@@ -3,28 +3,69 @@
 namespace App\Livewire\User;
 
 use App\Traits\LivewireToast;
-use Livewire\Component;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('user.layouts.main')]
 class Referrals extends Component
 {
     use LivewireToast;
 
+    // Referral data
+    public string $referralLink = '';
 
-    // meta
-    public string $metaTitle;
+    public int $referralCount = 0;
 
-    public string $metaDescription;
+    public int $referralRate = 3; // Default 3%
 
-    public string $metaKeywords;
+    public float $minWithdrawal = 10.00;
 
-    public string $metaImage;
+    public float $totalEarned = 0;
 
-    public function mount()
+    public Collection $recentReferrals;
+
+    // UI State
+    public bool $isLoading = true;
+
+    // Meta
+    public string $metaTitle = 'Referral Program';
+
+    public string $metaDescription = 'Invite friends and earn commissions on their purchases';
+
+    public string $metaKeywords = 'referrals, invite friends, earn money, affiliate program';
+
+    public string $metaImage = '';
+
+    public function mount(): void
     {
-        // set meta
-        $this->metaTitle = "Referrals";
+        $this->loadReferralData();
+    }
+
+    protected function loadReferralData(): void
+    {
+        $user = Auth::user();
+        if (! $user || ! $user->username) {
+            $this->isLoading = false;
+
+            return;
+        }
+        $this->referralLink = route('register').'?ref='.urlencode($user->username);
+        $this->loadReferrals();
+        $this->calculateStats();
+        $this->isLoading = false;
+    }
+
+    protected function loadReferrals(): void
+    {
+        $this->recentReferrals = Auth::user()->referrals()->get();
+    }
+
+    protected function calculateStats(): void
+    {
+        $this->referralCount = count($this->recentReferrals);
+        $this->totalEarned = collect($this->recentReferrals)->sum('bonus');
     }
 
     public function render()

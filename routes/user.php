@@ -1,16 +1,16 @@
 <?php
 
-use App\Livewire\Orders\Create as OrdersCreate;
 use App\Livewire\Orders\Bulk as OrdersBulk;
+use App\Livewire\Orders\Create as OrdersCreate;
 use App\Livewire\Orders\Index as OrdersIndex;
-use App\Livewire\Support\Create as SupportCreate;
-use App\Livewire\Support\Tickets as SupportTickets;
+use App\Livewire\Support\Create as Support;
+use App\Livewire\Support\Ticket as SupportView;
 use App\Livewire\User\Dashboard;
+use App\Livewire\User\Developer;
 use App\Livewire\User\Profile;
 use App\Livewire\User\Referrals;
-use App\Livewire\User\Wallet;
 use App\Livewire\User\Services;
-use App\Livewire\User\Developer;
+use App\Livewire\User\Wallet;
 
 Route::get('/', Dashboard::class)->name('index');
 Route::get('dashboard', Dashboard::class)->name('dashboard');
@@ -25,6 +25,8 @@ Route::get('orders/bulk', OrdersBulk::class)->name('orders.bulk');
 Route::get('services', Services::class)->name('services');
 Route::get('developer', Developer::class)->name('developer');
 
-Route::get('support', SupportTickets::class)->name('support');
-Route::get('support/tickets', SupportTickets::class)->name('support.tickets');
-Route::get('support/create', SupportCreate::class)->name('support.create');
+Route::get('support', Support::class)->name('support');
+Route::get('support/create', Support::class)->name('support.create');
+Route::get('support/ticket/{code}', SupportView::class)->name('support.view');
+
+Route::get('logout', App\Livewire\Actions\Logout::class)->name('logout');
