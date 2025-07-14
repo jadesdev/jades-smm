@@ -1,13 +1,13 @@
 <?php
 
-namespace [namespace];
+namespace App\Livewire\Admin;
 
 use App\Traits\LivewireToast;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 
 #[Layout('admin.layouts.main')]
-class [class] extends Component
+class Dashboard extends Component
 {
     use LivewireToast;
 
@@ -24,11 +24,11 @@ class [class] extends Component
     public function mount()
     {
         // set meta
-        $this->metaTitle = "[class]";
+        $this->metaTitle = "Dashboard";
     }
 
     public function render()
     {
-        return view('[view]');
+        return view('livewire.admin.dashboard');
     }
 }
