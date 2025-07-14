@@ -4,6 +4,6 @@
             <i class="fad fa-rocket text-xl mr-2"></i>
             <span class="text-xl font-bold">SMM Panel</span>
         </div>
-        @include('admin.layouts._menu')
+        @include('user.layouts._menu')
     </div>
 </div>

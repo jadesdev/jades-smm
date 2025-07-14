@@ -1,56 +1,76 @@
 <nav class="flex-1 px-2 py-4 space-y-1 side-menu overflow-y-auto">
     {{-- Dashboard --}}
-    <a href="{{ route('user.dashboard') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-home mr-3 w-5"></i>
-        Dashboard
-    </a>
+    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-tachometer-alt" name="Dashboard" />
 
-    {{-- Orders --}}
-    <a href="{{ route('user.orders') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-bags-shopping mr-3 w-5"></i>
-        Orders
-    </a>
-    {{-- Wallet --}}
-    <a href="{{ route('user.wallet') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-wallet mr-3 w-5"></i>
-        Wallet
-    </a>
+    <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Services</h6>
+    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-plug" name="API Providers" />
+    <x-sidebar.menu-item href="{{ route('admin.categories') }}" icon="fad fa-tags" name="Categories" />
+    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-concierge-bell" name="Services" />
 
-    {{-- Services --}}
-    <a href="{{ route('user.services') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-list mr-3 w-5"></i>
-        Services
-    </a>
+    <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Finance</h6>
+    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-shopping-cart" name="Orders" />
+    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-money-check-alt" name="Transactions" />
 
-    {{-- Support --}}
-    <a href="{{ route('user.support') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-comment-alt mr-3 w-5"></i>
-        Support
-    </a>
+    <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Management</h6>
+    <x-sidebar.submenu icon="fad fa-users" name="Users" :submenu-items="[
+        [
+            'href' => '#',
+            'name' => 'All Users',
+        ],
+        [
+            'href' => '#',
+            'name' => 'Settings',
+        ],
+        [
+            'href' => route('admin.dashboard'),
+            'name' => 'Wallet',
+        ],
+    ]" />
 
-    {{-- Referrals --}}
-    <a href="{{ route('user.referrals') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-users mr-3 w-5"></i>
-        Referrals
-    </a>
+    <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Support</h6>
+    <x-sidebar.submenu icon="fad fa-headset" name="Support Tickets" :submenu-items="[
+        [
+            'href' => '#',
+            'name' => 'New Tickets',
+        ],
+        [
+            'href' => '#',
+            'name' => 'Closed Tickets',
+        ],
+        [
+            'href' => route('admin.dashboard'),
+            'name' => 'All Tickets',
+        ],
+    ]" />
 
-    {{-- Developer Api --}}
-    <a href="{{ route('user.developer') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-code mr-3 w-5"></i>
-        Developer Api
-    </a>
+    <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Settings</h6>
+    <x-sidebar.submenu icon="fad fa-envelope" name="Email" :submenu-items="[
+        [
+            'href' => '#',
+            'name' => 'Email Templates',
+        ],
+        [
+            'href' => '#',
+            'name' => 'Settings',
+        ],
+        [
+            'href' => route('admin.dashboard'),
+            'name' => 'Bulk Email',
+        ],
+    ]" />
 
-    {{-- Account --}}
-    <a href="{{ route('user.profile') }}" wire:navigate
-        class="flex items-center px-4 py-2 text-sm font-medium rounded-md text-primary-200 dark:text-gray-300 hover:bg-primary-600 dark:hover:bg-gray-700 hover:text-white">
-        <i class="fad fa-user-circle mr-3 w-5"></i>
-        Account
-    </a>
+    <x-sidebar.submenu icon="fad fa-cogs" name="Settings" :submenu-items="[
+        [
+            'href' => '#',
+            'name' => 'General',
+        ],
+        [
+            'href' => '#',
+            'name' => 'Payment',
+        ],
+        [
+            'href' => '#',
+            'name' => 'Features',
+        ],
+    ]" />
 </nav>
