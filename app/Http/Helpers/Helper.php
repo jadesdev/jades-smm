@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Setting;
+use App\Models\SystemSetting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
@@ -7,70 +9,68 @@ if (! function_exists('static_asset')) {
     function static_asset(string $path, $secure = null)
     {
         if (PHP_SAPI == 'cli-server') {
-            return app('url')->asset('assets/'.$path, $secure);
+            return app('url')->asset('assets/' . $path, $secure);
         }
 
-        return app('url')->asset('public/assets/'.$path, $secure);
+        return app('url')->asset('public/assets/' . $path, $secure);
     }
 }
 
 // Return file uploaded via uploader
 if (! function_exists('my_asset')) {
-    function my_asset(string $path, $secure = null)
+    function my_asset(?string $path, $secure = null)
     {
         if (PHP_SAPI == 'cli-server') {
-            return app('url')->asset('uploads/'.$path, $secure);
+            return app('url')->asset('uploads/' . $path, $secure);
         }
 
-        return app('url')->asset('public/uploads/'.$path, $secure);
+        return app('url')->asset('public/uploads/' . $path, $secure);
     }
 }
 
 if (! function_exists('get_setting')) {
     function get_setting($key = null, $default = null)
     {
-        return $key;
         // Check if the settings table exists
-        // if (! Schema::hasTable('settings')) {
-        //     return $default;
-        // }
+        if (! Schema::hasTable('settings')) {
+            return $default;
+        }
 
-        // $settings = Cache::get('Settings');
+        $settings = Cache::get('Settings');
 
-        // if (! $settings) {
-        //     $settings = Setting::first();
-        //     if ($settings) {
-        //         Cache::put('Settings', $settings, 30000);
-        //     }
-        // }
+        if (! $settings) {
+            $settings = Setting::first();
+            if ($settings) {
+                Cache::put('Settings', $settings, 30000);
+            }
+        }
 
-        // if ($key) {
-        //     return @$settings->$key == null ? $default : @$settings->$key;
-        // }
+        if ($key) {
+            return @$settings->$key == null ? $default : @$settings->$key;
+        }
 
-        // return $settings;
+        return $settings;
     }
 }
 
 if (! function_exists('sys_setting')) {
     function sys_setting($key, $default = null)
     {
-        return $key;
         // // Check if the system_settings table exists
-        // if (! Schema::hasTable('system_settings')) {
-        //     return $default;
-        // }
+        if (! Schema::hasTable('system_settings')) {
+            return $default;
+        }
 
-        // $settings = Cache::get('SystemSettings');
+        $settings = Cache::get('SystemSettings');
 
-        // if (! $settings) {
-        //     $settings = SystemSetting::all();
-        //     Cache::put('SystemSettings', $settings, 30000);
-        // }
+        if (! $settings) {
+            $settings = SystemSetting::all();
+            Cache::put('SystemSettings', $settings, 30000);
+        }
 
-        // $setting = $settings->where('name', $key)->first();
+        $setting = $settings->where('name', $key)->first();
 
-        // return $setting == null ? $default : $setting->value;
+        return $setting == null ? $default : $setting->value;
     }
 }
 
@@ -81,7 +81,7 @@ if (! function_exists('format_price')) {
         $fomated_price = number_format($price, 2);
         $currency = get_setting('currency');
 
-        return $currency.$fomated_price;
+        return $currency . $fomated_price;
     }
 }
 
@@ -92,7 +92,7 @@ if (! function_exists('ngnformat_price')) {
         $fomated_price = number_format($price, 2);
         $currency = '₦';
 
-        return $currency.$fomated_price;
+        return $currency . $fomated_price;
     }
 }
 
@@ -101,7 +101,7 @@ function sym_price($price): string
     $fomated_price = number_format($price, 2);
     $currency = get_setting('currency_code');
 
-    return $currency.' '.$fomated_price;
+    return $currency . ' ' . $fomated_price;
 }
 
 function format_number($price, $place = 2): string
@@ -153,7 +153,7 @@ function getTrans(string $prefix, $len = 15): string
         $randomString .= $characters[random_int(0, $charactersLength - 1)];
     }
 
-    return $prefix.'_'.$randomString;
+    return $prefix . '_' . $randomString;
 }
 
 // Round the given amount to a specified number of decimal places
@@ -241,15 +241,15 @@ function queryBuild(string $key, $value): ?string
         $match = preg_match("/{$pattern}/", $url);
 
         if ($match != 0) {
-            return preg_replace('~(\?|&)'.$key.'[^&]*~', "\?{$key}={$value}", $url);
+            return preg_replace('~(\?|&)' . $key . '[^&]*~', "\?{$key}={$value}", $url);
         }
 
-        $filteredURL = preg_replace('~(\?|&)'.$key.'[^&]*~', '', $url);
+        $filteredURL = preg_replace('~(\?|&)' . $key . '[^&]*~', '', $url);
 
-        return $filteredURL.$delimeter."{$key}={$value}";
+        return $filteredURL . $delimeter . "{$key}={$value}";
     }
 
-    return request()->getRequestUri().$delimeter."{$key}={$value}";
+    return request()->getRequestUri() . $delimeter . "{$key}={$value}";
 }
 
 function getPaymentMethodLabel($method)

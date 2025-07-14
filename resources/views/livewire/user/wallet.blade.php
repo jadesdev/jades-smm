@@ -14,13 +14,13 @@
         <div class="md:flex justify-between">
             <div class="mb-2">
                 <span class="text-3xl font-bold mb-2">
-                    {{ $showBalance ? '$' . number_format($balance, 2) : '••••••' }}
+                    {{ $showBalance ? format_price($balance, 2) : '••••••' }}
                 </span>
                 <div class="text-primary-200">Available Balance</div>
             </div>
             <div class="">
                 <span class="text-3xl font-bold mb-2">
-                    {{ $showBalance ? '$' . number_format($referralBalance, 2) : '••••••' }}
+                    {{ $showBalance ? format_price($referralBalance, 2) : '••••••' }}
                 </span>
                 <div class="text-primary-200">Referral Balance</div>
             </div>

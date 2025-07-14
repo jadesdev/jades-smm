@@ -173,10 +173,10 @@ class Wallet extends Component
     public function getDepositButtonTextProperty()
     {
         if ($this->amount) {
-            return 'Deposit ₦'.number_format(floatval($this->amount), 2);
+            return 'Deposit '.format_price(floatval($this->amount), 2);
         }
 
-        return 'Deposit ₦0.00';
+        return 'Deposit '.format_price(0, 2);
     }
 
     public function getIsDepositValidProperty()
