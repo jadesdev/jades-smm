@@ -71,7 +71,7 @@ class Register extends Component
     /**
      * Validate referral code
      */
-    public function updatedReferralCode($value)
+    public function updatedReferralCode()
     {
         $this->validateOnly('referral_code', [
             'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],

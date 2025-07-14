@@ -92,7 +92,7 @@ class Wallet extends Component
 
     public function getTransactionsProperty()
     {
-        $filtered = Transaction::where('user_id', Auth::user()->id)->orderBy('updated_at', 'desc');
+        $filtered = Transaction::where('user_id', Auth::id())->orderBy('updated_at', 'desc');
 
         // Search filter
         if ($this->search) {
@@ -193,7 +193,7 @@ class Wallet extends Component
     {
         $user = Auth::user();
         $this->balance = $user->balance;
-        $this->referralBalance = $user->referral_balance;
+        $this->referralBalance = $user->bonus;
     }
 
     public function render()

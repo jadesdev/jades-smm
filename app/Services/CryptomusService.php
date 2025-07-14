@@ -32,8 +32,8 @@ class CryptomusService
             'url_callback' => route('cryptomus.success'),
             'url_return' => route('checkout'),
             'description' => $details['description'],
-            'subtract' => 10,
-            'accuracy_payment_percent' => 4,
+            'subtract' => config('payment.cryptomus.subtract', 10),
+            'accuracy_payment_percent' => config('payment.cryptomus.accuracy_payment_percent', 4),
             'currencies' => [
                 [
                     'currency' => 'USDT',
@@ -57,7 +57,6 @@ class CryptomusService
                     'currency' => 'TRX',
                 ],
             ],
-
         ];
         $signature = $this->generateSignature($data);
         $response = Http::withHeaders([
@@ -76,7 +75,7 @@ class CryptomusService
     public function getPaymentStatus($orderId)
     {
         $response = Http::withHeaders([
-            'Authorization' => 'Bearer '.$this->apiKey,
+            'Authorization' => 'Bearer ' . $this->apiKey,
         ])->get("{$this->baseUrl}/payment/{$orderId}");
 
         if ($response->successful()) {
@@ -93,7 +92,7 @@ class CryptomusService
     {
         $jsonData = json_encode($payload, JSON_UNESCAPED_UNICODE);
 
-        return md5(base64_encode($jsonData).$this->apiKey);
+        return md5(base64_encode($jsonData) . $this->apiKey);
     }
 
     /**

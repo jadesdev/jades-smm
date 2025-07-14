@@ -171,7 +171,7 @@ class Create extends Component
                 'user_id' => $user->id,
                 'message' => Purify::clean($messageContent),
                 'type' => $this->image ? SupportMessage::TYPE_IMAGE : SupportMessage::TYPE_TEXT,
-                'image' => $imagePath ? basename($imagePath) : null,
+                'image' => $imagePath ? 'support/'.basename($imagePath) : null,
                 'is_admin' => false,
             ]);
 
