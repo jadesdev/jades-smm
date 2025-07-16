@@ -5,6 +5,7 @@ namespace App\Livewire\Admin;
 use App\Traits\LivewireToast;
 use Livewire\Component;
 use App\Models\Category;
+use App\Models\Service;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
 
@@ -109,11 +110,13 @@ class CategoryManager extends Component
         switch ($this->bulkAction) {
             case 'activate':
                 Category::whereIn('id', $this->selectedCategories)->update(['is_active' => true]);
+                Service::whereIn('category_id', $this->selectedCategories)->update(['status' => true]);
                 $this->successAlert("$selectedCount categories activated successfully.");
                 break;
 
             case 'deactivate':
                 Category::whereIn('id', $this->selectedCategories)->update(['is_active' => false]);
+                Service::whereIn('category_id', $this->selectedCategories)->update(['status' => false]);
                 $this->successAlert("$selectedCount categories deactivated successfully.");
                 break;
 
@@ -161,6 +164,10 @@ class CategoryManager extends Component
         $this->editing = $category;
         $this->name = $category->name;
         $this->isActive = $category->is_active;
+        if ($category->is_active != $this->isActive) {
+            // update services status
+            Service::where('category_id', $category->id)->update(['status' => $this->isActive]);
+        }
         $this->dispatch('open-modal', name: 'category-modal');
     }
 

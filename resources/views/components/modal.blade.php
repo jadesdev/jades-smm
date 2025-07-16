@@ -45,7 +45,7 @@
     @endif
     x-on:keydown.tab="trapFocus($event)"
     x-show="show" 
-    class="{{ $containerClass() }}"
+    class="{{ $containerClass() }} overflow-y-auto"
     style="display: none;"
     role="dialog"
     aria-modal="true"

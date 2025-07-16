@@ -147,7 +147,6 @@ trait ServiceTrait
         }
 
         $syncOptions = $params['sync_options'];
-
         foreach ($dataServices as $item) {
             $service = Service::where('api_service_id', $item['service'])
                 ->where('api_provider_id', $params['api_provider_id'])
@@ -158,30 +157,32 @@ trait ServiceTrait
             }
 
             $updateData = ['type' => $this->formatServiceType($item['type'])];
-            if (!empty($syncOptions['new_price'])) {
+            if (in_array('new_price', $syncOptions)) {
                 $updateData['price'] = $this->calculatePriceWithMargin($item['rate'], $params['percentage'], $params['rate']);
             }
 
-            if (!empty($syncOptions['service_desc'])) {
+            if (in_array('service_desc', $syncOptions)) {
                 $updateData['description'] = $item['desc'] ?? $item['description'] ?? '';
             }
 
-            if (!empty($syncOptions['service_name'])) {
+            if (in_array('service_name', $syncOptions)) {
                 $updateData['name'] = $item['name'];
             }
 
-            if (!empty($syncOptions['original_price'])) {
+            if (in_array('original_price', $syncOptions)) {
                 $updateData['api_price'] = (float) $item['rate'];
                 $updateData['original_price'] = $item['rate'] * $params['rate'];
             }
 
-            if (!empty($syncOptions['min_max_dripfeed'])) {
+            if (in_array('min_max_dripfeed', $syncOptions)) {
                 $updateData['min'] = $item['min'];
                 $updateData['max'] = $item['max'];
-                $updateData['dripfeed'] = $item['dripfeed'] ?? 0;
+                $updateData['dripfeed'] = $item['dripfeed'] ?? 0;                
+                $updateData['refill'] = $item['refill'] ?? 0;
+                $updateData['cancel'] = $item['cancel'] ?? 0;
             }
 
-            if (!empty($syncOptions['old_service_status'])) {
+            if (in_array('old_service_status', $syncOptions)) {
                 $updateData['status'] = 1;
             }
 

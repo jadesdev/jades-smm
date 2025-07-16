@@ -212,7 +212,6 @@ class ApiProviderManager extends Component
             'syncOptions' => 'required|array|min:1',
             'syncOptions.*' => 'string',
         ]);
-        \Log::info($validated);
         $apiService = app(ApiProviderService::class);
         $apiService->syncProviderServices($this->syncProvider, $validated);       
         $this->successAlert('Services synced successfully.');

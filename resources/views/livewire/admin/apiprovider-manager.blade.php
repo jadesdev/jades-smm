@@ -170,17 +170,17 @@
                     <label class="flex items-center">
                         <input type="checkbox" wire:model="syncOptions" value="new_price"
                             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sync New Price</span>
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sync Current Price</span>
                     </label>
                     <label class="flex items-center">
                         <input type="checkbox" wire:model="syncOptions" value="original_price" checked
                             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sync Original Price</span>
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sync API Price</span>
                     </label>
                     <label class="flex items-center">
                         <input type="checkbox" wire:model="syncOptions" value="min_max_dripfeed"
                             class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-gray-300 rounded dark:bg-gray-700 dark:border-gray-600">
-                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sync Min, Max, DripFeed</span>
+                        <span class="ml-2 text-sm text-gray-700 dark:text-gray-300">Sync Min, Max, DripFeed, Refill and Cancel</span>
                     </label>
                     <label class="flex items-center">
                         <input type="checkbox" wire:model="syncOptions" value="service_name"

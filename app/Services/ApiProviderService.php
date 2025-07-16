@@ -17,11 +17,10 @@ class ApiProviderService
     {
         $services = $this->getServices($provider);
         $services = $this->sortServicesByKey($services, 'service');
-        $currentServices = $provider->services()->pluck('api_service_id')->toArray();
+        $currentServices = $this->sortServicesByKey(json_decode($provider->services,true), 'api_service_id');
         $disabledServices    = array_diff_key($currentServices, $services);
         $newServices         = array_diff_key($services, $currentServices);
         $existsServices      = array_diff_key($services, $newServices);
-
         // disable api services the no longer exist ($disabled services)
         if (!empty($disabledServices)) {
             $service = Service::whereIn('api_service_id', $disabledServices);
@@ -82,7 +81,7 @@ class ApiProviderService
     public function postRequest($endpoint, $payload)
     {
         try {
-            $res =  Http::post($endpoint, $payload);
+            $res =  Http::timeout(240)->post($endpoint, $payload);
             return $res->json();
         } catch (Exception $e) {
             Log::error('Provider request exception:' . $e->getMessage());

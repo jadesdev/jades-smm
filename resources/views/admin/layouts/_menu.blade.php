@@ -5,7 +5,7 @@
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Services</h6>
     <x-sidebar.menu-item href="{{ route('admin.api-providers') }}" icon="fad fa-plug" name="API Providers" />
     <x-sidebar.menu-item href="{{ route('admin.categories') }}" icon="fad fa-tags" name="Categories" />
-    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-concierge-bell" name="Services" />
+    <x-sidebar.menu-item href="{{ route('admin.services') }}" icon="fad fa-concierge-bell" name="Services" />
 
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Finance</h6>
     <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-shopping-cart" name="Orders" />
