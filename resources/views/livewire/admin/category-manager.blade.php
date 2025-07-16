@@ -44,7 +44,8 @@
                         <option value="delete">Delete</option>
                     </x-forms.select>
 
-                    <x-button wire:click="executeBulkAction" variant="primary" size="sm" :disabled="empty($bulkAction)">
+                    <x-button wire:click="executeBulkAction" class="!mb-4" variant="primary" size="sm"
+                        :disabled="empty($bulkAction)">
                         Execute
                     </x-button>
                 </div>
@@ -64,20 +65,14 @@
                         {{-- Sortable Name Column --}}
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            <button wire:click="sortBy('name')"
+                            <button wire:click="sortByColumn('name')"
                                 class="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100">
                                 <span>Name</span>
                                 @if ($sortBy === 'name')
                                     @if ($sortDirection === 'asc')
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                        </svg>
+                                        <i class="fa fa-caret-up"></i>
                                     @else
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" />
-                                        </svg>
+                                        <i class="fa fa-caret-down"></i>
                                     @endif
                                 @endif
                             </button>
@@ -86,20 +81,14 @@
                         {{-- Sortable Status Column --}}
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            <button wire:click="sortBy('is_active')"
+                            <button wire:click="sortByColumn('is_active')"
                                 class="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100">
                                 <span>Status</span>
                                 @if ($sortBy === 'is_active')
                                     @if ($sortDirection === 'asc')
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                        </svg>
+                                        <i class="fa fa-caret-up"></i>
                                     @else
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" />
-                                        </svg>
+                                        <i class="fa fa-caret-down"></i>
                                     @endif
                                 @endif
                             </button>
@@ -108,27 +97,21 @@
                         {{-- Sortable Created At Column --}}
                         <th scope="col"
                             class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            <button wire:click="sortBy('created_at')"
+                            <button wire:click="sortByColumn('created_at')"
                                 class="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100">
                                 <span>Created At</span>
                                 @if ($sortBy === 'created_at')
                                     @if ($sortDirection === 'asc')
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" />
-                                        </svg>
+                                        <i class="fa fa-caret-up"></i>
                                     @else
-                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                            <path
-                                                d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" />
-                                        </svg>
+                                        <i class="fa fa-caret-down"></i>
                                     @endif
                                 @endif
                             </button>
                         </th>
 
-                        <th scope="col" class="relative px-6 py-3">
-                            <span class="sr-only">Actions</span>
+                        <th scope="col" class="relative px-6 py-3 text-right">
+                            <span class="text-right">Actions</span>
                         </th>
                     </tr>
                 </thead>
@@ -201,13 +184,10 @@
                 <x-forms.input wire:model.defer="name" name='name' id="name" type="text"
                     class="mt-1 block w-full" />
 
-                @if ($editing)
-                    <x-forms.select wire:model.defer="isActive" name='isActive' id="isActive"
-                        class="mt-1 block w-full">
-                        <option value="1">Active</option>
-                        <option value="0">Inactive</option>
-                    </x-forms.select>
-                @endif
+                <x-forms.select wire:model.defer="isActive" name='isActive' id="isActive" class="mt-1 block w-full">
+                    <option value="1">Active</option>
+                    <option value="0">Inactive</option>
+                </x-forms.select>
             </div>
         </form>
 

@@ -23,7 +23,7 @@ class CategoryManager extends Component
     // Existing properties
     public ?Category $editing = null;
     public string $name = '';
-    public $isActive = 1;
+    public bool $isActive = true;
     public ?Category $deleting = null;
 
     // New properties for enhanced functionality
@@ -31,7 +31,7 @@ class CategoryManager extends Component
     public string $statusFilter = '';
     public string $sortBy = 'name';
     public string $sortDirection = 'asc';
-    
+
     // Bulk operations
     public array $selectedCategories = [];
     public bool $selectAll = false;
@@ -76,7 +76,7 @@ class CategoryManager extends Component
         $this->selectAll = count($this->selectedCategories) === $this->getCategories()->count();
     }
 
-    public function sortBy(string $column): void
+    public function sortByColumn(string $column): void
     {
         if ($this->sortBy === $column) {
             $this->sortDirection = $this->sortDirection === 'asc' ? 'desc' : 'asc';
@@ -84,7 +84,9 @@ class CategoryManager extends Component
             $this->sortBy = $column;
             $this->sortDirection = 'asc';
         }
+        $this->resetPage();
     }
+
 
     public function clearFilters(): void
     {
@@ -222,7 +224,7 @@ class CategoryManager extends Component
     public function render()
     {
         $categories = $this->getCategories()->paginate(30);
-        
+
         return view('livewire.admin.category-manager', compact('categories'));
     }
 }
