@@ -30,6 +30,11 @@ class ApiProvider extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        //
+        'is_active' => 'boolean',
     ];
+
+    public function services()
+    {
+        return $this->hasMany(Service::class);
+    }
 }

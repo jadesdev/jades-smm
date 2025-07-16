@@ -3,10 +3,12 @@
 namespace App\Livewire\Admin;
 
 use App\Models\ApiProvider;
+use App\Services\ApiProviderService;
 use App\Traits\LivewireToast;
 use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\WithPagination;
+use Log;
 
 #[Layout('admin.layouts.main')]
 class ApiProviderManager extends Component
@@ -21,17 +23,15 @@ class ApiProviderManager extends Component
     public ?ApiProvider $deleting = null;
     public ?ApiProvider $currencyEditing = null;
     public ?ApiProvider $syncProvider = null;
-    public ?ApiProvider $importProvider = null;
 
     public string $name = '';
     public string $url = '';
     public string $api_key = '';
     public float $rate = 0.0;
     public float $currencyRate = 0.0;
-    public string $syncRequestType = '0';
+    public string $syncRequestType = 'current';
     public int $syncPercentage = 100;
     public array $syncOptions = ['original_price'];
-    public int $importPercentage = 100;
 
     public function rules(): array
     {
@@ -98,11 +98,23 @@ class ApiProviderManager extends Component
             $data['api_key'] = $validated['api_key'];
         }
 
+        $apiService = app(ApiProviderService::class);
         if ($this->editing) {
             $this->editing->update($data);
+            // update balance?
+            $response = $apiService->getBalance($this->editing);
+            $this->editing->balance = $response['balance'] ?? $this->editing->balance;
+            $this->editing->currency = $response['currency'] ?? $this->editing->currency;
+            $this->editing->save();
+
             $this->successAlert('API Provider updated successfully.');
         } else {
-            ApiProvider::create($data);
+            $provider = ApiProvider::create($data);
+            $response = $apiService->getBalance($provider);
+            $provider->balance = $response['balance'] ?? 0;
+            $provider->currency = $response['currency'] ?? 'USD';
+            $provider->save();
+
             $this->successAlert('API Provider created successfully.');
         }
 
@@ -181,7 +193,7 @@ class ApiProviderManager extends Component
     public function updateServices(ApiProvider $provider): void
     {
         $this->resetErrorBag();
-        $this->syncRequestType = '0';
+        $this->syncRequestType = 'current';
         $this->syncPercentage = 100;
         $this->syncOptions = ['original_price'];
         $this->syncProvider = $provider;
@@ -195,14 +207,16 @@ class ApiProviderManager extends Component
             return;
         }
         $validated = $this->validate([
-            'syncRequestType' => 'required|in:0,1',
+            'syncRequestType' => 'required|in:current,all,new',
             'syncPercentage' => 'required|numeric|min:0',
             'syncOptions' => 'required|array|min:1',
             'syncOptions.*' => 'string',
         ]);
         \Log::info($validated);
-        $this->closeUpdateServicesModal();
+        $apiService = app(ApiProviderService::class);
+        $apiService->syncProviderServices($this->syncProvider, $validated);       
         $this->successAlert('Services synced successfully.');
+        $this->closeUpdateServicesModal();
     }
 
     public function closeUpdateServicesModal(): void
@@ -211,41 +225,22 @@ class ApiProviderManager extends Component
         $this->syncProvider = null;
     }
 
-    public function importServicesModal(ApiProvider $provider): void
-    {
-        $this->importProvider = $provider;
-        $this->importPercentage = 100;
-        $this->dispatch('open-modal', name: 'import-services-modal');
-    }
-
-    public function importServices(): void
-    {
-        if (!$this->importProvider) {
-            $this->errorAlert('No provider selected.');
-            return;
-        }
-        $validated = $this->validate([
-            'importPercentage' => 'required|numeric|min:0',
-        ]);
-        \Log::info($validated);
-        $this->closeImportModal();
-        $this->successAlert('Services imported successfully.');
-    }
-
-    public function closeImportModal(): void
-    {
-        $this->dispatch('close-modal', name: 'import-services-modal');
-        $this->importProvider = null;
-    }
     /**
      * Update provider balance.
      */
     public function updateProviderBalance(ApiProvider $provider): void
     {
         $this->resetErrorBag();
-        $provider->balance = rand(100, 1000);
-        $provider->save();
-        $this->successAlert('Provider balance updated successfully.');
+        $apiService = app(ApiProviderService::class);
+        $response = $apiService->getBalance($provider);
+        if (isset($response['balance'])) {
+            $provider->balance = $response['balance'];
+            $provider->currency = $response['currency'] ?? 'USD';
+            $provider->save();
+            $this->successAlert('Provider balance updated successfully.');
+        } else {
+            $this->errorAlert('Provider balance update failed.');
+        }
     }
 
     public function render()

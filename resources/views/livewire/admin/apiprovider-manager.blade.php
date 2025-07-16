@@ -78,9 +78,6 @@
                                         <x-dropdown.item wire:click="updateServices({{ $provider->id }})">
                                             <i class="fa fa-tags fa-fw mr-2"></i> Update Services
                                         </x-dropdown.item>
-                                        <x-dropdown.item wire:click="importServicesModal({{ $provider->id }})">
-                                            <i class="fa fa-tags fa-fw mr-2"></i> Import Services
-                                        </x-dropdown.item>
                                         <x-dropdown.item wire:click="updateProviderBalance({{ $provider->id }})">
                                             <i class="fa fa-wallet fa-fw mr-2"></i> Update Provider Balance
                                         </x-dropdown.item>
@@ -88,7 +85,8 @@
                                             <i class="fa fa-list mr-2"></i> All Services
                                         </x-dropdown.item>
                                         <x-dropdown.divider />
-                                        <x-dropdown.item wire:click="delete({{ $provider->id }})" class="text-red-600" variant="danger">
+                                        <x-dropdown.item wire:click="delete({{ $provider->id }})" class="text-red-600"
+                                            variant="danger">
                                             <i class="fa fa-trash-alt fa-fw mr-2"></i> Delete
                                         </x-dropdown.item>
                                     </x-dropdown.menu>
@@ -161,11 +159,11 @@
 
         <form wire:submit="syncProviderServices">
             <x-forms.select wire:model="syncRequestType" name="syncRequestType" label="Synchronous Request"
-                :options="['0' => 'Current Services', '1' => 'All Services']" required />
+                :options="['current' => 'Current Services', 'new' => 'New Services', 'all' => 'All Services']" required />
 
             {{-- Percentage Increase --}}
-            <x-forms.input wire:model="syncPercentage" value="10" name="syncPercentage" label="Percentage Increase"
-                type="number" required />
+            <x-forms.input wire:model="syncPercentage" value="10" name="syncPercentage"
+                label="Percentage Increase" type="number" required />
             {{-- Checkbox Options --}}
             <x-forms.form-field name="syncOptions" label="Sync Options" required>
                 <div class="space-y-2 mt-2">
@@ -202,18 +200,6 @@
             <x-button variant="secondary" wire:click="closeUpdateServicesModal">Cancel</x-button>
             <x-button variant="primary" wire:click="syncProviderServices"
                 wire:loading.attr="disabled">Sync</x-button>
-        </x-slot>
-    </x-modal>
-
-    {{-- Import services --}}
-    <x-modal name="import-services-modal" title="Import Services">
-        <form wire:submit="importServices">
-            <x-forms.input wire:model="importPercentage" value="10" name="importPercentage" label="Percentage Increase"
-                type="number" required />
-        </form>
-        <x-slot name="footer">
-            <x-button variant="secondary" wire:click="closeImportModal">Cancel</x-button>
-            <x-button variant="primary" wire:click="importServices" wire:loading.attr="disabled">Import</x-button>
         </x-slot>
     </x-modal>
 
