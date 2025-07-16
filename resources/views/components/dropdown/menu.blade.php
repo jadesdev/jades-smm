@@ -45,7 +45,8 @@
          @else
             x-on:click="close()" @endif>
 
-        <div class="rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+        <div
+            class="rounded-md shadow-lg bg-white ring-1 dark:ring-gray-700 ring-black ring-opacity-5 focus:outline-none dark:bg-gray-700 dark:text-gray-100">
             <div class="py-1" role="menu" aria-orientation="vertical">
                 {{ $slot }}
             </div>
