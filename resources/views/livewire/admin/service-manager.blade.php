@@ -4,7 +4,9 @@
         <x-slot name="header">
             <div class="flex items-center justify-between">
                 <h2 class="text-2xl font-bold text-gray-900 dark:text-gray-100">Services</h2>
-                <x-button wire:click="add" variant='primary'>Add Service</x-button>
+                <x-button wire:navigate href="{{ route('admin.services.create') }}" variant='primary'>
+                    Add Service
+                </x-button>
             </div>
         </x-slot>
 
@@ -110,8 +112,8 @@
                                 <x-status-badge :status="$service->status" />
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
-                                <x-button wire:click="edit({{ $service->id }})" variant="primary" size="xs"><i
-                                        class="fa fa-edit"></i></x-button>
+                                <x-button wire:navigate href="{{ route('admin.services.edit', $service->id) }}"
+                                    variant="primary" size="xs"><i class="fa fa-edit"></i></x-button>
                                 <x-button wire:click="delete({{ $service->id }})" variant="danger" size="xs"><i
                                         class="fa fa-trash"></i></x-button>
                             </td>
@@ -132,46 +134,6 @@
             {{ $services->links() }}
         </div>
     </x-card>
-
-    {{-- Add/Edit Modal --}}
-    <x-modal name="service-modal" :title="$editing ? 'Edit Service' : 'Add Service'" persistent="true">
-        <form wire:submit="save">
-            <div class="space-y-4">
-                <x-forms.input wire:model="name" label="Service Name" required />
-                <x-forms.select wire:model="category_id" label="Category" placeholder="Select Category" required>
-                    @foreach ($categories as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </x-forms.select>
-                <x-forms.select wire:model="api_provider_id" label="API Provider (Optional)"
-                    placeholder="Select Provider (for API services)">
-                    @foreach ($apiProviders as $id => $name)
-                        <option value="{{ $id }}">{{ $name }}</option>
-                    @endforeach
-                </x-forms.select>
-                <x-forms.input wire:model="api_service_id" label="API Service ID (Optional)" type="number" />
-                <x-forms.input wire:model="price" label="Price per 1000" type="number" step="0.01" required />
-                <div class="grid grid-cols-2 gap-4">
-                    <x-forms.input wire:model="min" label="Min Amount" type="number" required />
-                    <x-forms.input wire:model="max" label="Max Amount" type="number" required />
-                </div>
-                <x-forms.textarea wire:model="description" name="description" label="Description (Optional)" />
-                <div class="grid grid-cols-2 gap-4">
-                    <x-forms.toggle wire:model="dripfeed" label="Drip-feed" />
-                    <x-forms.toggle wire:model="cancel" label="Cancel Button" />
-                    <x-forms.toggle wire:model="refill" label="Refill Button" />
-                    <x-forms.toggle wire:model="status" label="Active" />
-                </div>
-            </div>
-        </form>
-
-        <x-slot name="footer">
-            <x-button variant="secondary" wire:click="closeModal">Cancel</x-button>
-            <x-button variant="primary" wire:click="save" wire:loading.attr="disabled">
-                {{ $editing ? 'Save Changes' : 'Add Service' }}
-            </x-button>
-        </x-slot>
-    </x-modal>
 
     {{-- Delete Confirmation Modal --}}
     <x-modal name="delete-service-modal" title="Confirm Deletion" persistent="true">

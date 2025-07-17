@@ -19,25 +19,8 @@ class ServiceManager extends Component
 
     public string $metaTitle = "Services";
 
-    // Form Properties
-    public ?Service $editing = null;
     public ?Service $deleting = null;
-
-    // Form fields
-    public string $name = '';
-    public ?int $category_id = null;
-    public ?int $api_provider_id = null;
-    public ?int $api_service_id = null;
-    public string $type = 'default';
-    public float $price = 0.00;
-    public int $min = 1;
-    public int $max = 1000;
-    public ?string $description = null;
-    public bool $dripfeed = false;
-    public bool $cancel = false;
-    public bool $refill = false;
-    public bool $status = true;
-
+    
     // Search and filtering
     public string $search = '';
     public string $statusFilter = '';
@@ -48,7 +31,7 @@ class ServiceManager extends Component
     public array $selectedServices = [];
     public bool $selectAll = false;
     public bool $bulkDeleteConfirmation = false;
-
+    public string $view = 'list';
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -58,90 +41,6 @@ class ServiceManager extends Component
         'sortBy' => ['except' => 'name'],
         'sortDirection' => ['except' => 'asc'],
     ];
-
-    public function rules(): array
-    {
-        return [
-            'name' => 'required|string|max:255',
-            'category_id' => 'required|exists:categories,id',
-            'api_provider_id' => 'nullable|exists:api_providers,id',
-            'api_service_id' => 'nullable|integer',
-            'type' => 'required|string',
-            'price' => 'required|numeric|min:0',
-            'min' => 'required|integer|min:1',
-            'max' => 'required|integer|gte:min',
-            'description' => 'nullable|string',
-            'dripfeed' => 'boolean',
-            'cancel' => 'boolean',
-            'refill' => 'boolean',
-            'status' => 'boolean',
-        ];
-    }
-
-    protected $validationAttributes = [
-        'name' => 'Service Name',
-        'category_id' => 'Category',
-        'api_provider_id' => 'API Provider',
-        'api_service_id' => 'API Service ID',
-        'price' => 'Price',
-    ];
-
-    public function add(): void
-    {
-        $this->resetErrorBag();
-        $this->editing = null;
-        $this->reset(
-            'name',
-            'category_id',
-            'api_provider_id',
-            'api_service_id',
-            'type',
-            'price',
-            'min',
-            'max',
-            'description',
-            'dripfeed',
-            'cancel',
-            'refill',
-            'status'
-        );
-        $this->status = true; // Default to active
-        $this->type = 'default';
-        $this->min = 1;
-        $this->max = 1000;
-        $this->price = 0.00;
-        $this->dispatch('open-modal', name: 'service-modal');
-    }
-
-    public function edit(Service $service): void
-    {
-        $this->resetErrorBag();
-        $this->editing = $service;
-        $this->fill($service->toArray());
-        $this->dispatch('open-modal', name: 'service-modal');
-    }
-
-    public function save(): void
-    {
-        $validated = $this->validate();
-        $validated['manual_order'] = $this->api_provider_id ? 0 : 1;
-
-        if ($this->editing) {
-            $this->editing->update($validated);
-            $this->successAlert('Service updated successfully.');
-        } else {
-            Service::create($validated);
-            $this->successAlert('Service created successfully.');
-        }
-
-        $this->closeModal();
-    }
-
-    public function closeModal(): void
-    {
-        $this->dispatch('close-modal', name: 'service-modal');
-        $this->editing = null;
-    }
 
     public function delete(Service $service): void
     {

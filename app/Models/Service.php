@@ -33,6 +33,7 @@ class Service extends Model
         'refill',
         'refill_automatic',
         'status',
+        'cancel',
     ];
 
     /**
@@ -45,6 +46,7 @@ class Service extends Model
         'refill' => 'boolean',
         'refill_automatic' => 'boolean',
         'status' => 'boolean',
+        'cancel' => 'boolean',
     ];
 
     /**
