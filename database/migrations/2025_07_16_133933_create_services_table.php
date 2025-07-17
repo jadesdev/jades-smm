@@ -13,13 +13,13 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
-            $table->foreignId('api_provider_id')->nullable()->constrained('api_providers')->nullOnDelete();
-            $table->bigInteger('api_service_id')->nullable();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete()->index();
+            $table->foreignId('api_provider_id')->nullable()->constrained('api_providers')->nullOnDelete()->index();
+            $table->bigInteger('api_service_id')->nullable()->index();
             $table->tinyInteger('manual_order')->default(0);
             $table->string('name');
             $table->string('type')->default('default');
-            $table->decimal('price', 10, 2)->default(0);
+            $table->decimal('price', 10, 2)->default(0)->index();
             $table->decimal('api_price', 10, 2)->default(0);
             $table->decimal('original_price', 10, 2)->default(0); //api price to site currency/rate
             $table->integer('min')->default(1);
@@ -29,7 +29,7 @@ return new class extends Migration
             $table->boolean('cancel')->default(0);
             $table->boolean('refill')->default(0);
             $table->boolean('refill_automatic')->default(0);
-            $table->boolean('status')->default(1);
+            $table->boolean('status')->default(1)->index();
             $table->timestamps();
             $table->softDeletes();
         });

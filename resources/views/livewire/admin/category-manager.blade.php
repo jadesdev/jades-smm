@@ -54,17 +54,14 @@
 
         <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-gray-200 dark:divide-gray-700">
-                <thead class="bg-gray-50 dark:bg-gray-800">
+                <thead class="bg-gray-200 dark:bg-gray-800">
                     <tr>
-                        {{-- Select All Checkbox --}}
                         <th scope="col" class="px-6 py-3 text-left">
                             <input type="checkbox" wire:model.live="selectAll"
                                 class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700" />
                         </th>
-
-                        {{-- Sortable Name Column --}}
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 tracking-wider">
                             <button wire:click="sortByColumn('name')"
                                 class="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100">
                                 <span>Name</span>
@@ -77,10 +74,8 @@
                                 @endif
                             </button>
                         </th>
-
-                        {{-- Sortable Status Column --}}
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 tracking-wider">
                             <button wire:click="sortByColumn('is_active')"
                                 class="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100">
                                 <span>Status</span>
@@ -93,37 +88,22 @@
                                 @endif
                             </button>
                         </th>
-
-                        {{-- Sortable Created At Column --}}
                         <th scope="col"
-                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider">
-                            <button wire:click="sortByColumn('created_at')"
-                                class="flex items-center space-x-1 hover:text-gray-700 dark:hover:text-gray-100">
-                                <span>Created At</span>
-                                @if ($sortBy === 'created_at')
-                                    @if ($sortDirection === 'asc')
-                                        <i class="fa fa-caret-up"></i>
-                                    @else
-                                        <i class="fa fa-caret-down"></i>
-                                    @endif
-                                @endif
-                            </button>
+                            class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300  tracking-wider">
+                            Services
                         </th>
-
                         <th scope="col" class="relative px-6 py-3 text-right">
-                            <span class="text-right">Actions</span>
+                            <span class="text-right font-medium text-gray-500 dark:text-gray-300">Actions</span>
                         </th>
                     </tr>
                 </thead>
                 <tbody class="bg-white dark:bg-gray-900 divide-y divide-gray-200 dark:divide-gray-700">
                     @forelse ($categories as $category)
                         <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
-                            {{-- Individual Checkbox --}}
                             <td class="px-6 py-4 whitespace-nowrap">
                                 <input type="checkbox" wire:model.live="selectedCategories" value="{{ $category->id }}"
                                     class="rounded border-gray-300 text-blue-600 focus:ring-blue-500 dark:border-gray-600 dark:bg-gray-700" />
                             </td>
-
                             <td
                                 class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
                                 {{ $category->name }}
@@ -142,11 +122,12 @@
                                     </span>
                                 @endif
                             </td>
-
-                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                {{ $category->created_at->format('M d, Y') }}
+                            <td class="px-6 py-4 whitespace-nowrap text-sm">
+                                <x-button
+                                    href="{{ route('admin.services', ['categoryFilter' => $category->id]) }}"
+                                    variant="primary" outline size="xs" class="ml-2">View ({{ $category->services_count }})
+                                </x-button>
                             </td>
-
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
                                 <x-button wire:click="edit({{ $category->id }})" variant="info" size="sm">
                                     Edit
@@ -184,7 +165,8 @@
                 <x-forms.input wire:model.defer="name" name='name' id="name" type="text"
                     class="mt-1 block w-full" />
 
-                <x-forms.select wire:model.defer="isActive" name='isActive' id="isActive" class="mt-1 block w-full">
+                <x-forms.select wire:model.defer="isActive" name='isActive' id="isActive"
+                    class="mt-1 block w-full">
                     <option value="1">Active</option>
                     <option value="0">Inactive</option>
                 </x-forms.select>

@@ -225,7 +225,7 @@ class CategoryManager extends Component
             ->when($this->search, fn($query) => $query->where('name', 'like', '%' . $this->search . '%'))
             ->when($this->statusFilter === 'active', fn($query) => $query->where('is_active', true))
             ->when($this->statusFilter === 'inactive', fn($query) => $query->where('is_active', false))
-            ->orderBy($this->sortBy, $this->sortDirection);
+            ->orderBy($this->sortBy, $this->sortDirection)->withCount('services');
     }
 
     public function render()
