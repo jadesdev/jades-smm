@@ -21,7 +21,6 @@ class Services extends Component
     #[Url(as: 'category')]
     public ?int $selectedCategory = null;
     public $categories;
-    public $filteredCategories = [];
 
     // meta
     public string $metaTitle;
@@ -43,8 +42,7 @@ class Services extends Component
 
     public function clearFilters()
     {
-        $this->search = '';
-        $this->selectedCategory = null;
+        $this->reset('search', 'selectedCategory');
         $this->loadCategories();
     }
 
@@ -57,53 +55,38 @@ class Services extends Component
                 ->orderBy('name')
                 ->get();
         });
-        $this->loadFilteredCategories();
     }
-    public function loadFilteredCategories()
-    {
 
-        $categoriesQuery = Category::where('is_active', true)
-            ->with(['services' => function ($query) {
+    public function mount()
+    {
+        $this->metaTitle = 'Services';
+        $this->metaDescription = 'Browse our wide range of social media marketing services for Instagram, YouTube, TikTok and more.';
+        $this->metaKeywords = 'SMM services, Instagram followers, YouTube views, TikTok likes, social media marketing';
+
+        $this->loadCategories();
+    }
+
+    public function render()
+    {
+        $categoriesQuery = Category::query()
+            ->where('is_active', true)
+            ->with([
+                'services' => function ($query) {
+                    $query->active()
+                        ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
+                }
+            ])
+            ->whereHas('services', function ($query) {
                 $query->active()
                     ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
-            }])
-            ->whereHas('services', function ($query) {
-                $query->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
             });
 
         if ($this->selectedCategory) {
             $categoriesQuery->where('id', $this->selectedCategory);
         }
 
-        $this->filteredCategories = $categoriesQuery->orderBy('name')->get()
-            ->filter(fn($category) => $category->services->isNotEmpty())
-            ->values();
-
-    }
-    public function updatedSearch()
-    {
-        $this->loadFilteredCategories();
-    }
-
-    public function updatedSelectedCategory()
-    {
-        $this->loadFilteredCategories();
-    }
-
-
-    public function mount()
-    {
-        // Set meta
-        $this->metaTitle = 'Services';
-        $this->metaDescription = 'Browse our wide range of social media marketing services for Instagram, YouTube, TikTok and more.';
-        $this->metaKeywords = 'SMM services, Instagram followers, YouTube views, TikTok likes, social media marketing';
-
-        // Load initial data
-        $this->loadCategories();
-    }
-
-    public function render()
-    {
-        return view('livewire.user.services');
+        return view('livewire.user.services', [
+            'filteredCategories' => $categoriesQuery->orderBy('name')->get(),
+        ]);
     }
 }
