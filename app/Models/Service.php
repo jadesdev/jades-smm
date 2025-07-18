@@ -50,6 +50,15 @@ class Service extends Model
     ];
 
     /**
+     * Scope a query to only include active services.
+     *
+     */
+    public function scopeActive($query)
+    {
+        return $query->where('status', 1);
+    }
+
+    /**
      * Get the category that owns the service.
      */
     public function category(): BelongsTo

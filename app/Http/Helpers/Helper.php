@@ -109,6 +109,15 @@ function format_number($price, $place = 2): string
     return number_format($price, $place);
 }
 
+function formatNumber($number)
+{
+    if ($number >= 1000000) {
+        return number_format($number / 1000000, 1) . 'M';
+    } elseif ($number >= 1000) {
+        return number_format($number / 1000, 1) . 'K';
+    }
+    return number_format($number);
+}
 // Trim text and append ellipsis if needed
 function textTrim($string, $length = null)
 {

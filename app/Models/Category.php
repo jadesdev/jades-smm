@@ -33,4 +33,9 @@ class Category extends Model
     {
         return $this->hasMany(Service::class);
     }
+    
+    public function activeServices()
+    {
+        return $this->services()->where('status', true);
+    }
 }
