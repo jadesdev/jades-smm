@@ -8,6 +8,7 @@ use App\Models\Service;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -62,9 +63,10 @@ class Create extends Component
         $this->reset('quantity', 'charge');
         if ($value) {
             $this->selectedService = Service::find($value);
-            // Pre-fill quantity with the minimum amount
-            $this->quantity = $this->selectedService->min;
-            $this->calculateCharge();
+            if ($this->selectedService) {
+                $this->quantity = $this->selectedService->min;
+                $this->calculateCharge();
+            }
         } else {
             $this->selectedService = null;
         }
@@ -91,9 +93,36 @@ class Create extends Component
             return;
         }
 
+        try {
+            DB::beginTransaction();
 
-        $this->successAlert('Order placed successfully!');
-        $this->redirect(route('user.orders.history'), navigate: true);
+            // Create the order
+            // $order = Order::create([
+            //     'user_id' => $user->id,
+            //     'service_id' => $this->service_id,
+            //     'link' => $this->link,
+            //     'quantity' => $this->quantity,
+            //     'charge' => $this->charge,
+            //     'status' => 'pending', // or whatever default status you use
+            //     // Add other required fields based on your Order model
+            // ]);
+
+            // Deduct balance from user
+            $user->decrement('balance', $this->charge);
+
+            // You might also want to create a transaction record
+            // Transaction::create([...]);
+
+            DB::commit();
+
+            $this->successAlert('Order placed successfully!');
+            $this->redirect(route('user.orders.history'), navigate: true);
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->errorAlert('Failed to place order. Please try again.');
+            // Log the error for debugging
+            \Log::error('Order creation failed: ' . $e->getMessage());
+        }
     }
 
     private function calculateCharge()
@@ -106,12 +135,24 @@ class Create extends Component
         }
     }
 
-
     public function mount()
     {
         $this->categories = Category::where('is_active', true)->has('activeServices')->orderBy('name')->get();
         $this->services = collect();
         $this->userBalance = Auth::user()->balance ?? 0.00;
+
+        $service_id = request()->get('service_id');
+        if ($service_id) {
+            $service = Service::find($service_id);
+            if ($service) {
+                $this->category_id = $service->category_id;
+                $this->updatedCategoryId($service->category_id);
+                $this->updatedServiceId($service_id);
+                $this->service_id = (int) $service_id;
+
+                $this->successAlert('Service selected successfully!');
+            }
+        }
     }
 
     public function render()

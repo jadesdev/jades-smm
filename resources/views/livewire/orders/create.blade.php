@@ -23,9 +23,6 @@
                             <option value="{{ $category->id }}">{{ $category->name }}</option>
                         @endforeach
                     </x-forms.select>
-                    @error('category_id')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <div>
@@ -37,22 +34,17 @@
                             placeholder="Select a service" :disabled="!$category_id">
                             @foreach ($services as $service)
                                 <option value="{{ $service->id }}">
-                                    {{ $service->name }} - {{ format_price($service->price) }} per 1000
+                                    {{ $service->id }} {{ $service->name }} - {{ format_price($service->price) }} per
+                                    1000
                                 </option>
                             @endforeach
                         </x-forms.select>
                     </div>
-                    @error('service_id')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 <div>
                     <x-forms.input wire:model="link" name="link" label="Link"
                         placeholder="https://example.com/your-link" type="text" />
-                    @error('link')
-                        <span class="text-red-500 text-sm">{{ $message }}</span>
-                    @enderror
                 </div>
 
                 @if ($selectedService)
@@ -62,9 +54,7 @@
                                 formatNumber($selectedService->min) .
                                 ' - Max: ' .
                                 formatNumber($selectedService->max)" />
-                        @error('quantity')
-                            <span class="text-red-500 text-sm">{{ $message }}</span>
-                        @enderror
+
                     </div>
                 @endif
 
@@ -168,7 +158,8 @@
         @else
             <div
                 class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-100 dark:to-indigo-100 rounded-2xl p-6 border border-purple-200">
-                <p class="font-semibold text-gray-800 text-center">Please select a category and service to see the details.
+                <p class="font-semibold text-gray-800 text-center">Please select a category and service to see the
+                    details.
                 </p>
             </div>
         @endif
