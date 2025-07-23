@@ -39,7 +39,7 @@
                             @if ($user->sms_verify)
                                 <span
                                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-800 dark:text-purple-100">
-                                    <i class="fas fa-mobile-check mr-1"></i> SMS Verified
+                                    <i class="fas fa-mobile-check mr-1"></i> Phone Verified
                                 </span>
                             @endif
                         </div>
@@ -130,6 +130,36 @@
         </div>
     </div>
 
+    <!-- Quick Actions -->
+    <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+        <div class="p-6">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quick Actions</h3>
+            <div class="space-y-3 lg:space-x-2">
+                @if (!$user->email_verify)
+                    <x-button variant="success" outline wire:click="verifyEmail"> Verify Email </x-button>
+                @endif
+
+                @if (!$user->sms_verify)
+                    <x-button variant="cyan" outline wire:click="verifySms"> Verify Phone </x-button>
+                @endif
+
+                <x-button variant="primary" outline href="{{ route('admin.orders.index', ['user_id' => $user->id]) }}">
+                    View Orders
+                </x-button>
+                <x-button variant="yellow" outline
+                    href="{{ route('admin.transactions.index', ['user_id' => $user->id]) }}">
+                    View Transactions
+                </x-button>
+                <x-button variant="info" target="_blank" outline href="{{ route('admin.users.login', $user->id) }}">
+                    Login as User
+                </x-button>
+                <x-button variant="blue" outline>
+                    Send Email
+                </x-button>
+            </div>
+        </div>
+    </div>
+
     <!-- Main Content Grid -->
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
 
@@ -152,53 +182,55 @@
                                 <x-forms.input wire:model="phone" label="Phone" />
                                 <x-forms.input wire:model="country" label="Country" />
                                 <x-forms.input wire:model="address" label="Address" />
+                            </div>
 
-                                <!-- Password Change -->
-                                <div class="border-t border-gray-200 dark:border-gray-600 pt-6">
-                                    <h4 class="text-md font-medium text-gray-900 dark:text-white mb-4">Change Password
-                                        (Optional)</h4>
-                                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                        <x-forms.input wire:model="password" label="New Password" />
-                                        <x-forms.input wire:model="password_confirmation" label="Confirm Password" />
-                                    </div>
+                            <!-- Password Change -->
+                            <div class="border-t border-gray-200 dark:border-gray-600 pt-6">
+                                <h4 class="text-md font-medium text-gray-900 dark:text-white mb-4">Change Password
+                                    (Optional)</h4>
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                    <x-forms.input wire:model="password" label="New Password" />
+                                    <x-forms.input wire:model="password_confirmation" label="Confirm Password" />
+                                </div>
+                            </div>
+
+                            <!-- Checkboxes -->
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                                <div class="flex items-center">
+                                    <input wire:model="is_active" type="checkbox" id="is_active"
+                                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                    <label for="is_active"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Active</label>
                                 </div>
 
-                                <!-- Checkboxes -->
-                                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-                                    <div class="flex items-center">
-                                        <input wire:model="is_active" type="checkbox" id="is_active"
-                                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                                        <label for="is_active"
-                                            class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Active</label>
-                                    </div>
-
-                                    <div class="flex items-center">
-                                        <input wire:model="email_verify" type="checkbox" id="email_verify"
-                                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                                        <label for="email_verify"
-                                            class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Email
-                                            Verified</label>
-                                    </div>
-
-                                    <div class="flex items-center">
-                                        <input wire:model="sms_verify" type="checkbox" id="sms_verify"
-                                            class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
-                                        <label for="sms_verify"
-                                            class="ml-2 block text-sm text-gray-700 dark:text-gray-300">SMS
-                                            Verified</label>
-                                    </div>
+                                <div class="flex items-center">
+                                    <input wire:model="email_verify" type="checkbox" id="email_verify"
+                                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                    <label for="email_verify"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Email
+                                        Verified</label>
                                 </div>
 
-                                <div class="flex justify-end space-x-3">
-                                    <button type="button" wire:click="toggleEditForm"
-                                        class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
-                                        Cancel
-                                    </button>
-                                    <button type="submit"
-                                        class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 shadow-sm">
-                                        Update User
-                                    </button>
+                                <div class="flex items-center">
+                                    <input wire:model="sms_verify" type="checkbox" id="sms_verify"
+                                        class="h-4 w-4 text-primary-600 focus:ring-primary-500 border-gray-300 rounded">
+                                    <label for="sms_verify"
+                                        class="ml-2 block text-sm text-gray-700 dark:text-gray-300">Phone
+                                        Verified</label>
                                 </div>
+                            </div>
+
+                            <div class="flex justify-end space-x-3">
+                                <button type="button" wire:click="toggleEditForm"
+                                    class="px-4 py-2 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm bg-white dark:bg-gray-700 text-sm font-medium text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600">
+                                    Cancel
+                                </button>
+                                <button type="submit"
+                                    class="px-4 py-2 bg-primary-600 text-white text-sm font-medium rounded-md hover:bg-primary-700 shadow-sm">
+                                    Update User
+                                </button>
+                            </div>
+
                         </form>
                     @else
                         <!-- View Mode -->
@@ -259,42 +291,6 @@
 
         <!-- Quick Actions & Additional Stats -->
         <div class="space-y-6">
-            <!-- Quick Actions -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Quick Actions</h3>
-                    <div class="space-y-3">
-                        @if (!$user->email_verify)
-                            <button wire:click="verifyEmail"
-                                class="w-full flex items-center px-4 py-2 border border-green-300 text-green-700 dark:text-green-300 rounded-md hover:bg-green-50 dark:hover:bg-green-900">
-                                <i class="fas fa-envelope-check mr-2"></i>
-                                Verify Email
-                            </button>
-                        @endif
-
-                        @if (!$user->sms_verify)
-                            <button wire:click="verifySms"
-                                class="w-full flex items-center px-4 py-2 border border-purple-300 text-purple-700 dark:text-purple-300 rounded-md hover:bg-purple-50 dark:hover:bg-purple-900">
-                                <i class="fas fa-mobile-check mr-2"></i>
-                                Verify SMS
-                            </button>
-                        @endif
-
-                        <a href="{{ route('admin.orders.index', ['user_id' => $user->id]) }}"
-                            class="w-full flex items-center px-4 py-2 border border-primary-300 text-primary-700 dark:text-primary-300 rounded-md hover:bg-primary-50 dark:hover:bg-primary-900">
-                            <i class="fas fa-shopping-cart mr-2"></i>
-                            View Orders
-                        </a>
-
-                        <a href="{{ route('admin.transactions.index', ['user_id' => $user->id]) }}"
-                            class="w-full flex items-center px-4 py-2 border border-yellow-300 text-yellow-700 dark:text-yellow-300 rounded-md hover:bg-yellow-50 dark:hover:bg-yellow-900">
-                            <i class="fas fa-exchange-alt mr-2"></i>
-                            View Transactions
-                        </a>
-                    </div>
-                </div>
-            </div>
-
             <!-- Balance Management -->
             <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
                 <div class="p-6">

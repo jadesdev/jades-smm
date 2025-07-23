@@ -22,6 +22,7 @@ Route::get('services/{id}/edit', ServiceForm::class)->name('services.edit');
 
 Route::get('users', UserIndex::class)->name('users');
 Route::get('users/{id}/view', UserView::class)->name('users.view');
+Route::get('users/{id}/login', UserView::class)->name('users.login');
 
 Route::get('orders', UserIndex::class)->name('orders.index');
 Route::get('transactions', UserIndex::class)->name('transactions.index');

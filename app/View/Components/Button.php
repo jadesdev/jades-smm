@@ -55,7 +55,7 @@ class Button extends Component
 
     private function getSolidClasses(): string
     {
-        $variants = [
+        $predefined = [
             'primary' => 'bg-primary-600 hover:bg-primary-700 text-white focus:ring-primary-500',
             'secondary' => 'bg-gray-600 hover:bg-gray-700 text-white focus:ring-gray-500',
             'success' => 'bg-green-600 hover:bg-green-700 text-white focus:ring-green-500',
@@ -66,12 +66,17 @@ class Button extends Component
             'dark' => 'bg-gray-900 hover:bg-gray-800 text-white focus:ring-gray-500',
         ];
 
-        return $variants[$this->variant] ?? $variants['primary'];
+        
+        if (!array_key_exists($this->variant, $predefined)) {
+            return "bg-{$this->variant}-600 hover:bg-{$this->variant}-700 text-white focus:ring-{$this->variant}-500";
+        }
+
+        return $predefined[$this->variant];
     }
 
     private function getOutlineClasses(): string
     {
-        $variants = [
+        $predefined = [
             'primary' => 'border-2 border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white focus:ring-primary-500',
             'secondary' => 'border-2 border-gray-600 text-gray-600 hover:bg-gray-600 hover:text-white focus:ring-gray-500',
             'success' => 'border-2 border-green-600 text-green-600 hover:bg-green-600 hover:text-white focus:ring-green-500',
@@ -81,13 +86,17 @@ class Button extends Component
             'light' => 'border-2 border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
             'dark' => 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-500',
         ];
+        if (!array_key_exists($this->variant, $predefined)) {
+            return "border-2 border-{$this->variant}-600 text-{$this->variant}-600 hover:bg-{$this->variant}-600 hover:text-white focus:ring-{$this->variant}-500";
+        }
 
-        return $variants[$this->variant] ?? $variants['primary'];
+        return $predefined[$this->variant];
+        // return $variants[$this->variant] ?? $variants['primary'];
     }
 
     private function getGhostClasses(): string
     {
-        $variants = [
+        $predefined = [
             'primary' => 'text-primary-600 hover:bg-primary-50 focus:ring-primary-500',
             'secondary' => 'text-gray-600 hover:bg-gray-50 focus:ring-gray-500',
             'success' => 'text-green-600 hover:bg-green-50 focus:ring-green-500',
@@ -97,8 +106,12 @@ class Button extends Component
             'light' => 'text-gray-500 hover:bg-gray-50 focus:ring-gray-500',
             'dark' => 'text-gray-900 hover:bg-gray-100 focus:ring-gray-500',
         ];
+        if (!array_key_exists($this->variant, $predefined)) {
+            return "text-{$this->variant}-600 hover:bg-{$this->variant}-50 focus:ring-{$this->variant}-500";
+        }
 
-        return $variants[$this->variant] ?? $variants['primary'];
+        return $predefined[$this->variant];
+        // return $variants[$this->variant] ?? $variants['primary'];
     }
 
     public function isLink(): bool
