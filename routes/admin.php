@@ -7,6 +7,8 @@ use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\GeneralSettings;
 use App\Livewire\Admin\ServiceForm;
 use App\Livewire\Admin\ServiceManager;
+use App\Livewire\Admin\Support\Message;
+use App\Livewire\Admin\Support\Tickets;
 use App\Livewire\Admin\User\Index as UserIndex;
 use App\Livewire\Admin\User\View as UserView;
 use App\Livewire\Admin\User\Settings as UserSettings;
@@ -31,11 +33,17 @@ Route::get('orders', UserIndex::class)->name('orders.index');
 Route::get('transactions', UserIndex::class)->name('transactions.index');
 Route::get('orders', UserIndex::class)->name('orders.index');
 
+// Support tickets
+Route::prefix('support')->name('support.')->group(function () {
+    Route::get('tickets/{type?}', Tickets::class)->name('tickets')
+        ->where('type', 'all|open|pending|resolved|closed');
+    Route::get('messages/{id}', Message::class)->name('messages');
+});
+
 // Settings
 Route::get('settings/{type?}', GeneralSettings::class)->name('settings');
 Route::get('settings/payment', GeneralSettings::class)->name('settings.payment');
 Route::get('settings/features', GeneralSettings::class)->name('settings.features');
-
 Route::controller(SettingsController::class)->as('settings.')->prefix('settings')->group(function (): void {
     Route::post('/update', 'update')->name('update');
     Route::post('/system', 'systemUpdate')->name('sys_settings');

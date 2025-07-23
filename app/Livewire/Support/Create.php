@@ -179,7 +179,7 @@ class Create extends Component
             $this->subject = 'Order Inquiry';
 
             $this->successAlert('Support ticket created successfully! We will respond within 24 hours.');
-            $this->redirect(route('user.support.view', $ticket->id), navigate: true);
+            $this->redirect(route('user.support.view', $ticket->code), navigate: true);
         } catch (\Exception $e) {
             \Log::error('Support ticket creation failed: '.$e->getMessage());
             $this->errorAlert('Failed to create support ticket. Please try again.');

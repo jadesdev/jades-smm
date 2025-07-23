@@ -26,15 +26,15 @@
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Support</h6>
     <x-sidebar.submenu icon="fad fa-headset" name="Support Tickets" :submenu-items="[
         [
-            'href' => '#',
-            'name' => 'New Tickets',
+            'href' => route('admin.support.tickets', 'open'),
+            'name' => 'Open Tickets',
         ],
         [
-            'href' => '#',
+            'href' => route('admin.support.tickets', 'closed'),
             'name' => 'Closed Tickets',
         ],
         [
-            'href' => route('admin.dashboard'),
+            'href' => route('admin.support.tickets'),
             'name' => 'All Tickets',
         ],
     ]" />

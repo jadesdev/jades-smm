@@ -4,7 +4,8 @@
             class="flex lg:hidden flex-col items-center py-2 px-3 text-gray-700 dark:text-gray-200 hover:text-primary-600 dark:hover:text-primary-400 transition-colors">
             <i class="fad fa-bars text-lg"></i>
         </button>
-        <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">@yield('title', 'Dashboard')</h1>
+        {{-- <h1 class="text-xl font-semibold text-gray-900 dark:text-gray-100">@yield('title', 'Dashboard')</h1> --}}
+        <h3></h3>
         <div class="flex items-center space-x-4">
             <!-- Currency Selector (Desktop) -->
             <div class="hidden md:flex items-center">
