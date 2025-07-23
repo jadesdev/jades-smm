@@ -57,15 +57,15 @@
 
     <x-sidebar.submenu icon="fad fa-cogs" name="Settings" :submenu-items="[
         [
-            'href' => '#',
+            'href' => route('admin.settings'),
             'name' => 'General',
         ],
         [
-            'href' => '#',
+            'href' => route('admin.settings.payment'),
             'name' => 'Payment',
         ],
         [
-            'href' => '#',
+            'href' => route('admin.settings.features'),
             'name' => 'Features',
         ],
     ]" />
