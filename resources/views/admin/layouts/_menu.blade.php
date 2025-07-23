@@ -14,7 +14,7 @@
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Management</h6>
     <x-sidebar.submenu icon="fad fa-users" name="Users" :submenu-items="[
         [
-            'href' => '#',
+            'href' => route('admin.users'),
             'name' => 'All Users',
         ],
         [
