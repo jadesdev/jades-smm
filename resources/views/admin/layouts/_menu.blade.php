@@ -18,13 +18,9 @@
             'name' => 'All Users',
         ],
         [
-            'href' => '#',
+            'href' => route('admin.users.settings'),
             'name' => 'Settings',
-        ],
-        [
-            'href' => route('admin.dashboard'),
-            'name' => 'Wallet',
-        ],
+        ]
     ]" />
 
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Support</h6>

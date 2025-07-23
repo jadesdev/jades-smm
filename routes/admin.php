@@ -7,6 +7,7 @@ use App\Livewire\Admin\ServiceForm;
 use App\Livewire\Admin\ServiceManager;
 use App\Livewire\Admin\User\Index as UserIndex;
 use App\Livewire\Admin\User\View as UserView;
+use App\Livewire\Admin\User\Settings as UserSettings;
 
 use function Pest\Laravel\get;
 
@@ -23,6 +24,7 @@ Route::get('services/{id}/edit', ServiceForm::class)->name('services.edit');
 Route::get('users', UserIndex::class)->name('users');
 Route::get('users/{id}/view', UserView::class)->name('users.view');
 Route::get('users/{id}/login', UserView::class)->name('users.login');
+Route::get('users/settings', UserSettings::class)->name('users.settings');
 
 Route::get('orders', UserIndex::class)->name('orders.index');
 Route::get('transactions', UserIndex::class)->name('transactions.index');
