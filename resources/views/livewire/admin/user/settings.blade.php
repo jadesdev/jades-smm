@@ -5,14 +5,15 @@
             <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Referral Settings</h2>
         </x-slot>
 
-        <form wire:submit="save" class="space-y-6">
+        <form wire:submit="saveReferralSettings" class="space-y-6">
+            <x-forms.toggle label="Enable Referral" wire:model.lazy="sysSettings.is_referral" />
 
-            <x-forms.toggle label="Enable Referral" wire:model="referralEnabled" />
-            <x-forms.input label="Referral Bonus" type="number" wire:model="referralBonus" />
+            <x-forms.input name="referral_bonus" type="number" label="Referral Bonus (%)" wire:model="referral_bonus"
+                required />
 
             <div class="flex justify-end">
                 <x-button type="submit" class="w-full">
-                    Save
+                    Save Referral Settings
                 </x-button>
             </div>
         </form>
@@ -23,14 +24,15 @@
             <h2 class="text-lg font-semibold text-gray-900 dark:text-gray-100">Welcome Bonus</h2>
         </x-slot>
 
-        <form wire:submit="save" class="space-y-6">
+        <form wire:submit="saveWelcomeBonus" class="space-y-6">
+            <x-forms.toggle label="Enable Welcome Bonus" wire:model.lazy="sysSettings.is_welcome_bonus" />
 
-            <x-forms.toggle label="Enable Welcome Bonus" wire:model="welcomeBonusEnabled" />
-            <x-forms.input label="Welcome Bonus" type="number" wire:model="welcomeBonus" />
+            <x-forms.input name="welcome_bonus" type="number" label="Welcome Bonus {{ get_setting('currency') }}"
+                wire:model="welcome_bonus" required />
 
             <div class="flex justify-end">
                 <x-button type="submit" class="w-full">
-                    Save
+                    Save Welcome Bonus
                 </x-button>
             </div>
         </form>
