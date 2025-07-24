@@ -42,20 +42,133 @@
                     </div>
                 </div>
 
-                <div>
-                    <x-forms.input wire:model="link" name="link" label="Link"
-                        placeholder="https://example.com/your-link" type="text" />
-                </div>
-
                 @if ($selectedService)
-                    <div>
-                        <x-forms.input wire:model.live="quantity" name="quantity" label="Quantity" type="number"
-                            :min="$selectedService->min" :max="$selectedService->max" :help="'Min: ' .
-                                formatNumber($selectedService->min) .
-                                ' - Max: ' .
-                                formatNumber($selectedService->max)" />
 
-                    </div>
+                    {{-- Default Link (shown for most services) --}}
+                    @if (!in_array($selectedService->type, ['subscriptions']))
+                        <div>
+                            <x-forms.input wire:model="link" name="link" label="Link"
+                                placeholder="https://example.com/your-link" type="text" />
+                        </div>
+                    @endif
+
+                    {{-- Default Quantity --}}
+                    @if (in_array($selectedService->type, [
+                            'default',
+                            'mentions_with_hashtags',
+                            'mentions_hashtag',
+                            'mentions_user_followers',
+                            'mentions_media_likers',
+                            'comment_likes',
+                        ]))
+                        <div>
+                            <x-forms.input wire:model.live.debounce.500ms="quantity" name="quantity" label="Quantity"
+                                type="number" :min="$selectedService->min" :max="$selectedService->max" :help="'Min: ' . $selectedService->min . ' - Max: ' . $selectedService->max" />
+                        </div>
+                    @endif
+
+                    {{-- Custom Comments --}}
+                    @if ($selectedService->type === 'custom_comments')
+                        <div>
+                            <x-forms.textarea wire:model.live="comments" name="comments" label="Comments (One per line)"
+                                placeholder="Enter one comment per line..." rows="8"
+                                help="The quantity will be automatically calculated based on the number of lines." />
+                        </div>
+                    @endif
+
+                    {{-- Mentions Custom List --}}
+                    @if ($selectedService->type === 'mentions_custom_list')
+                        <div>
+                            <x-forms.textarea wire:model.live="usernames_custom" name="usernames_custom"
+                                label="Usernames (One per line)" placeholder="Enter one username per line..."
+                                rows="8"
+                                help="The quantity will be automatically calculated based on the number of lines." />
+                        </div>
+                    @endif
+
+                    {{-- Mentions with Hashtags --}}
+                    @if ($selectedService->type === 'mentions_with_hashtags')
+                        <div>
+                            <x-forms.input wire:model="hashtags" name="hashtags" label="Hashtags"
+                                placeholder="e.g., #good,#love" type="text" help="Comma-separated hashtags." />
+                        </div>
+                        <div>
+                            <x-forms.input wire:model="usernames" name="usernames" label="Usernames to mention from"
+                                placeholder="e.g., userA,userB" type="text" help="Comma-separated usernames." />
+                        </div>
+                    @endif
+
+                    {{-- Mentions Hashtag --}}
+                    @if ($selectedService->type === 'mentions_hashtag')
+                        <div>
+                            <x-forms.input wire:model="hashtag" name="hashtag" label="Target Hashtag"
+                                placeholder="#target" type="text" />
+                        </div>
+                    @endif
+
+                    {{-- Mentions User Followers / Comment Likes --}}
+                    @if (in_array($selectedService->type, ['mentions_user_followers', 'comment_likes']))
+                        <div>
+                            <x-forms.input wire:model="username" name="username" label="Target Username"
+                                placeholder="e.g., target.user" type="text" />
+                        </div>
+                    @endif
+
+                    {{-- Mentions Media Likers --}}
+                    @if ($selectedService->type === 'mentions_media_likers')
+                        <div>
+                            <x-forms.input wire:model="media_url" name="media_url" label="Media URL"
+                                placeholder="https://..." type="url" />
+                        </div>
+                    @endif
+
+                    {{-- Subscriptions --}}
+                    @if ($selectedService->type === 'subscriptions')
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 border-t border-slate-200 pt-4">
+                            <div><x-forms.input wire:model="sub_username" name="sub_username" label="Username"
+                                    type="text" /></div>
+                            <div><x-forms.input wire:model="sub_posts" name="sub_posts" label="New Posts" type="number"
+                                    help="For how many future posts." /></div>
+                            <div><x-forms.input wire:model.live="sub_min" name="sub_min" label="Min Quantity"
+                                    type="number" /></div>
+                            <div><x-forms.input wire:model.live="sub_max" name="sub_max" label="Max Quantity"
+                                    type="number" /></div>
+                            <div>
+                                <x-forms.select wire:model="sub_delay" name="sub_delay" label="Delay (Minutes)">
+                                    <option value="0">No Delay</option>
+                                    <option value="5">5 Minutes</option>
+                                    <option value="15">15 Minutes</option>
+                                    <option value="30">30 Minutes</option>
+                                    <option value="60">60 Minutes</option>
+                                </x-forms.select>
+                            </div>
+                            <div><x-forms.input wire:model="sub_expiry" name="sub_expiry" label="Expiry"
+                                    type="date" /></div>
+                        </div>
+                    @endif
+
+                    {{-- Drip Feed Option --}}
+                    @if ($selectedService->drip_feed)
+                        <div class="border-t border-slate-200 pt-4 space-y-4">
+                            <x-forms.toggle wire:model.live="is_drip_feed" name="is_drip_feed"
+                                label="Enable Drip-Feed" help="This will deliver the order gradually over time." />
+
+                            @if ($is_drip_feed)
+                                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pl-4 border-l-2 border-primary-500">
+                                    <div><x-forms.input wire:model.live="runs" name="runs" label="Runs"
+                                            type="number" help="How many times to run the order." /></div>
+                                    <div><x-forms.input wire:model.live="interval" name="interval"
+                                            label="Interval (Minutes)" type="number"
+                                            help="Delay between each run." /></div>
+                                    <div class="md:col-span-2">
+                                        <x-forms.input wire:model="total_quantity" name="total_quantity"
+                                            label="Total Quantity" type="number" disabled />
+                                    </div>
+                                </div>
+                            @endif
+                        </div>
+                    @endif
+
                 @endif
 
                 <div
@@ -119,7 +232,8 @@
                     </div>
 
                     <!-- Max -->
-                    <div class="flex items-center space-x-2 tooltip" data-tooltip="Maximum quantity allowed per order">
+                    <div class="flex items-center space-x-2 tooltip"
+                        data-tooltip="Maximum quantity allowed per order">
                         <div class="w-8 h-8 bg-yellow-100 rounded-full flex items-center justify-center">
                             <i class="fas fa-arrow-up-9-1 text-yellow-600"></i>
                         </div>
