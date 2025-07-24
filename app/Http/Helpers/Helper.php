@@ -302,3 +302,23 @@ function getOrderStatusClass($status)
         'failed' => 'bg-danger',
     ][$status] ?? 'bg-secondary';
 }
+
+if (! function_exists('render_sortable_header')) {
+    function render_sortable_header(string $field, string $label, string $currentSortField, string $currentSortDirection): string
+    {
+        $icon = $currentSortField === $field
+            ? ($currentSortDirection === 'asc' ? '↑' : '↓')
+            : '';
+
+        $iconHtml = $icon ? '<span class="text-primary-500 dark:text-primary-400">'.$icon.'</span>' : '';
+
+        return <<<HTML
+            <th wire:click="sortBy('$field')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                <div class="flex items-center space-x-1">
+                    <span>$label</span>
+                    $iconHtml
+                </div>
+            </th>
+        HTML;
+    }
+}

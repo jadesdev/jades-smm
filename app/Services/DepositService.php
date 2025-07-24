@@ -65,7 +65,7 @@ class DepositService
 
             return $this->initiateGatewayPayment($gateway, $paymentData);
         } catch (Exception $exception) {
-            Log::error('Deposit initiation failed: '.$exception->getMessage());
+            Log::error('Deposit initiation failed: ' . $exception->getMessage());
             throw new Exception('Unable to process deposit. Please try again.');
         }
     }
@@ -101,7 +101,7 @@ class DepositService
     /**
      * Complete a successful deposit
      */
-    public function completeDeposit(Transaction $transaction): void
+    public function completeDeposit(Transaction $transaction, $paymentData = null): void
     {
         try {
             $user = $transaction->user;
@@ -114,13 +114,14 @@ class DepositService
                 $transaction->update([
                     'status' => 'successful',
                     'new_balance' => $user->balance,
+                    'response' => $paymentData,
                 ]);
             }
 
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to complete deposit: '.$e->getMessage());
+            Log::error('Failed to complete deposit: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -141,7 +142,7 @@ class DepositService
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to fail deposit: '.$e->getMessage());
+            Log::error('Failed to fail deposit: ' . $e->getMessage());
             throw $e;
         }
     }

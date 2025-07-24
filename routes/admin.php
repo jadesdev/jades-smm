@@ -9,6 +9,7 @@ use App\Livewire\Admin\ServiceForm;
 use App\Livewire\Admin\ServiceManager;
 use App\Livewire\Admin\Support\Message;
 use App\Livewire\Admin\Support\Tickets;
+use App\Livewire\Admin\Transactions;
 use App\Livewire\Admin\User\Index as UserIndex;
 use App\Livewire\Admin\User\View as UserView;
 use App\Livewire\Admin\User\Settings as UserSettings;
@@ -30,7 +31,7 @@ Route::get('users/{id}/login', UserView::class)->name('users.login');
 Route::get('users/settings', UserSettings::class)->name('users.settings');
 
 Route::get('orders', UserIndex::class)->name('orders.index');
-Route::get('transactions', UserIndex::class)->name('transactions.index');
+Route::get('transactions', Transactions::class)->name('transactions.index');
 Route::get('orders', UserIndex::class)->name('orders.index');
 
 // Support tickets

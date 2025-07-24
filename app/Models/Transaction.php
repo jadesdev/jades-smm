@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Transaction extends Model
 {
-    use HasUlids, SoftDeletes;
+    use HasUlids;
 
     /**
      * The attributes that are mass assignable.
