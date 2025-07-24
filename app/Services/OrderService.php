@@ -139,22 +139,22 @@ class OrderService
      */
     private function calculateApiPrice(Service $service, int $totalQuantity, array $data): float
     {
-        if (!$service->api_provider_id || !$service->api_price) {
+        if (!$service->api_provider_id || !$service->original_price) {
             return 0.00;
         }
 
         switch ($service->type) {
             case 'package':
             case 'custom_comments_package':
-                return (float)$service->api_price;
+                return (float)$service->original_price;
 
             case 'subscriptions':
                 $posts = (int)($data['sub_posts'] ?? 0);
                 $maxQty = (int)($data['sub_max'] ?? 0);
-                return ($maxQty / 1000) * (float)$service->api_price * $posts;
+                return ($maxQty / 1000) * (float)$service->original_price * $posts;
 
             default:
-                return ($totalQuantity / 1000) * (float)$service->api_price;
+                return ($totalQuantity / 1000) * (float)$service->original_price;
         }
     }
 }

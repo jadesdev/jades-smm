@@ -94,4 +94,44 @@ class Order extends Model
     {
         return $this->belongsTo(ApiProvider::class);
     }
+
+    public function scopeSearch($query, $search)
+    {
+        return $query->where(function ($query) use ($search) {
+            $params = ['category:name', 'service:name', 'user:username', 'user:name', 'user:username', 'user:email', 'service:description'];
+            $query->where(function ($q) use ($params, $search) {
+                foreach ($params as $key => $param) {
+                    $relationData = explode(':', $param);
+                    if (@$relationData[1]) {
+                        $q = $this->relationSearch($q, $relationData[0], $relationData[1], $search);
+                    } else {
+                        $column = $param;
+                        $q->orWhere($column, 'LIKE', $search);
+                    }
+                }
+            })
+                ->orwhere('id', 'like', "%$search%")
+                ->orwhere('link', 'like', "%$search%")
+                ->orWhere('status', 'like', "%$search%")
+                ->orWhere('quantity', 'like', "%$search%")
+                ->orWhere('response', 'like', "%$search%")
+                ->orWhere('price', 'like', "%$search%");
+        });
+    }
+
+    private function relationSearch($query, $relation, $columns, $search)
+    {
+        foreach (explode(',', $columns) as $column) {
+            $query->orWhereHas($relation, function ($q) use ($column, $search) {
+                $q->where($column, 'like', "%$search%");
+            });
+        }
+
+        return $query;
+    }
+
+    public function scopeToday($query)
+    {
+        return $query->whereDate('created_at', now());
+    }
 }

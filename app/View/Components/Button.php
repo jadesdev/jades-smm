@@ -97,17 +97,17 @@ class Button extends Component
     private function getGhostClasses(): string
     {
         $predefined = [
-            'primary' => 'text-primary-600 hover:bg-primary-50 focus:ring-primary-500',
-            'secondary' => 'text-gray-600 hover:bg-gray-50 focus:ring-gray-500',
-            'success' => 'text-green-600 hover:bg-green-50 focus:ring-green-500',
-            'danger' => 'text-red-600 hover:bg-red-50 focus:ring-red-500',
-            'warning' => 'text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-500',
-            'info' => 'text-cyan-600 hover:bg-cyan-50 focus:ring-cyan-500',
-            'light' => 'text-gray-500 hover:bg-gray-50 focus:ring-gray-500',
-            'dark' => 'text-gray-900 hover:bg-gray-100 focus:ring-gray-500',
+            'primary' => 'text-primary-600 hover:bg-primary-50 focus:ring-primary-500 hover:ring-primary-500',
+            'secondary' => 'text-gray-600 hover:bg-gray-50 focus:ring-gray-500 hover:ring-gray-500',
+            'success' => 'text-green-600 hover:bg-green-50 focus:ring-green-500 hover:ring-green-500',
+            'danger' => 'text-red-600 hover:bg-red-50 focus:ring-red-500 hover:ring-red-500',
+            'warning' => 'text-yellow-600 hover:bg-yellow-50 focus:ring-yellow-500 hover:ring-yellow-500',
+            'info' => 'text-cyan-600 hover:bg-cyan-50 focus:ring-cyan-500 hover:ring-cyan-500',
+            'light' => 'text-gray-500 hover:bg-gray-50 focus:ring-gray-500 hover:ring-gray-500',
+            'dark' => 'text-gray-900 hover:bg-gray-100 focus:ring-gray-500 hover:ring-gray-500',
         ];
         if (!array_key_exists($this->variant, $predefined)) {
-            return "text-{$this->variant}-600 hover:bg-{$this->variant}-50 focus:ring-{$this->variant}-500";
+            return "text-{$this->variant}-600 hover:bg-{$this->variant}-50 focus:ring-{$this->variant}-500 hover:ring-{$this->variant}-500";
         }
 
         return $predefined[$this->variant];
