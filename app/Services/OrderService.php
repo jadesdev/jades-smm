@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Exceptions\InsufficientBalanceException;
 use App\Models\User;
 use App\Models\Order;
 use App\Models\Service;
@@ -18,7 +19,7 @@ class OrderService
         $apiPrice = $this->calculateApiPrice($service, $totalQuantity, $data);
 
         if ($user->balance < $charge) {
-            throw new \Exception('You do not have enough funds to place this order.');
+            throw new InsufficientBalanceException('You do not have enough funds to place this order.');
         }
 
         DB::beginTransaction();

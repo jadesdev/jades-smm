@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Orders;
 
+use App\Exceptions\InsufficientBalanceException;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Service;
@@ -262,9 +263,9 @@ class Create extends Component
 
             $this->successAlert('Your order has been placed successfully!');
             return $this->redirect(route('user.orders'), navigate: true);
-
+        } catch (InsufficientBalanceException $e) {
+            $this->errorAlert($e->getMessage());
         } catch (\Exception $e) {
-            \Log::error('Order creation failed: ' . $e->getMessage());
             $this->errorAlert('Failed to place order. Please try again.');
         }
     }

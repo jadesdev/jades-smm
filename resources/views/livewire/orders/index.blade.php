@@ -21,7 +21,7 @@
                     placeholder="Search by Order ID, Service..." class="!mb-0 md:w-64" />
             </div>
             @if ($search || $status !== 'all')
-                <x-button wire:click="clearFilters" variant="outline" size="sm" class="whitespace-nowrap">
+                <x-button wire:click="clearFilters" variant="primary" outline size="sm" class="whitespace-nowrap mb-4">
                     Clear
                 </x-button>
             @endif

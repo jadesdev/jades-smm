@@ -8,7 +8,7 @@
     <x-sidebar.menu-item href="{{ route('admin.services') }}" icon="fad fa-concierge-bell" name="Services" />
 
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Finance</h6>
-    <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-shopping-cart" name="Orders" />
+    <x-sidebar.menu-item href="{{ route('admin.orders.index') }}" icon="fad fa-shopping-cart" name="Orders" />
     <x-sidebar.menu-item href="{{ route('admin.transactions.index') }}" icon="fad fa-money-check-alt" name="Transactions" />
 
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Management</h6>

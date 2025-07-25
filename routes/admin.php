@@ -5,6 +5,7 @@ use App\Livewire\Admin\ApiProviderManager;
 use App\Livewire\Admin\CategoryManager;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\GeneralSettings;
+use App\Livewire\Admin\OrderManager;
 use App\Livewire\Admin\ServiceForm;
 use App\Livewire\Admin\ServiceManager;
 use App\Livewire\Admin\Support\Message;
@@ -30,9 +31,8 @@ Route::get('users/{id}/view', UserView::class)->name('users.view');
 Route::get('users/{id}/login', UserView::class)->name('users.login');
 Route::get('users/settings', UserSettings::class)->name('users.settings');
 
-Route::get('orders', UserIndex::class)->name('orders.index');
+Route::get('orders', OrderManager::class)->name('orders.index');
 Route::get('transactions', Transactions::class)->name('transactions.index');
-Route::get('orders', UserIndex::class)->name('orders.index');
 
 // Support tickets
 Route::prefix('support')->name('support.')->group(function () {
