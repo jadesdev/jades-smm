@@ -4,10 +4,10 @@ namespace App\Services;
 
 use App\Models\ApiProvider;
 use App\Models\Service;
+use App\Traits\ServiceTrait;
 use Exception;
 use Http;
 use Log;
-use App\Traits\ServiceTrait;
 
 class ApiProviderService
 {
@@ -17,12 +17,12 @@ class ApiProviderService
     {
         $services = $this->getServices($provider);
         $services = $this->sortServicesByKey($services, 'service');
-        $currentServices = $this->sortServicesByKey(json_decode($provider->services,true), 'api_service_id');
-        $disabledServices    = array_diff_key($currentServices, $services);
-        $newServices         = array_diff_key($services, $currentServices);
-        $existsServices      = array_diff_key($services, $newServices);
+        $currentServices = $this->sortServicesByKey(json_decode($provider->services, true), 'api_service_id');
+        $disabledServices = array_diff_key($currentServices, $services);
+        $newServices = array_diff_key($services, $currentServices);
+        $existsServices = array_diff_key($services, $newServices);
         // disable api services the no longer exist ($disabled services)
-        if (!empty($disabledServices)) {
+        if (! empty($disabledServices)) {
             $service = Service::whereIn('api_service_id', $disabledServices);
             $service->update([
                 'status' => 2,
@@ -30,25 +30,25 @@ class ApiProviderService
         }
 
         // create new api services ($new services)
-        if ($params['syncRequestType'] === 'new' && !empty($newServices)) {
+        if ($params['syncRequestType'] === 'new' && ! empty($newServices)) {
             $this->syncNewServices($newServices, [
                 'api_provider_id' => $provider->id,
                 'percentage' => $params['syncPercentage'] ?? 100,
                 'rate' => $provider->rate,
             ]);
-        } else if ($params['syncRequestType'] === 'current' && !empty($existsServices)) {
+        } elseif ($params['syncRequestType'] === 'current' && ! empty($existsServices)) {
             $this->syncExistingServices($existsServices, [
                 'api_provider_id' => $provider->id,
                 'percentage' => $params['syncPercentage'] ?? 100,
                 'rate' => $provider->rate,
-                'sync_options' => $params['syncOptions']
+                'sync_options' => $params['syncOptions'],
             ]);
-        } else if ($params['syncRequestType'] === 'all' && !empty($services)) {
+        } elseif ($params['syncRequestType'] === 'all' && ! empty($services)) {
             $this->syncExistingServices($existsServices, [
                 'api_provider_id' => $provider->id,
                 'percentage' => $params['syncPercentage'] ?? 100,
                 'rate' => $provider->rate,
-                'sync_options' => $params['syncOptions']
+                'sync_options' => $params['syncOptions'],
             ]);
             $this->syncNewServices($services, [
                 'api_provider_id' => $provider->id,
@@ -56,16 +56,17 @@ class ApiProviderService
                 'rate' => $provider->rate,
             ]);
         }
+
         return true;
     }
-
 
     public function getBalance(ApiProvider $provider)
     {
         $payload = [
             'key' => $provider->api_key,
-            'action' => 'balance'
+            'action' => 'balance',
         ];
+
         return $this->postRequest($provider->url, $payload);
     }
 
@@ -73,18 +74,20 @@ class ApiProviderService
     {
         $payload = [
             'key' => $provider->api_key,
-            'action' => 'services'
+            'action' => 'services',
         ];
+
         return $this->postRequest($provider->url, $payload);
     }
 
     public function postRequest($endpoint, $payload)
     {
         try {
-            $res =  Http::timeout(240)->post($endpoint, $payload);
+            $res = Http::timeout(240)->post($endpoint, $payload);
+
             return $res->json();
         } catch (Exception $e) {
-            Log::error('Provider request exception:' . $e->getMessage());
+            Log::error('Provider request exception:'.$e->getMessage());
             throw $e;
         }
     }

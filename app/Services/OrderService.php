@@ -3,15 +3,14 @@
 namespace App\Services;
 
 use App\Exceptions\InsufficientBalanceException;
-use App\Models\User;
 use App\Models\Order;
 use App\Models\Service;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
-
     public function createOrder(User $user, Service $service, array $data): Order
     {
         $totalQuantity = $this->calculateTotalQuantity($service, $data);
@@ -70,7 +69,7 @@ class OrderService
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Order creation failed in OrderService: ' . $e->getMessage());
+            Log::error('Order creation failed in OrderService: '.$e->getMessage());
             throw new \Exception('Failed to create the order due to a server error.');
         }
     }
@@ -87,6 +86,7 @@ class OrderService
 
         return (string) $value;
     }
+
     private function calculateTotalQuantity(Service $service, array $data): int
     {
         $quantity = 0;
@@ -103,13 +103,13 @@ class OrderService
                 $quantity = 1;
                 break;
             default:
-                $quantity = (int)($data['quantity'] ?? 0);
+                $quantity = (int) ($data['quantity'] ?? 0);
                 break;
         }
 
         // Apply drip-feed multiplication if enabled.
         if ($data['is_drip_feed'] ?? false) {
-            $quantity *= (int)($data['runs'] ?? 1);
+            $quantity *= (int) ($data['runs'] ?? 1);
         }
 
         return $quantity;
@@ -123,15 +123,16 @@ class OrderService
         switch ($service->type) {
             case 'package':
             case 'custom_comments_package':
-                return (float)$service->price;
+                return (float) $service->price;
 
             case 'subscriptions':
-                $posts = (int)($data['sub_posts'] ?? 0);
-                $maxQty = (int)($data['sub_max'] ?? 0);
-                return ($maxQty / 1000) * (float)$service->price * $posts;
+                $posts = (int) ($data['sub_posts'] ?? 0);
+                $maxQty = (int) ($data['sub_max'] ?? 0);
+
+                return ($maxQty / 1000) * (float) $service->price * $posts;
 
             default:
-                return ($totalQuantity / 1000) * (float)$service->price;
+                return ($totalQuantity / 1000) * (float) $service->price;
         }
     }
 
@@ -140,22 +141,23 @@ class OrderService
      */
     private function calculateApiPrice(Service $service, int $totalQuantity, array $data): float
     {
-        if (!$service->api_provider_id || !$service->original_price) {
+        if (! $service->api_provider_id || ! $service->original_price) {
             return 0.00;
         }
 
         switch ($service->type) {
             case 'package':
             case 'custom_comments_package':
-                return (float)$service->original_price;
+                return (float) $service->original_price;
 
             case 'subscriptions':
-                $posts = (int)($data['sub_posts'] ?? 0);
-                $maxQty = (int)($data['sub_max'] ?? 0);
-                return ($maxQty / 1000) * (float)$service->original_price * $posts;
+                $posts = (int) ($data['sub_posts'] ?? 0);
+                $maxQty = (int) ($data['sub_max'] ?? 0);
+
+                return ($maxQty / 1000) * (float) $service->original_price * $posts;
 
             default:
-                return ($totalQuantity / 1000) * (float)$service->original_price;
+                return ($totalQuantity / 1000) * (float) $service->original_price;
         }
     }
 }

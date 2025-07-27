@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Admin;
 
-use App\Models\Order;
 use App\Models\ApiProvider;
+use App\Models\Order;
 use App\Traits\LivewireToast;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
-use Livewire\WithPagination;
-use Livewire\Attributes\Url;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
+use Livewire\Component;
+use Livewire\WithPagination;
 use Str;
 
 #[Layout('admin.layouts.main')]
@@ -34,11 +34,14 @@ class OrderManager extends Component
 
     // Bulk selection
     public $selectedOrders = [];
+
     public $selectAll = false;
 
     // Modals
     public $showResponseModal = false;
+
     public $selectedOrderResponse = null;
+
     public $selectedOrderId = null;
 
     protected $queryString = ['search', 'status', 'provider', 'serviceType', 'perPage'];
@@ -57,13 +60,18 @@ class OrderManager extends Component
 
     // Cache for counts and options
     public $statusCounts = [];
+
     public $providers = [];
+
     public $serviceTypes = [];
 
     // Meta properties
     public string $metaTitle = 'Order Management';
+
     public string $metaDescription = 'Manage and monitor all orders';
+
     public string $metaKeywords;
+
     public string $metaImage;
 
     public function mount()
@@ -90,13 +98,14 @@ class OrderManager extends Component
     {
         $query = Order::query();
         $this->applyFilters($query);
+
         return $query->pluck('id')->toArray();
     }
 
     public function updateStatus($status)
     {
         $this->status = $status;
-        $this->metaTitle = $status === 'all' ? 'Order Management' : Str::title($status) . ' Orders';
+        $this->metaTitle = $status === 'all' ? 'Order Management' : Str::title($status).' Orders';
         $this->resetPage();
         $this->resetSelection();
     }
@@ -149,6 +158,7 @@ class OrderManager extends Component
     {
         if (empty($this->selectedOrders)) {
             $this->errorAlert('No orders selected');
+
             return;
         }
 
@@ -164,7 +174,7 @@ class OrderManager extends Component
                 // Bulk update - just set status
                 Order::whereIn('id', $this->selectedOrders)->update([
                     'status' => $status,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
             }
 
@@ -174,7 +184,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to update orders: ' . $e->getMessage());
+            $this->errorAlert('Failed to update orders: '.$e->getMessage());
         }
     }
 
@@ -182,6 +192,7 @@ class OrderManager extends Component
     {
         if (empty($this->selectedOrders)) {
             $this->errorAlert('No orders selected');
+
             return;
         }
 
@@ -206,7 +217,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to cancel and refund orders: ' . $e->getMessage());
+            $this->errorAlert('Failed to cancel and refund orders: '.$e->getMessage());
         }
     }
 
@@ -214,6 +225,7 @@ class OrderManager extends Component
     {
         if (empty($this->selectedOrders)) {
             $this->errorAlert('No orders selected');
+
             return;
         }
 
@@ -228,7 +240,7 @@ class OrderManager extends Component
                     'status' => 'pending',
                     'error' => 0,
                     'error_message' => null,
-                    'updated_at' => now()
+                    'updated_at' => now(),
                 ]);
                 $this->successAlert("Successfully queued {$count} orders for resending");
             }
@@ -236,7 +248,7 @@ class OrderManager extends Component
             $this->resetSelection();
             $this->loadStatusCounts();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend orders: ' . $e->getMessage());
+            $this->errorAlert('Failed to resend orders: '.$e->getMessage());
         }
     }
 
@@ -261,7 +273,7 @@ class OrderManager extends Component
             $this->successAlert('Order deleted successfully');
             $this->loadStatusCounts();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to delete order: ' . $e->getMessage());
+            $this->errorAlert('Failed to delete order: '.$e->getMessage());
         }
     }
 
@@ -277,12 +289,11 @@ class OrderManager extends Component
         }
     }
 
-
     public function resendOrder($orderId)
     {
         try {
             $order = Order::findOrFail($orderId);
-            
+
             if ($order->error == 1 || in_array($order->status, ['error', 'fail'])) {
                 $this->sendSingleOrderToApi($orderId);
                 $this->successAlert('Order resent to API');
@@ -290,7 +301,7 @@ class OrderManager extends Component
                 $this->errorAlert('Order is not in error state');
             }
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend order: ' . $e->getMessage());
+            $this->errorAlert('Failed to resend order: '.$e->getMessage());
         }
     }
 
@@ -302,9 +313,9 @@ class OrderManager extends Component
         $order->update([
             'status' => 'pending',
             'error' => 0,
-            'error_message' => null
+            'error_message' => null,
         ]);
-        
+
         // TODO: Implement actual API sending logic here
         // $this->dispatchApiOrder($order);
     }
@@ -368,7 +379,7 @@ class OrderManager extends Component
 
         // Apply search filter
         if ($this->search) {
-            $query->search('%' . $this->search . '%');
+            $query->search('%'.$this->search.'%');
         }
     }
 

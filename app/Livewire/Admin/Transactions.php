@@ -4,9 +4,9 @@ namespace App\Livewire\Admin;
 
 use App\Models\Transaction;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
 use Livewire\Attributes\Url;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -30,13 +30,15 @@ class Transactions extends Component
     public string $userFilter = '';
 
     public int $perPage = 25;
+
     public string $sortField = 'created_at';
+
     public string $sortDirection = 'desc';
 
     public ?Transaction $viewingTransaction = null;
 
     // Meta
-    public string $metaTitle = "Transactions";
+    public string $metaTitle = 'Transactions';
 
     public function mount()
     {
@@ -97,14 +99,13 @@ class Transactions extends Component
         $this->viewingTransaction = null;
         $this->dispatch('close-modal', name: 'transaction-details');
     }
-    
+
     private function deleteOldTransactions()
     {
         Transaction::where('status', 'initiated')
             ->where('created_at', '<', now()->subWeek())
             ->delete();
     }
-    
 
     public function render()
     {
@@ -122,10 +123,10 @@ class Transactions extends Component
                         });
                 });
             })
-            ->when($this->userFilter, fn($q) => $q->where('user_id', $this->userFilter))
-            ->when($this->statusFilter, fn($q) => $q->where('status', $this->statusFilter))
-            ->when($this->typeFilter, fn($q) => $q->where('type', $this->typeFilter))
-            ->when($this->serviceFilter, fn($q) => $q->where('service', $this->serviceFilter));
+            ->when($this->userFilter, fn ($q) => $q->where('user_id', $this->userFilter))
+            ->when($this->statusFilter, fn ($q) => $q->where('status', $this->statusFilter))
+            ->when($this->typeFilter, fn ($q) => $q->where('type', $this->typeFilter))
+            ->when($this->serviceFilter, fn ($q) => $q->where('service', $this->serviceFilter));
 
         $transactions = $query->orderBy($this->sortField, $this->sortDirection)->paginate($this->perPage);
 

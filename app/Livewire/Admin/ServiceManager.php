@@ -6,9 +6,9 @@ use App\Models\ApiProvider;
 use App\Models\Category;
 use App\Models\Service;
 use App\Traits\LivewireToast;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -17,20 +17,29 @@ class ServiceManager extends Component
     use LivewireToast;
     use WithPagination;
 
-    public string $metaTitle = "Services";
+    public string $metaTitle = 'Services';
 
     public ?Service $deleting = null;
-    
+
     // Search and filtering
     public string $search = '';
+
     public string $statusFilter = '';
+
     public string $categoryFilter = '';
+
     public string $providerFilter = '';
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
+
     public array $selectedServices = [];
+
     public bool $selectAll = false;
+
     public bool $bulkDeleteConfirmation = false;
+
     public string $view = 'list';
 
     protected $queryString = [
@@ -73,7 +82,6 @@ class ServiceManager extends Component
         $this->closeDeleteModal();
     }
 
-
     public function closeDeleteModal(): void
     {
         $this->dispatch('close-modal', name: 'delete-service-modal');
@@ -107,7 +115,7 @@ class ServiceManager extends Component
 
     public function toggleStatus(Service $service): void
     {
-        $service->update(['status' => !$service->status]);
+        $service->update(['status' => ! $service->status]);
         $status = $service->status ? 'activated' : 'deactivated';
         $this->successAlert("Service has been {$status}.");
     }
@@ -134,32 +142,34 @@ class ServiceManager extends Component
     public function updatedSelectAll($value): void
     {
         if ($value) {
-            $this->selectedServices = $this->servicesOnPage->pluck('id')->map(fn($id) => (string) $id)->toArray();
+            $this->selectedServices = $this->servicesOnPage->pluck('id')->map(fn ($id) => (string) $id)->toArray();
         } else {
             $this->selectedServices = [];
         }
     }
+
     public function updatedSelectedServices(): void
     {
-        $pageIds = $this->servicesOnPage->pluck('id')->map(fn($id) => (string) $id)->toArray();
-        $allOnPageSelected = !array_diff($pageIds, $this->selectedServices);
+        $pageIds = $this->servicesOnPage->pluck('id')->map(fn ($id) => (string) $id)->toArray();
+        $allOnPageSelected = ! array_diff($pageIds, $this->selectedServices);
         $this->selectAll = (count($pageIds) > 0) && $allOnPageSelected;
     }
 
     private function getServices()
     {
         return Service::with(['category', 'apiProvider'])
-            ->when($this->search, fn($query) => $query->where('name', 'like', '%' . $this->search . '%')
-                ->orWhere('description', 'like', '%' . $this->search . '%')
-                ->orWhere('id', 'like', '%' . $this->search . '%')
-                ->orWhere('api_service_id', 'like', '%' . $this->search . '%'))
-            ->when($this->statusFilter === 'active', fn($query) => $query->where('status', true))
-            ->when($this->statusFilter === 'inactive', fn($query) => $query->where('status', false))
-            ->when($this->categoryFilter, fn($query) => $query->where('category_id', $this->categoryFilter))
+            ->when($this->search, fn ($query) => $query->where('name', 'like', '%'.$this->search.'%')
+                ->orWhere('description', 'like', '%'.$this->search.'%')
+                ->orWhere('id', 'like', '%'.$this->search.'%')
+                ->orWhere('api_service_id', 'like', '%'.$this->search.'%'))
+            ->when($this->statusFilter === 'active', fn ($query) => $query->where('status', true))
+            ->when($this->statusFilter === 'inactive', fn ($query) => $query->where('status', false))
+            ->when($this->categoryFilter, fn ($query) => $query->where('category_id', $this->categoryFilter))
             ->when($this->providerFilter, function ($query) {
                 if ($this->providerFilter === 'manual') {
                     return $query->whereNull('api_provider_id');
                 }
+
                 return $query->where('api_provider_id', $this->providerFilter);
             })
             ->orderBy($this->sortBy, $this->sortDirection);
@@ -179,7 +189,7 @@ class ServiceManager extends Component
         return view('livewire.admin.service-manager', [
             'services' => $this->servicesOnPage,
             'categories' => $categories,
-            'apiProviders' => $apiProviders
+            'apiProviders' => $apiProviders,
         ]);
     }
 }

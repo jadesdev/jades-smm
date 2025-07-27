@@ -15,16 +15,16 @@ Route::get('/dashboard', function () {
     return view('dashboard');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 
 // user
 Route::prefix('user')->as('user.')->middleware(['auth'])->group(function (): void {
-    require __DIR__ . '/user.php';
+    require __DIR__.'/user.php';
 });
 
 // Admin
 Route::prefix('admin')->as('admin.')->group(function (): void {
-    require __DIR__ . '/admin.php';
+    require __DIR__.'/admin.php';
 });
 
 // Payment Callback

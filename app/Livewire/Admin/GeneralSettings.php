@@ -4,8 +4,8 @@ namespace App\Livewire\Admin;
 
 use App\Traits\LivewireToast;
 use App\Traits\SettingsTrait;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithFileUploads;
 
 #[Layout('admin.layouts.main')]
@@ -20,22 +20,23 @@ class GeneralSettings extends Component
     public $gateways = [];
 
     public $sysSettings = [];
+
     public $settings = [];
 
     // meta
-    public string $metaTitle = "General Settings";
+    public string $metaTitle = 'General Settings';
 
     public function mount($type = 'index'): void
     {
         $this->view = 'index';
         if ($type == 'payment') {
             $this->showPayment();
-            $this->metaTitle = "Payment Settings";
+            $this->metaTitle = 'Payment Settings';
         }
 
         if ($type == 'features') {
             $this->view = 'features';
-            $this->metaTitle = "Features Settings";
+            $this->metaTitle = 'Features Settings';
             $features = [
                 'force_https',
                 'verify_email',
@@ -75,7 +76,6 @@ class GeneralSettings extends Component
         );
         $this->successAlert('Settings updated successfully.', 'Settings Saved');
     }
-    
 
     public function render()
     {

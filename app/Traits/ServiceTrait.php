@@ -5,7 +5,6 @@ namespace App\Traits;
 use App\Models\ApiProvider;
 use App\Models\Category;
 use App\Models\Service;
-use Illuminate\Http\Request;
 
 trait ServiceTrait
 {
@@ -14,7 +13,7 @@ trait ServiceTrait
      */
     public function updateProviderServices(ApiProvider $apiProvider, int $status): void
     {
-        if (!$apiProvider->services) {
+        if (! $apiProvider->services) {
             return;
         }
         foreach ($apiProvider->services as $service) {
@@ -33,7 +32,7 @@ trait ServiceTrait
     {
         $apiProvider = ApiProvider::find($providerId);
 
-        if (!$apiProvider || !$apiProvider->services) {
+        if (! $apiProvider || ! $apiProvider->services) {
             return;
         }
 
@@ -50,12 +49,13 @@ trait ServiceTrait
      */
     protected function getOrCreateCategory(?string $name): int
     {
-        if (!$name) {
+        if (! $name) {
             return Category::firstOrCreate(
                 ['name' => 'Default Category'],
                 ['status' => 1]
             )->id;
         }
+
         return Category::firstOrCreate(
             ['name' => $name],
             ['status' => 1]
@@ -79,14 +79,14 @@ trait ServiceTrait
         return Service::create([
             'category_id' => $item['category'],
             'api_provider_id' => $providerId,
-            'api_service_id'  => $item['service'],
+            'api_service_id' => $item['service'],
             'name' => $item['name'],
             'type' => $this->getServiceType($item['type']) ?? 'default',
             'min' => $item['min'],
             'max' => $item['max'],
             'price' => $this->calculatePriceWithMargin($item['rate'], $percentage, $rate),
-            'api_price'       => $item['rate'],
-            'original_price'       => $item['rate'] * $rate,
+            'api_price' => $item['rate'],
+            'original_price' => $item['rate'] * $rate,
             'description' => $item['desc'] ?? $item['description'] ?? '',
             'dripfeed' => $item['dripfeed'] ?? 0,
             'cancel' => $item['cancel'] ?? 0,
@@ -152,7 +152,7 @@ trait ServiceTrait
                 ->where('api_provider_id', $params['api_provider_id'])
                 ->first();
 
-            if (!$service) {
+            if (! $service) {
                 continue;
             }
 
@@ -177,7 +177,7 @@ trait ServiceTrait
             if (in_array('min_max_dripfeed', $syncOptions)) {
                 $updateData['min'] = $item['min'];
                 $updateData['max'] = $item['max'];
-                $updateData['dripfeed'] = $item['dripfeed'] ?? 0;                
+                $updateData['dripfeed'] = $item['dripfeed'] ?? 0;
                 $updateData['refill'] = $item['refill'] ?? 0;
                 $updateData['cancel'] = $item['cancel'] ?? 0;
             }
@@ -209,7 +209,7 @@ trait ServiceTrait
                 ->where('api_provider_id', $params['api_provider_id'])
                 ->first();
 
-            if (!$existingService) {
+            if (! $existingService) {
                 $this->createProviderService($item, $params['api_provider_id'], $params['percentage'], $params['rate']);
             }
         }
@@ -240,9 +240,11 @@ trait ServiceTrait
     {
         return $price * $rate;
     }
+
     protected function calculatePriceWithMargin(float $apiPrice, float $percentage, float $rate): float
     {
         $price = $apiPrice + ($percentage / 100) * $apiPrice;
+
         return round($price * $rate, 4);
     }
 }

@@ -2,15 +2,15 @@
 
 namespace App\Livewire\Admin\User;
 
-use App\Models\User;
 use App\Models\Order;
-use App\Models\Transaction;
 use App\Models\SupportTicket;
+use App\Models\Transaction;
+use App\Models\User;
 use App\Traits\LivewireToast;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class View extends Component
@@ -18,33 +18,49 @@ class View extends Component
     use LivewireToast;
 
     public User $user;
+
     public $userId;
-    
+
     // Edit form properties
     public string $name = '';
+
     public string $email = '';
+
     public string $username = '';
+
     public string $phone = '';
+
     public string $country = '';
+
     public string $address = '';
+
     public float $balance = 0;
+
     public float $bonus = 0;
+
     public bool $is_active = true;
+
     public bool $email_verify = false;
+
     public bool $sms_verify = false;
+
     public string $password = '';
+
     public string $password_confirmation = '';
 
     // Stats
     public array $stats = [];
-    
+
     // UI state
     public bool $showEditForm = false;
 
     // Meta
     public string $metaTitle;
+
     public string $metaDescription;
+
     public string $metaKeywords;
+
     public string $metaImage;
 
     protected function rules()
@@ -69,14 +85,14 @@ class View extends Component
     {
         $this->userId = $id;
         $this->user = User::findOrFail($id);
-        
+
         // Set meta
         $this->metaTitle = "{$this->user->username} profile";
         $this->metaDescription = "View and manage user {$this->user->name}";
-        
+
         // Initialize form data
         $this->initializeFormData();
-        
+
         // Load stats
         $this->loadStats();
     }
@@ -118,8 +134,8 @@ class View extends Component
 
     public function toggleEditForm()
     {
-        $this->showEditForm = !$this->showEditForm;
-        if (!$this->showEditForm) {
+        $this->showEditForm = ! $this->showEditForm;
+        if (! $this->showEditForm) {
             $this->initializeFormData();
             $this->password = '';
             $this->password_confirmation = '';
@@ -145,7 +161,7 @@ class View extends Component
             ];
 
             // Only update password if provided
-            if (!empty($this->password)) {
+            if (! empty($this->password)) {
                 $updateData['password'] = Hash::make($this->password);
             }
 
@@ -163,16 +179,16 @@ class View extends Component
 
         } catch (\Exception $e) {
             $this->errorAlert('Failed to update user. Please try again.');
-            \Log::error('User update failed: ' . $e->getMessage());
+            \Log::error('User update failed: '.$e->getMessage());
         }
     }
 
     public function toggleUserStatus()
     {
-        $this->user->update(['is_active' => !$this->user->is_active]);
+        $this->user->update(['is_active' => ! $this->user->is_active]);
         $this->user->refresh();
         $this->is_active = $this->user->is_active;
-        
+
         $status = $this->user->is_active ? 'activated' : 'deactivated';
         $this->successAlert("User {$status} successfully!");
     }
@@ -181,11 +197,11 @@ class View extends Component
     {
         $this->user->update([
             'email_verify' => true,
-            'email_verified_at' => now()
+            'email_verified_at' => now(),
         ]);
         $this->user->refresh();
         $this->email_verify = true;
-        
+
         $this->successAlert('Email verified successfully!');
     }
 
@@ -194,7 +210,7 @@ class View extends Component
         $this->user->update(['sms_verify' => true]);
         $this->user->refresh();
         $this->sms_verify = true;
-        
+
         $this->successAlert('SMS verified successfully!');
     }
 
@@ -202,10 +218,10 @@ class View extends Component
     {
         if ($type === 'add') {
             $this->user->increment('balance', $amount);
-            $message = "Added " . format_price($amount) . " to user balance";
+            $message = 'Added '.format_price($amount).' to user balance';
         } else {
             $this->user->decrement('balance', $amount);
-            $message = "Deducted " . format_price($amount) . " from user balance";
+            $message = 'Deducted '.format_price($amount).' from user balance';
         }
 
         // Create transaction record

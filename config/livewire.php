@@ -158,5 +158,5 @@ return [
 
     'pagination_theme' => 'tailwind',
 
-    'server' => env('LIVEWIRE_SERVER', false)
+    'server' => env('LIVEWIRE_SERVER', false),
 ];

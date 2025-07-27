@@ -6,8 +6,8 @@ use App\Models\SupportMessage;
 use App\Models\SupportTicket;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Facades\Auth;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithFileUploads;
 use Stevebauman\Purify\Facades\Purify;
 
@@ -21,10 +21,12 @@ class Message extends Component
 
     // Ticket Data
     public SupportTicket $ticket;
+
     public $ticketmessages;
 
     // Form Inputs
     public string $message = '';
+
     public $image;
 
     public function mount($id)
@@ -125,6 +127,7 @@ class Message extends Component
 
         if ($this->ticket->status === 'closed') {
             $this->errorAlert('Cannot send a message to a closed ticket.');
+
             return;
         }
 
@@ -132,9 +135,10 @@ class Message extends Component
         if ($this->image) {
             try {
                 $storedPath = $this->image->store('support', 'uploads');
-                $imagePath = 'support/' . basename($storedPath);
+                $imagePath = 'support/'.basename($storedPath);
             } catch (\Exception $e) {
                 $this->errorAlert('Failed to upload image. Please try again.');
+
                 return;
             }
         }

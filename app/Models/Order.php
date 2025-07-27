@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
@@ -73,7 +71,6 @@ class Order extends Model
         'refilled_at' => 'date',
         'sub_expiry' => 'date',
     ];
-
 
     public function category()
     {

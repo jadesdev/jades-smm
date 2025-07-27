@@ -21,7 +21,7 @@ return new class extends Migration
             $table->string('type')->default('default');
             $table->decimal('price', 10, 2)->default(0)->index();
             $table->decimal('api_price', 10, 2)->default(0);
-            $table->decimal('original_price', 10, 2)->default(0); //api price to site currency/rate
+            $table->decimal('original_price', 10, 2)->default(0); // api price to site currency/rate
             $table->integer('min')->default(1);
             $table->integer('max')->default(1000);
             $table->longText('description')->nullable();

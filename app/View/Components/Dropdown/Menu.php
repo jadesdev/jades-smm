@@ -56,11 +56,12 @@ class Menu extends Component
         }
 
         if ($this->position === 'auto') {
-            return 'top-full mt-' . $this->offsetY;
+            return 'top-full mt-'.$this->offsetY;
         }
 
         $baseClass = $this->position === 'top' ? 'bottom-full mb-' : 'top-full mt-';
-        return $baseClass . $this->offsetY;
+
+        return $baseClass.$this->offsetY;
     }
 
     public function widthClass(): string

@@ -135,7 +135,6 @@ class Ticket extends Component
 
         $this->reset(['message', 'image']);
 
-
         $this->dispatch('message-sent');
     }
 

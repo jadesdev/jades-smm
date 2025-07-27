@@ -4,8 +4,8 @@ namespace App\Livewire\Admin\Support;
 
 use App\Models\SupportTicket;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -13,16 +13,21 @@ class Tickets extends Component
 {
     use LivewireToast;
     use WithPagination;
-    
+
     // Meta properties
     public string $metaTitle;
+
     public string $view;
-    
+
     // Filter and search properties
     public $search = '';
+
     public $statusFilter = '';
+
     public $perPage = 20;
+
     public $sortField = 'created_at';
+
     public $sortDirection = 'desc';
 
     public function updatingSearch()
@@ -48,7 +53,7 @@ class Tickets extends Component
     public function mount($type = 'all')
     {
         $this->view = $type;
-        $this->metaTitle = "Support Tickets - " . ucfirst($type);
+        $this->metaTitle = 'Support Tickets - '.ucfirst($type);
     }
 
     public function getTicketsProperty()
@@ -73,18 +78,18 @@ class Tickets extends Component
                 break;
         }
 
-        if (!empty($this->search)) {
+        if (! empty($this->search)) {
             $query->where(function ($q) {
-                $q->where('code', 'like', '%' . $this->search . '%')
-                  ->orWhere('subject', 'like', '%' . $this->search . '%')
-                  ->orWhereHas('user', function ($userQuery) {
-                      $userQuery->where('name', 'like', '%' . $this->search . '%')
-                               ->orWhere('email', 'like', '%' . $this->search . '%');
-                  });
+                $q->where('code', 'like', '%'.$this->search.'%')
+                    ->orWhere('subject', 'like', '%'.$this->search.'%')
+                    ->orWhereHas('user', function ($userQuery) {
+                        $userQuery->where('name', 'like', '%'.$this->search.'%')
+                            ->orWhere('email', 'like', '%'.$this->search.'%');
+                    });
             });
         }
 
-        if (!empty($this->statusFilter)) {
+        if (! empty($this->statusFilter)) {
             $query->where('status', $this->statusFilter);
         }
         $query->orderBy($this->sortField, $this->sortDirection);
@@ -102,7 +107,7 @@ class Tickets extends Component
     public function render()
     {
         return view('livewire.admin.support.tickets', [
-            'tickets' => $this->tickets
+            'tickets' => $this->tickets,
         ]);
     }
 }

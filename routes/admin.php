@@ -12,9 +12,8 @@ use App\Livewire\Admin\Support\Message;
 use App\Livewire\Admin\Support\Tickets;
 use App\Livewire\Admin\Transactions;
 use App\Livewire\Admin\User\Index as UserIndex;
-use App\Livewire\Admin\User\View as UserView;
 use App\Livewire\Admin\User\Settings as UserSettings;
-
+use App\Livewire\Admin\User\View as UserView;
 
 Route::get('dashboard', Dashboard::class)->name('dashboard');
 

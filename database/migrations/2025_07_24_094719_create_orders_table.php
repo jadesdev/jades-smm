@@ -36,11 +36,11 @@ return new class extends Migration
 
             $table->enum('status', ['pending', 'inprogress', 'processing', 'completed', 'partial', 'canceled', 'refunded', 'error', 'fail'])->default('pending');
 
-            $table->text('comments')->nullable();            
-            $table->text('usernames')->nullable();           
-            $table->string('username')->nullable();          
-            $table->text('hashtags')->nullable();            
-            $table->string('hashtag')->nullable();           
+            $table->text('comments')->nullable();
+            $table->text('usernames')->nullable();
+            $table->string('username')->nullable();
+            $table->text('hashtags')->nullable();
+            $table->string('hashtag')->nullable();
             $table->string('media')->nullable();
 
             $table->enum('sub_status', ['active', 'paused', 'completed', 'expired', 'canceled'])->nullable();
@@ -48,13 +48,13 @@ return new class extends Migration
             $table->unsignedInteger('sub_min')->nullable();
             $table->unsignedInteger('sub_max')->nullable();
             $table->unsignedInteger('sub_delay')->nullable();
-            $table->date('sub_expiry')->nullable(); 
-            $table->json('sub_response_orders')->nullable(); 
+            $table->date('sub_expiry')->nullable();
+            $table->json('sub_response_orders')->nullable();
             $table->json('sub_response_posts')->nullable();
 
-            $table->boolean('is_drip_feed')->default(false); 
+            $table->boolean('is_drip_feed')->default(false);
             $table->unsignedInteger('runs')->default(0);
-            $table->unsignedSmallInteger('interval')->default(0); 
+            $table->unsignedSmallInteger('interval')->default(0);
             $table->unsignedInteger('dripfeed_quantity')->default(0);
             $table->string('refill_status', 20)->nullable();
             $table->date('refilled_at')->nullable();

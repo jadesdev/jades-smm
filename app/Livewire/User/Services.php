@@ -20,6 +20,7 @@ class Services extends Component
 
     #[Url(as: 'category')]
     public ?int $selectedCategory = null;
+
     public $categories;
 
     // meta
@@ -35,7 +36,7 @@ class Services extends Component
     public function categoriesForFilter()
     {
         return Category::where('is_active', true)
-            ->whereHas('services', fn($q) => $q->active())
+            ->whereHas('services', fn ($q) => $q->active())
             ->orderBy('name')
             ->get(['id', 'name']);
     }
@@ -50,8 +51,8 @@ class Services extends Component
     {
         $this->categories = Cache::remember('categories_actives', now()->addHours(2), function () {
             return Category::where('is_active', true)
-                ->whereHas('services', fn($q) => $q->active())
-                ->with(['services' => fn($q) => $q->active()])
+                ->whereHas('services', fn ($q) => $q->active())
+                ->with(['services' => fn ($q) => $q->active()])
                 ->orderBy('name')
                 ->get();
         });
@@ -73,12 +74,12 @@ class Services extends Component
             ->with([
                 'services' => function ($query) {
                     $query->active()
-                        ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
-                }
+                        ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'));
+                },
             ])
             ->whereHas('services', function ($query) {
                 $query->active()
-                    ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
+                    ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'));
             });
 
         if ($this->selectedCategory) {

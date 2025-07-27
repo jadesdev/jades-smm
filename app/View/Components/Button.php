@@ -66,8 +66,7 @@ class Button extends Component
             'dark' => 'bg-gray-900 hover:bg-gray-800 text-white focus:ring-gray-500',
         ];
 
-        
-        if (!array_key_exists($this->variant, $predefined)) {
+        if (! array_key_exists($this->variant, $predefined)) {
             return "bg-{$this->variant}-600 hover:bg-{$this->variant}-700 text-white focus:ring-{$this->variant}-500";
         }
 
@@ -86,7 +85,7 @@ class Button extends Component
             'light' => 'border-2 border-gray-300 text-gray-700 hover:bg-gray-100 focus:ring-gray-500',
             'dark' => 'border-2 border-gray-900 text-gray-900 hover:bg-gray-900 hover:text-white focus:ring-gray-500',
         ];
-        if (!array_key_exists($this->variant, $predefined)) {
+        if (! array_key_exists($this->variant, $predefined)) {
             return "border-2 border-{$this->variant}-600 text-{$this->variant}-600 hover:bg-{$this->variant}-600 hover:text-white focus:ring-{$this->variant}-500";
         }
 
@@ -106,7 +105,7 @@ class Button extends Component
             'light' => 'text-gray-500 hover:bg-gray-50 focus:ring-gray-500 hover:ring-gray-500',
             'dark' => 'text-gray-900 hover:bg-gray-100 focus:ring-gray-500 hover:ring-gray-500',
         ];
-        if (!array_key_exists($this->variant, $predefined)) {
+        if (! array_key_exists($this->variant, $predefined)) {
             return "text-{$this->variant}-600 hover:bg-{$this->variant}-50 focus:ring-{$this->variant}-500 hover:ring-{$this->variant}-500";
         }
 

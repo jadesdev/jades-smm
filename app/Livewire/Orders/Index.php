@@ -7,9 +7,9 @@ use App\Traits\LivewireToast;
 use Auth;
 use Illuminate\Support\Str;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\Url;
 use Livewire\Component;
 use Livewire\WithPagination;
-use Livewire\Attributes\Url;
 
 #[Layout('user.layouts.main')]
 class Index extends Component
@@ -42,14 +42,17 @@ class Index extends Component
 
     // Meta properties
     public string $metaTitle = 'Order History';
+
     public string $metaDescription = 'Order History';
+
     public string $metaKeywords;
+
     public string $metaImage;
 
     public function updateStatus($status)
     {
         $this->status = $status;
-        $this->metaTitle = $status === 'all' ? 'Order History' : Str::title($status) . ' Orders';
+        $this->metaTitle = $status === 'all' ? 'Order History' : Str::title($status).' Orders';
         $this->resetPage();
     }
 
@@ -109,11 +112,11 @@ class Index extends Component
         // Apply search filter
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('id', 'like', '%' . $this->search . '%')
+                $q->where('id', 'like', '%'.$this->search.'%')
                     ->orWhereHas('service', function ($serviceQuery) {
-                        $serviceQuery->where('name', 'like', '%' . $this->search . '%');
+                        $serviceQuery->where('name', 'like', '%'.$this->search.'%');
                     })
-                    ->orWhere('link', 'like', '%' . $this->search . '%');
+                    ->orWhere('link', 'like', '%'.$this->search.'%');
             });
         }
 

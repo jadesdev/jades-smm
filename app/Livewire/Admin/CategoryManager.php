@@ -2,11 +2,11 @@
 
 namespace App\Livewire\Admin;
 
-use App\Traits\LivewireToast;
-use Livewire\Component;
 use App\Models\Category;
 use App\Models\Service;
+use App\Traits\LivewireToast;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -16,26 +16,37 @@ class CategoryManager extends Component
     use WithPagination;
 
     // Meta
-    public string $metaTitle = "Categories ";
+    public string $metaTitle = 'Categories ';
+
     public string $metaDescription;
+
     public string $metaKeywords;
+
     public string $metaImage;
 
     // Existing properties
     public ?Category $editing = null;
+
     public string $name = '';
+
     public bool $isActive = true;
+
     public ?Category $deleting = null;
 
     // New properties for enhanced functionality
     public string $search = '';
+
     public string $statusFilter = '';
+
     public string $sortBy = 'name';
+
     public string $sortDirection = 'asc';
 
     // Bulk operations
     public array $selectedCategories = [];
+
     public bool $selectAll = false;
+
     public string $bulkAction = '';
 
     protected $queryString = [
@@ -88,7 +99,6 @@ class CategoryManager extends Component
         $this->resetPage();
     }
 
-
     public function clearFilters(): void
     {
         $this->search = '';
@@ -102,6 +112,7 @@ class CategoryManager extends Component
     {
         if (empty($this->selectedCategories) || empty($this->bulkAction)) {
             $this->errorAlert('Please select categories and an action.');
+
             return;
         }
 
@@ -122,6 +133,7 @@ class CategoryManager extends Component
 
             case 'delete':
                 $this->dispatch('open-modal', name: 'bulk-delete-modal');
+
                 return;
         }
 
@@ -130,7 +142,7 @@ class CategoryManager extends Component
 
     public function confirmBulkDelete(): void
     {
-        if (!empty($this->selectedCategories)) {
+        if (! empty($this->selectedCategories)) {
             $selectedCount = count($this->selectedCategories);
             Category::whereIn('id', $this->selectedCategories)->delete();
             $this->successAlert("$selectedCount categories deleted successfully.");
@@ -222,9 +234,9 @@ class CategoryManager extends Component
     private function getCategories()
     {
         return Category::query()
-            ->when($this->search, fn($query) => $query->where('name', 'like', '%' . $this->search . '%'))
-            ->when($this->statusFilter === 'active', fn($query) => $query->where('is_active', true))
-            ->when($this->statusFilter === 'inactive', fn($query) => $query->where('is_active', false))
+            ->when($this->search, fn ($query) => $query->where('name', 'like', '%'.$this->search.'%'))
+            ->when($this->statusFilter === 'active', fn ($query) => $query->where('is_active', true))
+            ->when($this->statusFilter === 'inactive', fn ($query) => $query->where('is_active', false))
             ->orderBy($this->sortBy, $this->sortDirection)->withCount('services');
     }
 

@@ -5,10 +5,9 @@ namespace App\Livewire\Admin;
 use App\Models\ApiProvider;
 use App\Services\ApiProviderService;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
-use Log;
 
 #[Layout('admin.layouts.main')]
 class ApiProviderManager extends Component
@@ -16,37 +15,48 @@ class ApiProviderManager extends Component
     use LivewireToast;
     use WithPagination;
 
-    public string $metaTitle = "API Providers";
+    public string $metaTitle = 'API Providers';
 
     // Form Properties
     public ?ApiProvider $editing = null;
+
     public ?ApiProvider $deleting = null;
+
     public ?ApiProvider $currencyEditing = null;
+
     public ?ApiProvider $syncProvider = null;
 
     public string $name = '';
+
     public string $url = '';
+
     public string $api_key = '';
+
     public float $rate = 0.0;
+
     public float $currencyRate = 0.0;
+
     public string $syncRequestType = 'current';
+
     public int $syncPercentage = 100;
+
     public array $syncOptions = ['original_price'];
 
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255|unique:api_providers,name,' . $this->editing?->id,
+            'name' => 'required|string|max:255|unique:api_providers,name,'.$this->editing?->id,
             'url' => 'required|url|max:255',
             'api_key' => [
                 $this->editing ? 'nullable' : 'required',
                 'string',
-                'min:8'
+                'min:8',
             ],
             'rate' => $this->editing ? 'nullable|numeric' : 'required|numeric',
             'currencyRate' => $this->currencyEditing ? 'required|numeric|min:0.01' : 'nullable|numeric',
         ];
     }
+
     protected $validationAttributes = [
         'name' => 'Provider Name',
         'url' => 'API URL',
@@ -86,6 +96,7 @@ class ApiProviderManager extends Component
             $validated = $this->validate();
         } catch (\Exception $e) {
             $this->errorAlert($e->getMessage());
+
             return;
         }
         $data = [
@@ -94,7 +105,7 @@ class ApiProviderManager extends Component
             'rate' => $validated['rate'],
         ];
 
-        if (!empty($validated['api_key'])) {
+        if (! empty($validated['api_key'])) {
             $data['api_key'] = $validated['api_key'];
         }
 
@@ -148,12 +159,13 @@ class ApiProviderManager extends Component
         $this->dispatch('close-modal', name: 'delete-provider-modal');
         $this->deleting = null;
     }
+
     /**
      * Toggles status of a provider.
      */
     public function toggleStatus(ApiProvider $provider): void
     {
-        $provider->update(['is_active' => !$provider->is_active]);
+        $provider->update(['is_active' => ! $provider->is_active]);
         $status = $provider->is_active ? 'activated' : 'deactivated';
         $this->successAlert("Provider has been {$status}.");
     }
@@ -168,6 +180,7 @@ class ApiProviderManager extends Component
         $this->currencyRate = $provider->rate;
         $this->dispatch('open-modal', name: 'currency-modal');
     }
+
     public function saveCurrency(): void
     {
         $this->validate(['currencyRate' => 'required|numeric|min:0.001']);
@@ -202,8 +215,9 @@ class ApiProviderManager extends Component
 
     public function syncProviderServices(): void
     {
-        if (!$this->syncProvider) {
+        if (! $this->syncProvider) {
             $this->errorAlert('No provider selected.');
+
             return;
         }
         $validated = $this->validate([
@@ -213,7 +227,7 @@ class ApiProviderManager extends Component
             'syncOptions.*' => 'string',
         ]);
         $apiService = app(ApiProviderService::class);
-        $apiService->syncProviderServices($this->syncProvider, $validated);       
+        $apiService->syncProviderServices($this->syncProvider, $validated);
         $this->successAlert('Services synced successfully.');
         $this->closeUpdateServicesModal();
     }
@@ -245,6 +259,7 @@ class ApiProviderManager extends Component
     public function render()
     {
         $providers = ApiProvider::latest()->paginate(15);
+
         return view('livewire.admin.apiprovider-manager', compact('providers'));
     }
 }

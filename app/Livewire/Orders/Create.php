@@ -10,7 +10,6 @@ use App\Services\OrderService;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 
@@ -20,36 +19,57 @@ class Create extends Component
     use LivewireToast;
 
     public Collection $categories;
+
     public Collection $services;
 
     public ?int $category_id = null;
+
     public ?int $service_id = null;
+
     public string $link = '';
+
     public ?int $quantity = null;
+
     public ?string $comments = null;
 
     public ?string $comments_custom_package = null;
+
     public ?string $usernames_custom = null;
+
     public array $usernames = [];
+
     public array $hashtags = [];
+
     public ?string $hashtag = null;
+
     public ?string $username = null;
+
     public ?string $media_url = null;
 
     public ?string $sub_username = null;
+
     public ?int $sub_posts = null;
+
     public ?int $sub_min = null;
+
     public ?int $sub_max = null;
+
     public ?int $sub_delay = null;
+
     public ?int $sub_expiry = null;
 
     public bool $is_drip_feed = false;
+
     public ?int $runs = null;
+
     public ?int $interval = null;
+
     public ?int $total_quantity = null;
 
     public ?Service $selectedService = null;
+
     public float $charge = 0.00;
+
     public float $userBalance = 0.00;
 
     public string $metaTitle = 'Create Order';
@@ -60,7 +80,7 @@ class Create extends Component
             'category_id' => 'required|exists:categories,id',
             'service_id' => 'required|exists:services,id',
         ];
-        if (!$this->selectedService) {
+        if (! $this->selectedService) {
             return $rules;
         }
 
@@ -112,8 +132,8 @@ class Create extends Component
             case 'subscriptions':
                 $rules['sub_username'] = 'required|string|min:3';
                 $rules['sub_posts'] = 'required|integer|min:1';
-                $rules['sub_min'] = 'required|integer|min:' . $this->selectedService->min;
-                $rules['sub_max'] = 'required|integer|gte:sub_min|max:' . $this->selectedService->max;
+                $rules['sub_min'] = 'required|integer|min:'.$this->selectedService->min;
+                $rules['sub_max'] = 'required|integer|gte:sub_min|max:'.$this->selectedService->max;
                 $rules['sub_delay'] = 'required|integer|in:0,5,10,15,30,60,90';
                 $rules['sub_expiry'] = 'nullable|date';
                 break;
@@ -131,13 +151,14 @@ class Create extends Component
 
         return $rules;
     }
+
     protected function getQuantityRules(): array
     {
         return [
             'required',
             'integer',
-            'min:' . ($this->selectedService->min ?? 1),
-            'max:' . ($this->selectedService->max ?? 1000),
+            'min:'.($this->selectedService->min ?? 1),
+            'max:'.($this->selectedService->max ?? 1000),
         ];
     }
 
@@ -151,9 +172,10 @@ class Create extends Component
             'sub_min' => 'Min Quantity',
             'sub_max' => 'Max Quantity',
             'usernames_custom' => 'Usernames List',
-            'media_url' => 'Media URL'
+            'media_url' => 'Media URL',
         ];
     }
+
     public function updatedCategoryId($value)
     {
         $this->reset('service_id', 'selectedService', 'quantity', 'charge', 'link');
@@ -187,13 +209,13 @@ class Create extends Component
             'is_drip_feed',
             'runs',
             'interval',
-            'total_quantity'
+            'total_quantity',
         ]);
 
         if ($value) {
             $this->selectedService = Service::find($value);
             if ($this->selectedService) {
-                if (!in_array($this->selectedService->type, ['package', 'custom_comments_package', 'custom_comments', 'mentions_custom_list', 'subscriptions'])) {
+                if (! in_array($this->selectedService->type, ['package', 'custom_comments_package', 'custom_comments', 'mentions_custom_list', 'subscriptions'])) {
                     $this->quantity = $this->selectedService->min;
                 }
                 if ($this->selectedService->drip_feed) {
@@ -214,11 +236,11 @@ class Create extends Component
     private function updateServiceDesc()
     {
         if ($this->selectedService && $this->selectedService->description == null) {
-            $this->selectedService->description = "
+            $this->selectedService->description = '
             1. Please make sure your page is not Private.
             2. Kindly refrain from placing a second order on the same link until your initial order is completed.
             3. Please be note that there may be speed changes in service delivery during periods of high demand.
-            ";
+            ';
         }
     }
 
@@ -262,6 +284,7 @@ class Create extends Component
             );
 
             $this->successAlert('Your order has been placed successfully!');
+
             return $this->redirect(route('user.orders'), navigate: true);
         } catch (InsufficientBalanceException $e) {
             $this->errorAlert($e->getMessage());
@@ -313,9 +336,10 @@ class Create extends Component
 
     private function calculateCharge()
     {
-        if (!$this->selectedService) {
+        if (! $this->selectedService) {
             $this->charge = 0.00;
             $this->total_quantity = 0;
+
             return;
         }
 
@@ -330,16 +354,16 @@ class Create extends Component
                 break;
 
             case 'subscriptions':
-                $posts = (int)$this->sub_posts;
-                $max_qty = (int)$this->sub_max;
+                $posts = (int) $this->sub_posts;
+                $max_qty = (int) $this->sub_max;
                 $this->charge = $posts > 0 && $max_qty > 0 ? ($max_qty / 1000) * $pricePerThousand * $posts : 0.00;
                 $localQuantity = $max_qty * $posts;
                 break;
 
             default:
-                $localQuantity = (int)$this->quantity;
+                $localQuantity = (int) $this->quantity;
                 if ($this->is_drip_feed && $this->runs > 0) {
-                    $localQuantity *= (int)$this->runs;
+                    $localQuantity *= (int) $this->runs;
                 }
                 $this->charge = $localQuantity > 0 ? ($localQuantity / 1000) * $pricePerThousand : 0.00;
                 break;
@@ -370,6 +394,7 @@ class Create extends Component
     public function render()
     {
         $this->updateServiceDesc();
+
         return view('livewire.orders.create');
     }
 }

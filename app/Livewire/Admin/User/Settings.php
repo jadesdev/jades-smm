@@ -4,21 +4,23 @@ namespace App\Livewire\Admin\User;
 
 use App\Traits\LivewireToast;
 use App\Traits\SettingsTrait;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class Settings extends Component
 {
     use LivewireToast;
     use SettingsTrait;
+
     public $sysSettings = [];
+
     public $referral_bonus;
+
     public $welcome_bonus;
 
     // meta
-    public string $metaTitle = "User Settings";
-
+    public string $metaTitle = 'User Settings';
 
     public function mount()
     {

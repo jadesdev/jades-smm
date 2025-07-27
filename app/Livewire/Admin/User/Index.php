@@ -4,8 +4,8 @@ namespace App\Livewire\Admin\User;
 
 use App\Models\User;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -14,15 +14,23 @@ class Index extends Component
     use LivewireToast, WithPagination;
 
     public $search = '';
+
     public $statusFilter = '';
+
     public $countryFilter = '';
+
     public $emailVerifiedFilter = '';
+
     public $smsVerifiedFilter = '';
+
     public $sortField = 'created_at';
+
     public $sortDirection = 'desc';
+
     public $perPage = 50;
+
     // meta
-    public string $metaTitle = "All Users";
+    public string $metaTitle = 'All Users';
 
     public string $metaDescription;
 
@@ -70,10 +78,10 @@ class Index extends Component
         $users = User::query()
             ->when($this->search, function ($query) {
                 $query->where(function ($q) {
-                    $q->where('name', 'like', '%' . $this->search . '%')
-                        ->orWhere('email', 'like', '%' . $this->search . '%')
-                        ->orWhere('username', 'like', '%' . $this->search . '%')
-                        ->orWhere('phone', 'like', '%' . $this->search . '%');
+                    $q->where('name', 'like', '%'.$this->search.'%')
+                        ->orWhere('email', 'like', '%'.$this->search.'%')
+                        ->orWhere('username', 'like', '%'.$this->search.'%')
+                        ->orWhere('phone', 'like', '%'.$this->search.'%');
                 });
             })
             ->when($this->statusFilter !== '', function ($query) {
@@ -94,7 +102,6 @@ class Index extends Component
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
-       
 
         return view('livewire.admin.user.index', compact('users'));
     }

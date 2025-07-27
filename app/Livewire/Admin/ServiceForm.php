@@ -9,9 +9,9 @@ use App\Services\ApiProviderService;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Cache;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class ServiceForm extends Component
@@ -19,28 +19,48 @@ class ServiceForm extends Component
     use LivewireToast;
 
     public ?Service $editing = null;
+
     public bool $isSaving = false;
+
     public bool $hasChanges = false;
+
     public array $providerServices = [];
+
     public bool $isLoadingServices = false;
+
     public string $metaTitle = '';
 
     // Form fields
     public string $name = '';
+
     public ?int $category_id = null;
+
     public ?int $api_provider_id = null;
+
     public ?int $api_service_id = null;
+
     public string $type = 'default';
+
     public float $price = 0.00;
+
     public float $api_price = 0.00;
+
     public float $original_price = 0.00;
+
     public int $min = 1;
+
     public int $max = 10000;
+
     public ?string $description = null;
+
     public bool $dripfeed = false;
+
     public bool $cancel = false;
+
     public bool $refill = false;
+
     public bool $status = true;
+
     public string $orderType = 'manual';
 
     protected $listeners = ['updated' => 'trackChanges'];
@@ -101,10 +121,10 @@ class ServiceForm extends Component
     {
         if ($id) {
             $this->editing = Service::findOrFail($id);
-            $this->metaTitle = "Edit Service";
+            $this->metaTitle = 'Edit Service';
             $this->loadServiceData();
         } else {
-            $this->metaTitle = "Add Service";
+            $this->metaTitle = 'Add Service';
             $this->resetForm();
         }
     }
@@ -138,8 +158,9 @@ class ServiceForm extends Component
 
     public function updatedApiServiceId($serviceId): void
     {
-        if (!$serviceId) {
+        if (! $serviceId) {
             $this->resetServiceFields();
+
             return;
         }
 
@@ -164,7 +185,8 @@ class ServiceForm extends Component
             $cacheKey = "provider_services_{$providerId}";
 
             $services = Cache::remember($cacheKey, now()->addMinutes(30), function () use ($provider) {
-                $apiService = new ApiProviderService();
+                $apiService = new ApiProviderService;
+
                 return $apiService->getServices($provider);
             });
 
@@ -244,7 +266,7 @@ class ServiceForm extends Component
             'description',
             'dripfeed',
             'cancel',
-            'refill'
+            'refill',
         ]);
 
         $this->status = true;
@@ -280,8 +302,9 @@ class ServiceForm extends Component
     {
         $selectedService = collect($this->providerServices)->firstWhere('service', $serviceId);
         \Log::info($selectedService);
-        if (!$selectedService) {
+        if (! $selectedService) {
             $this->errorAlert('Selected service not found.');
+
             return;
         }
 
@@ -320,7 +343,7 @@ class ServiceForm extends Component
 
     private function isValidServicesResponse($services): bool
     {
-        return !empty($services) && is_array($services) && !isset($services['error']);
+        return ! empty($services) && is_array($services) && ! isset($services['error']);
     }
 
     private function handleServicesError($services, string $cacheKey): void
@@ -336,7 +359,7 @@ class ServiceForm extends Component
 
     private function handleFetchError(\Exception $e, $providerId): void
     {
-        $this->errorAlert('Failed to connect to the provider: ' . $e->getMessage());
+        $this->errorAlert('Failed to connect to the provider: '.$e->getMessage());
         $this->providerServices = [];
         Cache::forget("provider_services_{$providerId}");
     }
