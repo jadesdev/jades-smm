@@ -1,6 +1,7 @@
 @section('title', $metaTitle)
 
-<div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 sm:mb-8">
+<div class="bg-white dark:bg-gray-900 rounded-lg border border-gray-200 dark:border-gray-700 sm:mb-8"
+    wire:poll.40s="loadMessages">
     <!-- Ticket Header -->
     <div class="border-b border-gray-200 dark:border-gray-700 p-4">
         <div class="flex items-start justify-between">
@@ -63,9 +64,9 @@
                             @if ($message->image)
                                 <div class="mt-2">
                                     <a data-fancybox="chat-{{ $message->ticket_id ?? 'default' }}"
-                                        href="{{ ($message->image_url) }}"
+                                        href="{{ $message->image_url }}"
                                         data-caption="{{ show_datetime($message->created_at) }}">
-                                        <img src="{{ ($message->image_url) }}" alt="Uploaded Image"
+                                        <img src="{{ $message->image_url }}" alt="Uploaded Image"
                                             class="rounded-md max-w-full h-auto"
                                             style="max-height: 300px; cursor: pointer;">
                                     </a>

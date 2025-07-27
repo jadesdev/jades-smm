@@ -28,8 +28,12 @@
 
     <!-- Font Awesome 6 -->
     <link rel="stylesheet" href="{{ static_asset('css/vendors.min.css') }}">
-
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if (!config('livewire.server'))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+    <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
+    <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
+    @endif
     <link rel="stylesheet" href="{{ static_asset('css/main.css') }}">
     @yield('styles')
     @stack('styles')
@@ -46,9 +50,12 @@
     </div>
 
     <script src="{{ static_asset('js/vendors.min.js') }}"></script>
-    @livewireScripts()
-    {{-- <script src="{{ asset('vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
-        data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script> --}}
+    @if (!config('livewire.server'))
+        @livewireScripts()
+    @else
+        <script src="{{ asset('public/vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
+            data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script>
+    @endif
     <script src="{{ static_asset('js/main.js') }}"></script>
     @stack('scripts')
     @yield('scripts')

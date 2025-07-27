@@ -100,7 +100,7 @@ class PaymentController extends Controller
                 $metadata = $paymentData['data']['metadata'];
                 $transaction = Transaction::findOrFail($metadata['trx_id']);
                 $depositService = app(DepositService::class);
-                $depositService->completeDeposit($transaction);
+                $depositService->completeDeposit($transaction, $paymentData);
 
                 return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
             }
@@ -126,7 +126,7 @@ class PaymentController extends Controller
             $metadata = $paymentData['data']['meta'];
             $transaction = Transaction::findOrFail($metadata['trx_id']);
             $depositService = app(DepositService::class);
-            $depositService->completeDeposit($transaction);
+            $depositService->completeDeposit($transaction, $paymentData);
 
             return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
         }
@@ -151,7 +151,7 @@ class PaymentController extends Controller
             $code = $paymentData['purchase_units'][0]['custom_id'] ?? null;
             $transaction = Transaction::where('code', $code)->firstOrFail();
             $depositService = app(DepositService::class);
-            $depositService->completeDeposit($transaction);
+            $depositService->completeDeposit($transaction, $paymentData);
 
             return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
         }

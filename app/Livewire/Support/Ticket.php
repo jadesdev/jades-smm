@@ -36,12 +36,12 @@ class Ticket extends Component
     public function mount($code)
     {
         $ticket = SupportTicket::where('code', $code)->first();
-        if (! $ticket) {
+        if ($ticket == null) {
             $this->errorAlert('Ticket not found');
             $this->redirect(route('user.support'), navigate: true);
         }
         // \Log::info($ticket);
-        if ($ticket->user_id != Auth::id()) {
+        if ($ticket->user_id != Auth::user()->id) {
             $this->errorAlert('Access denied');
             $this->redirect(route('user.support'), navigate: true);
         }
@@ -121,9 +121,9 @@ class Ticket extends Component
                 return;
             }
         }
-
-        $this->ticket->messages()->create([
-            'user_id' => Auth::id(),
+        $message = SupportMessage::create([
+            'user_id' => Auth::user()->id,
+            'ticket_id' => $this->ticket->id,
             'message' => Purify::clean($this->message),
             'type' => $this->image ? SupportMessage::TYPE_IMAGE : SupportMessage::TYPE_TEXT,
             'image' => $imagePath,
@@ -134,8 +134,6 @@ class Ticket extends Component
         $this->loadMessages();
 
         $this->reset(['message', 'image']);
-
-        $this->successAlert('Message sent successfully');
 
         $this->dispatch('message-sent');
     }

@@ -37,19 +37,19 @@
                     </td>
                     <td class="px-4 py-4" data-label="Rate per 1000">
                         <span
-                            class="inline-block bg-blue-100 dark:bg-blue-800 text-blue-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">
-                            {{ $service['rate'] }}
+                            class="inline-block text-blue-800 dark:text-blue-300 text-sm font-medium px-2 py-1 rounded">
+                            {{ ($service['rate']) }}
                         </span>
                     </td>
                     <td class="px-4 py-4" data-label="Min Order">
                         <span
-                            class="inline-block bg-green-100 dark:bg-green-800 text-green-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">
+                            class="inline-block text-green-800 dark:text-green-300 text-sm font-medium px-2 py-1 rounded">
                             {{ $service['min'] }}
                         </span>
                     </td>
                     <td class="px-4 py-4" data-label="Max Order">
                         <span
-                            class="inline-block bg-purple-100 dark:bg-purple-800 text-primary-800 dark:text-gray-300 text-sm font-medium px-2 py-1 rounded">
+                            class="inline-block text-purple-800 dark:text-purple-300 text-sm font-medium px-2 py-1 rounded">
                             {{ $service['max'] }}
                         </span>
                     </td>
@@ -57,12 +57,12 @@
                         <div class="flex flex-col sm:flex-row gap-2 justify-end">
 
                             <button
-                                class="bg-primary text-white dark:text-gray-300 text-xs px-3 py-1 rounded hover:bg-primary-800 dark:hover:bg-primary-700 transition-colors whitespace-nowrap"
+                                class="bg-primary text-white text-xs px-2 py-1 rounded hover:bg-primary-800 dark:hover:bg-primary-700 transition-colors whitespace-nowrap"
                                 @click="openServiceModal(@js($service))">
                                 View
                             </button>
                             <a href="{{ route('user.orders.create', ['service_id' => $service['id']]) }}"
-                                class="inline-flex items-center px-3 py-1 bg-green-600 text-white rounded hover:bg-green-700">
+                                class="inline-flex items-center px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700">
                                 Buy
                             </a>
                         </div>

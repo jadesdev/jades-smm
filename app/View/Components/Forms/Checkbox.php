@@ -12,7 +12,7 @@ class Checkbox extends Component
      * Create a new component instance.
      */
     public function __construct(
-        public string $name,
+        public string $name = '',
         public string $label = '',
         public bool $required = false,
         public mixed $value = null,

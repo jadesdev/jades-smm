@@ -45,7 +45,7 @@
     @endif
     x-on:keydown.tab="trapFocus($event)"
     x-show="show" 
-    class="{{ $containerClass() }}"
+    class="{{ $containerClass() }} overflow-y-auto"
     style="display: none;"
     role="dialog"
     aria-modal="true"
@@ -77,13 +77,13 @@
         x-transition:leave="ease-in duration-200"
         x-transition:leave-start="{{ $leaveClasses['start'] }}"
         x-transition:leave-end="{{ $leaveClasses['end'] }}"
-        class="relative mb-6 bg-white rounded-lg shadow-xl transform transition-all sm:w-full {{ $maxWidthClass() }} sm:mx-auto @if($scrollable) max-h-full overflow-hidden flex flex-col @endif"
+        class="relative mb-6 bg-white dark:bg-gray-800 rounded-lg shadow-xl transform transition-all sm:w-full {{ $maxWidthClass() }} sm:mx-auto @if($scrollable) max-h-full overflow-hidden flex flex-col @endif"
         x-on:click.stop>
         
         @if ($title || $closeable)
-            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-300 @if($scrollable) flex-shrink-0 @endif">
+            <div class="flex items-center justify-between px-6 py-4 border-b border-gray-300 dark:border-gray-700 @if($scrollable) flex-shrink-0 @endif">
                 @if ($title)
-                    <h3 id="modal-title-{{ $name }}" class="text-lg font-medium text-gray-900">{{ $title }}</h3>
+                    <h3 id="modal-title-{{ $name }}" class="text-lg font-medium text-gray-900 dark:text-gray-100">{{ $title }}</h3>
                 @endif
                 
                 @if ($closeable)
@@ -104,7 +104,7 @@
         </div>
 
         @if (isset($footer))
-            <div class="px-6 py-4 bg-gray-50 border-t border-gray-200 flex justify-end space-x-3 @if($scrollable) flex-shrink-0 @endif">
+            <div class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-800 flex justify-end space-x-3 @if($scrollable) flex-shrink-0 @endif">
                 {{ $footer }}
             </div>
         @endif

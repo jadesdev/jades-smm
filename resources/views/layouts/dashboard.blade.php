@@ -10,7 +10,16 @@
 
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Compiled CSS -->
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if (!config('livewire.server'))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
+        <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
+    @endif
+    {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
+
+    <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
+    <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
 
     @stack('styles')
@@ -311,9 +320,12 @@
     </script>
 
     @stack('scripts')
-    @livewireScripts()
-    {{-- <script src="{{ asset('vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
-        data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script> --}}
+    @if (!config('livewire.server'))
+        @livewireScripts()
+    @else
+        <script src="{{ asset('vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
+            data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script>
+    @endif
 </body>
 
 </html>

@@ -101,7 +101,7 @@ class DepositService
     /**
      * Complete a successful deposit
      */
-    public function completeDeposit(Transaction $transaction): void
+    public function completeDeposit(Transaction $transaction, $paymentData = null): void
     {
         try {
             $user = $transaction->user;
@@ -114,6 +114,7 @@ class DepositService
                 $transaction->update([
                     'status' => 'successful',
                     'new_balance' => $user->balance,
+                    'response' => $paymentData,
                 ]);
             }
 

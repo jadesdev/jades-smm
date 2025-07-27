@@ -13,7 +13,7 @@ class Menu extends Component
      */
     public function __construct(
         public string $align = 'left', // left, right, center
-        public string $position = 'bottom', // bottom, top
+        public string $position = 'bottom', // bottom, top, auto
         public string $width = 'auto', // auto, sm, md, lg, xl, full
         public bool $persistent = false, // stays open when clicking inside
         public string $trigger = 'click', // click, hover
@@ -53,6 +53,10 @@ class Menu extends Component
     {
         if (! is_numeric($this->offsetY)) {
             $this->offsetY = '4'; // fallback to default
+        }
+
+        if ($this->position === 'auto') {
+            return 'top-full mt-'.$this->offsetY;
         }
 
         $baseClass = $this->position === 'top' ? 'bottom-full mb-' : 'top-full mt-';

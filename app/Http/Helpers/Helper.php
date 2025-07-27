@@ -1,5 +1,7 @@
 <?php
 
+use App\Models\Setting;
+use App\Models\SystemSetting;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
@@ -16,7 +18,7 @@ if (! function_exists('static_asset')) {
 
 // Return file uploaded via uploader
 if (! function_exists('my_asset')) {
-    function my_asset(string $path, $secure = null)
+    function my_asset(?string $path, $secure = null)
     {
         if (PHP_SAPI == 'cli-server') {
             return app('url')->asset('uploads/'.$path, $secure);
@@ -29,48 +31,46 @@ if (! function_exists('my_asset')) {
 if (! function_exists('get_setting')) {
     function get_setting($key = null, $default = null)
     {
-        return $key;
         // Check if the settings table exists
-        // if (! Schema::hasTable('settings')) {
-        //     return $default;
-        // }
+        if (! Schema::hasTable('settings')) {
+            return $default;
+        }
 
-        // $settings = Cache::get('Settings');
+        $settings = Cache::get('Settings');
 
-        // if (! $settings) {
-        //     $settings = Setting::first();
-        //     if ($settings) {
-        //         Cache::put('Settings', $settings, 30000);
-        //     }
-        // }
+        if (! $settings) {
+            $settings = Setting::first();
+            if ($settings) {
+                Cache::put('Settings', $settings, 30000);
+            }
+        }
 
-        // if ($key) {
-        //     return @$settings->$key == null ? $default : @$settings->$key;
-        // }
+        if ($key) {
+            return @$settings->$key == null ? $default : @$settings->$key;
+        }
 
-        // return $settings;
+        return $settings;
     }
 }
 
 if (! function_exists('sys_setting')) {
     function sys_setting($key, $default = null)
     {
-        return $key;
         // // Check if the system_settings table exists
-        // if (! Schema::hasTable('system_settings')) {
-        //     return $default;
-        // }
+        if (! Schema::hasTable('system_settings')) {
+            return $default;
+        }
 
-        // $settings = Cache::get('SystemSettings');
+        $settings = Cache::get('SystemSettings');
 
-        // if (! $settings) {
-        //     $settings = SystemSetting::all();
-        //     Cache::put('SystemSettings', $settings, 30000);
-        // }
+        if (! $settings) {
+            $settings = SystemSetting::all();
+            Cache::put('SystemSettings', $settings, 30000);
+        }
 
-        // $setting = $settings->where('name', $key)->first();
+        $setting = $settings->where('name', $key)->first();
 
-        // return $setting == null ? $default : $setting->value;
+        return $setting == null ? $default : $setting->value;
     }
 }
 
@@ -109,6 +109,16 @@ function format_number($price, $place = 2): string
     return number_format($price, $place);
 }
 
+function formatNumber($number)
+{
+    if ($number >= 1000000) {
+        return number_format($number / 1000000, 1).'M';
+    } elseif ($number >= 1000) {
+        return number_format($number / 1000, 1).'K';
+    }
+
+    return number_format($number);
+}
 // Trim text and append ellipsis if needed
 function textTrim($string, $length = null)
 {
@@ -292,4 +302,24 @@ function getOrderStatusClass($status)
         'cancelled' => 'bg-secondary',
         'failed' => 'bg-danger',
     ][$status] ?? 'bg-secondary';
+}
+
+if (! function_exists('render_sortable_header')) {
+    function render_sortable_header(string $field, string $label, string $currentSortField, string $currentSortDirection): string
+    {
+        $icon = $currentSortField === $field
+            ? ($currentSortDirection === 'asc' ? '↑' : '↓')
+            : '';
+
+        $iconHtml = $icon ? '<span class="text-primary-500 dark:text-primary-400">'.$icon.'</span>' : '';
+
+        return <<<HTML
+            <th wire:click="sortBy('$field')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
+                <div class="flex items-center space-x-1">
+                    <span>$label</span>
+                    $iconHtml
+                </div>
+            </th>
+        HTML;
+    }
 }

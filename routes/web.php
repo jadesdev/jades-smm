@@ -22,6 +22,11 @@ Route::prefix('user')->as('user.')->middleware(['auth'])->group(function (): voi
     require __DIR__.'/user.php';
 });
 
+// Admin
+Route::prefix('admin')->as('admin.')->group(function (): void {
+    require __DIR__.'/admin.php';
+});
+
 // Payment Callback
 Route::controller(PaymentController::class)->prefix('payment')->group(function (): void {
     Route::any('/paystack', 'paystackSuccess')->name('paystack.success');
