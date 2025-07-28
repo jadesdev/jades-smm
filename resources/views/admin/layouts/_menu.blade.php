@@ -46,7 +46,7 @@
             'name' => 'Email Templates',
         ],
         [
-            'href' => '#',
+            'href' => route('admin.email.settings'),
             'name' => 'Settings',
         ],
         [
