@@ -5,6 +5,7 @@ namespace App\Services;
 use App\Exceptions\InsufficientBalanceException;
 use App\Models\Order;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -62,6 +63,27 @@ class OrderService
                 'dripfeed_quantity' => $data['is_drip_feed'] ? ($data['quantity'] ?? 0) : 0,
             ];
             $order = Order::create($orderData);
+            // create transaction
+            Transaction::create([
+                'user_id' => $user->id,
+                'type' => 'debit',
+                'code' => getTrx(),
+                'service' => 'order',
+                'message' => 'You place an order of ' . format_price($charge) . " for {$service->name}",
+                'gateway' => 'order',
+                'amount' => $charge,
+                'image' => 'order.png',
+                'charge' => 0,
+                'new_balance' => $user->balance,
+                'old_balance' => $user->balance + $charge,
+                'meta' => [
+                    'service_id' => $service->id,
+                    'order_id' => $order->id,
+                    'service_name' => $service->name,
+                ],
+                'status' => 'successful',
+            ]);
+            // debit user
             $user->decrement('balance', $charge);
 
             DB::commit();

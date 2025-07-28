@@ -10,7 +10,7 @@
                 </h3>
             </x-slot>
             <form action="{{ route('admin.settings.update') }}" method="post"
-                class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                class="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-0">
                 @csrf
                 <x-forms.input name="title" label="Website Name" type="text" :value="$settings->title"
                     placeholder="Enter website name" icon="fas fa-globe" />
@@ -45,7 +45,7 @@
             <form action="{{ route('admin.settings.update') }}" method="post" enctype="multipart/form-data"
                 class="space-y-6">
                 @csrf
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-0">
                     <div>
                         <x-forms.file name="logo" label="Site Logo" :value="$settings->logo" accept="image/*"
                             preview-class="h-20 w-30 mt-2" />
@@ -70,7 +70,7 @@
                 </h3>
             </x-slot>
             <form action="{{ route('admin.settings.update') }}" method="post"
-                class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                class="grid grid-cols-1 md:grid-cols-2 gap-6 gap-y-0">
                 @csrf
                 <x-forms.input name="facebook" label="Facebook" type="text" :value="$settings->facebook"
                     icon="fab fa-facebook" />
@@ -100,7 +100,7 @@
                 </h3>
             </x-slot>
             <form action="{{ route('admin.settings.update') }}" method="post"
-                class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                class="grid grid-cols-1 md:grid-cols-3 gap-6 gap-y-0">
                 @csrf
                 <x-forms.input name="currency" label="Currency Symbol" type="text" :value="$settings->currency" required />
                 <x-forms.input name="currency_code" label="Currency Code" type="text" :value="$settings->currency_code"

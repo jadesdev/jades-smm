@@ -4,6 +4,7 @@ namespace App\Livewire\Admin;
 
 use App\Models\ApiProvider;
 use App\Models\Order;
+use App\Models\Transaction;
 use App\Traits\LivewireToast;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Layout;
@@ -73,6 +74,10 @@ class OrderManager extends Component
     public string $metaKeywords;
 
     public string $metaImage;
+    public $deletingOrder = null;
+    public $editingOrder = null;
+    public $page = 'list';
+    public $editData = [];
 
     public function mount()
     {
@@ -105,7 +110,7 @@ class OrderManager extends Component
     public function updateStatus($status)
     {
         $this->status = $status;
-        $this->metaTitle = $status === 'all' ? 'Order Management' : Str::title($status).' Orders';
+        $this->metaTitle = $status === 'all' ? 'Order Management' : Str::title($status) . ' Orders';
         $this->resetPage();
         $this->resetSelection();
     }
@@ -184,7 +189,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to update orders: '.$e->getMessage());
+            $this->errorAlert('Failed to update orders: ' . $e->getMessage());
         }
     }
 
@@ -217,7 +222,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to cancel and refund orders: '.$e->getMessage());
+            $this->errorAlert('Failed to cancel and refund orders: ' . $e->getMessage());
         }
     }
 
@@ -248,33 +253,182 @@ class OrderManager extends Component
             $this->resetSelection();
             $this->loadStatusCounts();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend orders: '.$e->getMessage());
+            $this->errorAlert('Failed to resend orders: ' . $e->getMessage());
         }
     }
 
     // Individual Actions
     public function viewOrder($orderId)
     {
-        // Redirect to order details page or emit event
         $this->dispatch('viewOrder', orderId: $orderId);
     }
 
     public function editOrder($orderId)
     {
-        // Redirect to edit page or emit event
-        $this->dispatch('editOrder', orderId: $orderId);
+        $order = Order::with([
+            'service:id,name,category_id',
+            'service.category:id,name',
+            'user:id,name,email',
+            'apiProvider:id,name'
+        ])->findOrFail($orderId);
+
+        $this->editData = [
+            'id' => $order->id,
+            'link' => $order->link,
+            'remains' => $order->remains,
+            'start_counter' => $order->start_counter,
+            'status' => $order->status,
+            'note' => $order->note,
+        ];
+
+        $this->editingOrder = $order;
+        $this->page = 'edit';
     }
 
-    public function deleteOrder($orderId)
+    public function cancelEdit()
     {
+        $this->editingOrder = null;
+        $this->page = "list";
+    }
+
+    public function updateOrder()
+    {
+        $this->validate([
+            'editData.link' => 'required|string|max:255',
+            'editData.remains' => 'nullable|numeric|min:0',
+            'editData.start_counter' => 'nullable|numeric|min:0',
+            'editData.status' => 'required|in:pending,processing,inprogress,completed,partial,canceled,refunded,error,fail',
+            'editData.note' => 'nullable|string|max:1000',
+        ]);
+
         try {
-            $order = Order::findOrFail($orderId);
-            // $order->delete();
-            $this->successAlert('Order deleted successfully');
+            DB::beginTransaction();
+
+            $order = $this->editingOrder;
+            $user = $order->user;
+
+            if (!$order || !$user) {
+                throw new \Exception('Order or user not found.');
+            }
+
+            $oldRemains = $order->remains;
+            $oldStatus = $order->status;
+            $newStatus = $this->editData['status'];
+
+            // Update basic fields
+            $order->link = $this->editData['link'];
+            $order->remains = $this->editData['remains'] ?? 0;
+            $order->start_counter = $this->editData['start_counter'];
+            $order->note = $this->editData['note'];
+            $order->error = 0; // Reset error flag when manually updating
+            $order->error_message = null;
+
+            // Refund logic for cancel or partial status
+            if (
+                in_array($newStatus, ['canceled', 'partial', 'refunded']) &&
+                $oldRemains > 0 &&
+                !in_array($oldStatus, ['canceled', 'completed', 'refunded'])
+            ) {
+                $perOrder = $order->quantity > 0 ? ($order->price / $order->quantity) : 0;
+                $refundAmount = $oldRemains * $perOrder;
+
+                if ($refundAmount > 0) {
+                    // Update user balance
+                    $user->increment('balance', $refundAmount);
+
+                    // Create transaction record
+                    Transaction::create([
+                        'user_id' => $user->id,
+                        'type' => 'credit',
+                        'code' => getTrx(),
+                        'service' => 'order',
+                        'message' => 'Refund for order #{$order->id}',
+                        'amount' => $refundAmount,
+                        'image' => 'order.png',
+                        'charge' => 0,
+                        'new_balance' => $user->balance,
+                        'old_balance' => $user->balance - $refundAmount,
+                        'meta' => [
+                            'service_id' => $order->service_id,
+                            'order_id' => $order->id,
+                        ],
+                        'status' => 'successful',
+                    ]);
+                }
+            }
+
+            // Update status
+            $order->status = $newStatus;
+            $order->save();
+
+            // Send notification to user
+            $this->sendOrderUpdateNotification($order, $user);
+
+            DB::commit();
+
+            $this->successAlert('Order updated successfully');
+            $this->page = 'list';
+            $this->editingOrder = null;
             $this->loadStatusCounts();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to delete order: '.$e->getMessage());
+            DB::rollback();
+            $this->errorAlert('Failed to update order: ' . $e->getMessage());
         }
+    }
+
+    private function sendOrderUpdateNotification($order, $user)
+    {
+        try {
+            // Email notification
+            $subject = 'Order Status Updated';
+            $message = view('emails.order-updated', [
+                'order' => $order,
+                'user' => $user
+            ])->render();
+
+            // You can replace this with your actual email sending method
+            // general_email($user->email, $subject, $message);
+
+            // In-app notification (if you have a notification system)
+            $user->notifications()->create([
+                'title' => 'Order Status Updated',
+                'message' => "Your Order #{$order->id} status has been updated to: " . ucfirst($order->status),
+                'type' => 'order_update',
+                'data' => [
+                    'order_id' => $order->id,
+                    'status' => $order->status,
+                    'remains' => $order->remains,
+                ],
+            ]);
+        } catch (\Exception $e) {
+            // Log notification error but don't fail the main operation
+            \Log::warning('Failed to send order update notification: ' . $e->getMessage());
+        }
+    }
+
+    public function deleteModal($orderId)
+    {
+        $this->deletingOrder = Order::findOrFail($orderId);
+        $this->dispatch('open-modal', name: 'delete-order-modal');
+    }
+
+    public function deleteOrder()
+    {
+        try {
+            $this->deletingOrder->delete();
+            $this->successAlert('Order deleted successfully');
+            $this->dispatch('close-modal', name: 'delete-order-modal');
+            $this->deletingOrder = null;
+            $this->loadStatusCounts();
+        } catch (\Exception $e) {
+            $this->errorAlert('Failed to delete order: ' . $e->getMessage());
+        }
+    }
+
+    public function closeDeleteModal(): void
+    {
+        $this->dispatch('close-modal', name: 'delete-order-modal');
+        $this->deletingOrder = null;
     }
 
     public function viewResponse($orderId)
@@ -301,7 +455,7 @@ class OrderManager extends Component
                 $this->errorAlert('Order is not in error state');
             }
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend order: '.$e->getMessage());
+            $this->errorAlert('Failed to resend order: ' . $e->getMessage());
         }
     }
 
@@ -379,7 +533,7 @@ class OrderManager extends Component
 
         // Apply search filter
         if ($this->search) {
-            $query->search('%'.$this->search.'%');
+            $query->search('%' . $this->search . '%');
         }
     }
 

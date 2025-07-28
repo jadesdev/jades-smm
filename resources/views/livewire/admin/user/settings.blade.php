@@ -27,7 +27,7 @@
         <form wire:submit="saveWelcomeBonus" class="space-y-6">
             <x-forms.toggle label="Enable Welcome Bonus" wire:model.lazy="sysSettings.is_welcome_bonus" />
 
-            <x-forms.input name="welcome_bonus" type="number" label="Welcome Bonus {{ get_setting('currency') }}"
+            <x-forms.input name="welcome_bonus" type="number" label="Welcome Bonus ({{ get_setting('currency') }})"
                 wire:model="welcome_bonus" required />
 
             <div class="flex justify-end">
