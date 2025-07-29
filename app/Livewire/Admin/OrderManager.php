@@ -158,12 +158,10 @@ class OrderManager extends Component
         $this->selectAll = false;
     }
 
-    // Bulk Actions
     public function bulkSetStatus($status)
     {
         if (empty($this->selectedOrders)) {
             $this->errorAlert('No orders selected');
-
             return;
         }
 
@@ -172,15 +170,28 @@ class OrderManager extends Component
         try {
             DB::beginTransaction();
 
-            if ($status === 'pending' && $count === 1) {
-                // Single order - send to API directly (placeholder)
-                $this->sendSingleOrderToApi($this->selectedOrders[0]);
-            } else {
-                // Bulk update - just set status
-                Order::whereIn('id', $this->selectedOrders)->update([
-                    'status' => $status,
-                    'updated_at' => now(),
-                ]);
+            foreach ($this->selectedOrders as $orderId) {
+                $order = Order::with('user')->findOrFail($orderId);
+
+                if (
+                    in_array($status, ['canceled', 'partial', 'refunded']) &&
+                    $order->remains > 0 &&
+                    !in_array($order->status, ['canceled', 'completed', 'refunded'])
+                ) {
+                    $this->refundUserBalance($order);
+                }
+
+                $order->update(['status' => $status, 'updated_at' => now()]);
+
+                if ($status === 'pending') {
+                    $this->sendSingleOrderToApi($orderId);
+                }
+                if ($status === 'completed') {
+                    $order->update([
+                        'remains' => 0,
+                    ]);
+                }
+                $this->sendOrderUpdateNotification($order, $order->user);
             }
 
             DB::commit();
@@ -209,10 +220,8 @@ class OrderManager extends Component
             $orders = Order::with('user')->whereIn('id', $this->selectedOrders)->get();
 
             foreach ($orders as $order) {
-                // Update order status
                 $order->update(['status' => 'refunded']);
 
-                // Refund user balance (placeholder - implement your refund logic)
                 $this->refundUserBalance($order);
             }
 
@@ -359,6 +368,9 @@ class OrderManager extends Component
 
             // Update status
             $order->status = $newStatus;
+            if ($newStatus === 'completed') {
+                $order->remains = 0;
+            }
             $order->save();
 
             // Send notification to user

@@ -112,7 +112,7 @@
                                 <x-status-badge :status="$service->status" />
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
-                                <x-button wire:navigate href="{{ route('admin.services.edit', $service->id) }}"
+                                <x-button href="{{ route('admin.services.edit', $service->id) }}"
                                     variant="primary" size="xs"><i class="fa fa-edit"></i></x-button>
                                 <x-button wire:click="delete({{ $service->id }})" variant="danger" size="xs"><i
                                         class="fa fa-trash"></i></x-button>
