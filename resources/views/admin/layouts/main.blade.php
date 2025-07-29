@@ -42,6 +42,8 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/toolbar/prism-toolbar.min.css"
         rel="stylesheet" crossorigin="anonymous" />
     <link rel="stylesheet" href="{{ static_asset('css/main.css') }}">
+    <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet" />
+
     @yield('styles')
     @stack('styles')
     @livewireStyles()
@@ -97,6 +99,8 @@
     <script
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"
         crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
+
 
 </body>
 

@@ -2,9 +2,11 @@
 
 use App\Http\Controllers\SettingsController;
 use App\Livewire\Admin\ApiProviderManager;
+use App\Livewire\Admin\BulkEmail;
 use App\Livewire\Admin\CategoryManager;
 use App\Livewire\Admin\Dashboard;
 use App\Livewire\Admin\EmailSetting;
+use App\Livewire\Admin\EmailTemplate;
 use App\Livewire\Admin\GeneralSettings;
 use App\Livewire\Admin\OrderManager;
 use App\Livewire\Admin\ServiceForm;
@@ -54,5 +56,10 @@ Route::controller(SettingsController::class)->as('settings.')->prefix('settings'
 
 // Email Setting
 Route::get('email/settings', EmailSetting::class)->name('email.settings');
-// Route::get('email/templates', EmailTemplate::class)->name('email.templates');
-// Route::get('email/templates/edit/{id}', EmailTemplate::class)->name('email.templates.edit');
+Route::get('email/templates', EmailTemplate::class)->name('email.templates');
+Route::get('email/templates/edit/{id}', EmailTemplate::class)->name('email.templates.edit');
+Route::get('email/bulk', BulkEmail::class)->name('email.bulk');
+Route::get('email/bulk/add', BulkEmail::class)->name('email.bulk.add');
+Route::get('email/bulk/edit/{id}', BulkEmail::class)->name('email.bulk.edit');
+
+

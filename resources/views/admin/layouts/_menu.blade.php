@@ -42,7 +42,7 @@
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Settings</h6>
     <x-sidebar.submenu icon="fad fa-envelope" name="Email" :submenu-items="[
         [
-            'href' => '#',
+            'href' => route('admin.email.templates'),
             'name' => 'Email Templates',
         ],
         [
@@ -50,7 +50,7 @@
             'name' => 'Settings',
         ],
         [
-            'href' => route('admin.dashboard'),
+            'href' => route('admin.email.bulk'),
             'name' => 'Bulk Email',
         ],
     ]" />
