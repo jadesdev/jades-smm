@@ -67,7 +67,7 @@ class ApiProviderService
             'action' => 'balance',
         ];
 
-        return $this->postRequest($provider->url, $payload);
+        return $this->postRequest($provider, $payload);
     }
 
     public function getServices(ApiProvider $provider)
@@ -77,23 +77,52 @@ class ApiProviderService
             'action' => 'services',
         ];
 
-        return $this->postRequest($provider->url, $payload);
+        return $this->postRequest($provider, $payload);
     }
 
-    public function postRequest($endpoint, $payload)
+    public function sendOrders(ApiProvider $provider, array $data)
+    {
+        $data['key'] = $provider->api_key;
+
+        return $this->postRequest($provider, $data);
+    }
+
+    public function multipleStatus(ApiProvider $provider, array $orderIds)
+    {
+        $payload = [
+            'key'    => $provider->api_key,
+            'action' => 'status',
+            'orders' => implode(",", $orderIds)
+        ];
+
+        return $this->postRequest($provider, $payload);
+    }
+
+    public function multipleRefillStatus(ApiProvider $provider, array $refillIds)
+    {
+        $payload = [
+            'key'    => $provider->api_key,
+            'action' => 'refill_status',
+            'refills' => implode(",", $refillIds)
+        ];
+
+        return $this->postRequest($provider, $payload);
+    }
+
+    public function postRequest(ApiProvider $provider, $payload)
     {
         try {
-            $res = Http::timeout(240)->post($endpoint, $payload);
+            $res = Http::timeout(240)->post($provider->url, $payload);
 
             return $res->json();
         } catch (Exception $e) {
-            Log::error('Provider request exception:'.$e->getMessage());
+            Log::error('Provider request exception:' . $e->getMessage());
             throw $e;
         }
     }
 
-    public function getRequest($endpoint, $payload = null)
+    public function getRequest(ApiProvider $provider, $payload = null)
     {
-        return Http::get($endpoint, $payload)->json();
+        return Http::get($provider->url, $payload)->json();
     }
 }

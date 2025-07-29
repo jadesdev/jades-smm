@@ -311,7 +311,7 @@ class ApiOrderController extends Controller
                 return $multiple ? array_merge($responseData, ['status' => $status]) : response()->json(['error' => $status['error']], 400);
             }
 
-            $refillResponse = Http::post(optional($order->service)->provider->api_url, [
+            $refillResponse = Http::post(optional($order->service)->provider->url, [
                 'key' => optional(optional($order->service)->provider)->api_key,
                 'action' => 'refill',
                 'order' => $order->api_order_id

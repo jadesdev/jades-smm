@@ -17,6 +17,15 @@ Route::get('/dashboard', function () {
 
 require __DIR__.'/auth.php';
 
+// cron jobs
+Route::get('queue-work', function () {
+    return Illuminate\Support\Facades\Artisan::call('queue:work', ['--stop-when-empty' => true]);
+})->name('queue.work');
+
+// Cron job
+Route::get('/cron-job', [App\Http\Controllers\CronController::class, 'handle'])->name('cron');
+
+
 // user
 Route::prefix('user')->as('user.')->middleware(['auth'])->group(function (): void {
     require __DIR__.'/user.php';
