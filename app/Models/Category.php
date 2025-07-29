@@ -34,6 +34,6 @@ class Category extends Model
 
     public function activeServices()
     {
-        return $this->services()->where('status', true);
+        return $this->services()->where('status', 1);
     }
 }

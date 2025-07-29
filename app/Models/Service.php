@@ -45,7 +45,7 @@ class Service extends Model
         'dripfeed' => 'boolean',
         'refill' => 'boolean',
         'refill_automatic' => 'boolean',
-        'status' => 'boolean',
+        // 'status' => 'boolean',
         'cancel' => 'boolean',
     ];
 

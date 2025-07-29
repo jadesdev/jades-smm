@@ -323,35 +323,10 @@ if (! function_exists('render_sortable_header')) {
         HTML;
     }
 }
-function order_remains_format($input_remains)
+
+function formatOrderStatus($status)
 {
-    $remains = $input_remains;
-    if ($remains < 0) {
-        $remains = abs($remains);
-        $remains = "+" . $remains;
-    }
-    return $remains;
-}
-
-if (!function_exists('calculate_order_by_status')) {
-    function calculate_order_by_status($data_order = [], $params = [])
-    {
-        $result = [];
-        $remains = $params['remains'];
-
-        $charge_back = $real_charge = $formal_charge = $profit = 0;
-        if ($params['status'] == 'partial') {
-            $real_charge   = $data_order['charge'] * (1 - ((int)$remains / (int)$data_order['quantity']));
-            $formal_charge = $data_order['formal_charge'] * (1 - ((int)$remains / (int)$data_order['quantity']));
-            $profit        = $data_order['profit'] * (1 - ((int)$remains / (int)$data_order['quantity']));
-        }
-        $refund_money = $data_order['charge'] - $real_charge;
-        $result = [
-            'real_charge'   => $real_charge,
-            'profit'        => $profit,
-            'api_price' => $formal_charge,
-            'refund_money'  => $refund_money,
-        ];
-        return $result;
-    }
+    $status = str_replace('_', '', $status);
+    $status = str_replace(' ', '', $status);
+    return strtolower($status);
 }

@@ -449,7 +449,7 @@ class OrderManager extends Component
         if ($order && $order->response) {
             $this->selectedOrderId = $orderId;
             $this->selectedOrderResponse = $order->response;
-            $this->showResponseModal = true;
+            $this->dispatch('open-modal', name: 'order-response-modal');
         } else {
             $this->errorAlert('No response data available for this order');
         }

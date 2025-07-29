@@ -54,7 +54,8 @@ class CronController extends Controller
             ->limit(500)
             ->get();
         if ($orders->isEmpty()) {
-            return 'No orders found';
+            echo 'No orders found to process <br>';
+            return 'No orders found to process';
         }
         foreach ($orders as $order) {
             $provider = $order->provider;
@@ -167,7 +168,6 @@ class CronController extends Controller
      */
     public function updateOrderStatus(Request $request)
     {
-        // get orders (This query is good)
         $orders = Order::whereIn('status', ['active', 'processing', 'inprogress', 'pending'])
             ->where('api_order_id', '>', 0)
             ->where('updated_at', '<', now()->subMinutes(5))
@@ -177,6 +177,7 @@ class CronController extends Controller
             ->get();
 
         if ($orders->isEmpty()) {
+            echo 'No orders found to update. <br>';
             return 'No orders found to update.';
         }
 
@@ -189,13 +190,12 @@ class CronController extends Controller
             }
 
             $response = $this->providerService->multipleStatus($provider, $ordersGroup->pluck('api_order_id')->toArray());
-
-            if ($response) {
+            if ($response && is_array($response)) {
+                $response = collect($response)->keyBy('order')->toArray();
                 foreach ($ordersGroup as $order) {
                     if (isset($response[$order->api_order_id])) {
                         $apiOrderData = $response[$order->api_order_id];
-
-                        echo "Processing Order ID: {$order->id}... ";
+                        echo "Processing Order ID: {$order->id}... <br>";
 
                         if (isset($apiOrderData['error'])) {
                             $order->note = $apiOrderData['error'];
@@ -203,11 +203,12 @@ class CronController extends Controller
                         }
 
                         if (isset($apiOrderData['status'])) {
-                            $received_status = strtolower($apiOrderData['status']);
+                            $received_status = strtolower(str_replace(' ', '', $apiOrderData['status']));
 
                             $order->status = $received_status;
                             $order->start_counter = $apiOrderData['start_count'] ?? $order->start_counter;
                             $order->remains = $apiOrderData['remains'] ?? $order->remains;
+
 
                             if (in_array($received_status, ['partial', 'canceled', 'refunded'])) {
                                 $order->load('user');
@@ -230,7 +231,7 @@ class CronController extends Controller
                                         $user->save();
 
                                         $order->is_refunded = 1;
-                                        echo "Refunded {$refundAmount} to user {$user->id}. ";
+                                        echo "Refunded {$refundAmount} to user {$user->id}. <br>";
                                     }
                                 }
                                 $order->status = $received_status;
@@ -239,6 +240,7 @@ class CronController extends Controller
                             echo "Status updated to {$received_status}.<br>";
                         }
 
+                        $order->response = $apiOrderData ?? [];
                         $order->save();
                     }
                 }
@@ -259,6 +261,7 @@ class CronController extends Controller
             ->get();
 
         if ($orders->isEmpty()) {
+            echo 'No pending refills to check. <br>';
             return 'No pending refills to check.';
         }
 
@@ -277,15 +280,18 @@ class CronController extends Controller
             );
 
             if ($response && is_array($response)) {
+                $response = collect($response)->keyBy('refill')->toArray();
                 foreach ($ordersGroup as $order) {
                     if (isset($response[$order->api_refill_id])) {
                         $refillData = $response[$order->api_refill_id];
                         if (isset($refillData['status'])) {
-                            $order->refill_status = strtolower($refillData['status']);
-                            $order->status = ($refillData['status']);
-                            $order->save();
+                            $order->refill_status = formatOrderStatus($refillData['status']);
+                            $order->status = formatOrderStatus($refillData['status']);
+                            // $order->save();
                             echo "Refill for Order #{$order->id} updated to: {$order->refill_status} <br>";
                         }
+                        $order->response = $refillData ?? [];
+                        $order->save();
                     }
                 }
             }
@@ -335,6 +341,7 @@ class CronController extends Controller
             ->get();
 
         if ($orders->isEmpty()) {
+            echo 'No active Drip-Feed orders found. <br>';
             return 'No active Drip-Feed orders found.';
         }
 
@@ -402,6 +409,7 @@ class CronController extends Controller
                         if (in_array($order->sub_status, ['Completed', 'Expired', 'Canceled'])) {
                             $order->status = strtolower($order->sub_status);
                         }
+
                         $order->save();
 
                         if (!empty($subData['orders'])) {

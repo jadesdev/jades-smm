@@ -104,12 +104,10 @@ class Index extends Component
             ->where('is_drip_feed', false)
             ->where('service_type', '!=', 'subscriptions');
 
-        // Apply status filter
         if ($this->status && $this->status !== 'all') {
             $query->where('status', $this->status);
         }
 
-        // Apply search filter
         if ($this->search) {
             $query->where(function ($q) {
                 $q->where('id', 'like', '%'.$this->search.'%')
