@@ -4,7 +4,6 @@ namespace App\Livewire\Orders;
 
 use App\Exceptions\InsufficientBalanceException;
 use App\Models\Category;
-use App\Models\Order;
 use App\Models\Service;
 use App\Services\OrderService;
 use App\Traits\LivewireToast;
@@ -17,6 +16,7 @@ use Livewire\Component;
 class Bulk extends Component
 {
     use LivewireToast;
+
     public Collection $categories;
 
     public Collection $services;
@@ -24,9 +24,11 @@ class Bulk extends Component
     public ?int $category_id = null;
 
     public ?int $service_id = null;
+
     public array $orders = [];
 
     public string $bulk_order = '';
+
     public string $link = '';
 
     public ?int $quantity = null;
@@ -41,9 +43,10 @@ class Bulk extends Component
     public string $metaImage;
 
     public ?Service $selectedService = null;
-    public float $charge = 0.00;
-    public float $userBalance = 0.00;
 
+    public float $charge = 0.00;
+
+    public float $userBalance = 0.00;
 
     public function mount()
     {
@@ -56,7 +59,7 @@ class Bulk extends Component
 
         // Initialize with one empty row
         $this->orders = [
-            ['link' => '', 'quantity' => '']
+            ['link' => '', 'quantity' => ''],
         ];
 
         $service_id = request()->get('service_id');
@@ -122,12 +125,12 @@ class Bulk extends Component
     {
         $this->charge = 0.00;
 
-        if (!$this->selectedService) {
+        if (! $this->selectedService) {
             return;
         }
 
         foreach ($this->orders as $order) {
-            if (!empty($order['quantity']) && is_numeric($order['quantity'])) {
+            if (! empty($order['quantity']) && is_numeric($order['quantity'])) {
                 $quantity = (int) $order['quantity'];
                 $this->charge += ($quantity / 1000) * $this->selectedService->price;
             }
@@ -147,6 +150,7 @@ class Bulk extends Component
         // Check if user has sufficient balance
         if ($this->charge > $this->userBalance) {
             $this->errorAlert('Insufficient balance to place this order.');
+
             return;
         }
 
@@ -154,11 +158,12 @@ class Bulk extends Component
         $quantities = [];
 
         $validOrders = collect($this->orders)->filter(function ($order) {
-            return !empty($order['link']) && !empty($order['quantity']);
+            return ! empty($order['link']) && ! empty($order['quantity']);
         });
 
         if ($validOrders->isEmpty()) {
             $this->errorAlert('Please add at least one valid order.');
+
             return;
         }
 
@@ -175,13 +180,14 @@ class Bulk extends Component
             $result = $orderService->createBulkOrder(Auth::user(), $this->selectedService, $bulkData);
 
             if ($result['success']) {
-                $this->successAlert("Created {$result['order_count']} orders for " . format_price($result['total_charge']));
+                $this->successAlert("Created {$result['order_count']} orders for ".format_price($result['total_charge']));
 
-                if (!empty($result['errors'])) {
+                if (! empty($result['errors'])) {
                     foreach ($result['errors'] as $link => $error) {
                         $this->errorAlert("Error for {$link}: {$error}");
                     }
                 }
+
                 return $this->redirect(route('user.orders'), navigate: true);
             } else {
                 $this->errorAlert($result['message']);

@@ -4,8 +4,8 @@ namespace App\Livewire\Admin;
 
 use App\Models\NotifyTemplate;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -40,7 +40,7 @@ class EmailTemplate extends Component
 
     // meta
     public string $metaTitle = 'Email Templates';
-    
+
     public function sortBy($field): void
     {
         if ($this->sortField === $field) {
@@ -133,7 +133,6 @@ class EmailTemplate extends Component
         $this->content = $content;
     }
 
-
     public function render()
     {
         $templates = [];
@@ -141,9 +140,9 @@ class EmailTemplate extends Component
         if ($this->view === 'list') {
             $this->title = 'Email Templates';
             $templates = NotifyTemplate::when($this->search, function ($query): void {
-                $query->where('name', 'like', '%' . $this->search . '%')
-                    ->orWhere('type', 'like', '%' . $this->search . '%')
-                    ->orWhere('subject', 'like', '%' . $this->search . '%');
+                $query->where('name', 'like', '%'.$this->search.'%')
+                    ->orWhere('type', 'like', '%'.$this->search.'%')
+                    ->orWhere('subject', 'like', '%'.$this->search.'%');
             })
                 ->orderBy($this->sortField, $this->sortDirection)
                 ->paginate($this->perPage);

@@ -134,7 +134,7 @@ class ApiOrderController extends Controller
     public function add($user, $request, OrderService $orderService)
     {
         $service = Service::where('id', $request->service)->where('status', 1)->first();
-        if (!$service) {
+        if (! $service) {
             return response()->json(['error' => 'Invalid service ID'], 422);
         }
         $rules = ['service' => 'required|exists:services,id'];
@@ -241,7 +241,7 @@ class ApiOrderController extends Controller
             return response()->json([
                 'status' => 'success',
                 'message' => 'Your order has been placed successfully!',
-                'order' => $order->id
+                'order' => $order->id,
             ], 200);
         } catch (InsufficientBalanceException $e) {
             return response()->json(['error' => $e->getMessage()], 422);
@@ -255,12 +255,12 @@ class ApiOrderController extends Controller
      */
     public function refill($user, $request)
     {
-        if (!empty($request['refill'])) {
+        if (! empty($request['refill'])) {
             // Single refill request
             return $this->processRefill($user, $request['refill']);
         }
 
-        if (!empty($request['refills'])) {
+        if (! empty($request['refills'])) {
             // Multiple refill requests
             $refillIds = explode(',', $request['refills']);
             $response = [];
@@ -288,6 +288,7 @@ class ApiOrderController extends Controller
 
         if (! $order) {
             $status = ['error' => 'The selected order id is invalid.'];
+
             return $multiple ? array_merge($responseData, ['status' => $status]) : response()->json(['error' => $status['error']], 422);
         }
 
@@ -296,29 +297,32 @@ class ApiOrderController extends Controller
             optional($order->service)->refill != 3 &&
             $order->refilled_at->lt(Carbon::now()->subHours(24)) &&
             (
-                !isset($order->refill_status) ||
+                ! isset($order->refill_status) ||
                 in_array($order->refill_status, ['completed', 'partial', 'canceled', 'refunded'])
             );
 
-        if (!$canRefill) {
+        if (! $canRefill) {
             $status = ['error' => 'You are not eligible to send refill request.'];
+
             return $multiple ? array_merge($responseData, ['status' => $status]) : response()->json(['error' => $status['error']], 400);
         }
 
         if (optional($order->service)->refill == 2) {
             if (optional(optional($order->service)->provider)->status != 1) {
                 $status = ['error' => 'You are not eligible to send refill request.'];
+
                 return $multiple ? array_merge($responseData, ['status' => $status]) : response()->json(['error' => $status['error']], 400);
             }
 
             $refillResponse = Http::post(optional($order->service)->provider->url, [
                 'key' => optional(optional($order->service)->provider)->api_key,
                 'action' => 'refill',
-                'order' => $order->api_order_id
+                'order' => $order->api_order_id,
             ]);
 
-            if (!isset($refillResponse['refill'])) {
+            if (! isset($refillResponse['refill'])) {
                 $status = ['error' => 'You are not eligible to send refill request.'];
+
                 return $multiple ? array_merge($responseData, ['status' => $status]) : response()->json(['error' => $status['error']], 400);
             }
 
@@ -341,7 +345,7 @@ class ApiOrderController extends Controller
      */
     public function refill_status($user, $request)
     {
-        if (!empty($request['refill'])) {
+        if (! empty($request['refill'])) {
             $order = Order::where('id', $request['refill'])->where('user_id', $user->id)->whereNotNull('refill_status')->first();
 
             if (! $order) {
@@ -351,7 +355,7 @@ class ApiOrderController extends Controller
             return response()->json(['status' => ucfirst($order->refill_status)], 200);
         }
 
-        if (!empty($request['refills'])) {
+        if (! empty($request['refills'])) {
             $refillIds = explode(',', $request['refills']);
             $response = [];
 
@@ -383,10 +387,10 @@ class ApiOrderController extends Controller
      */
     public function cancel($user, $request)
     {
-        if (!empty($request->order)) {
+        if (! empty($request->order)) {
             $order = Order::where('id', $request->order)->where('user_id', $user->id)->with('service')->first();
 
-            $orderData = ['order' => (int)$request->order];
+            $orderData = ['order' => (int) $request->order];
 
             if (! $order) {
                 $orderData['cancel'] = ['error' => 'Incorrect order ID'];
@@ -418,7 +422,7 @@ class ApiOrderController extends Controller
             $response = [];
 
             foreach ($orderIds as $orderId) {
-                $orderData = ['order' => (int)$orderId];
+                $orderData = ['order' => (int) $orderId];
 
                 $order = Order::where('id', $orderId)
                     ->where('user_id', $user->id)

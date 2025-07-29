@@ -74,9 +74,13 @@ class OrderManager extends Component
     public string $metaKeywords;
 
     public string $metaImage;
+
     public $deletingOrder = null;
+
     public $editingOrder = null;
+
     public $page = 'list';
+
     public $editData = [];
 
     public function mount()
@@ -110,7 +114,7 @@ class OrderManager extends Component
     public function updateStatus($status)
     {
         $this->status = $status;
-        $this->metaTitle = $status === 'all' ? 'Order Management' : Str::title($status) . ' Orders';
+        $this->metaTitle = $status === 'all' ? 'Order Management' : Str::title($status).' Orders';
         $this->resetPage();
         $this->resetSelection();
     }
@@ -162,6 +166,7 @@ class OrderManager extends Component
     {
         if (empty($this->selectedOrders)) {
             $this->errorAlert('No orders selected');
+
             return;
         }
 
@@ -176,7 +181,7 @@ class OrderManager extends Component
                 if (
                     in_array($status, ['canceled', 'partial', 'refunded']) &&
                     $order->remains > 0 &&
-                    !in_array($order->status, ['canceled', 'completed', 'refunded'])
+                    ! in_array($order->status, ['canceled', 'completed', 'refunded'])
                 ) {
                     $this->refundUserBalance($order);
                 }
@@ -200,7 +205,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to update orders: ' . $e->getMessage());
+            $this->errorAlert('Failed to update orders: '.$e->getMessage());
         }
     }
 
@@ -231,7 +236,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to cancel and refund orders: ' . $e->getMessage());
+            $this->errorAlert('Failed to cancel and refund orders: '.$e->getMessage());
         }
     }
 
@@ -262,7 +267,7 @@ class OrderManager extends Component
             $this->resetSelection();
             $this->loadStatusCounts();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend orders: ' . $e->getMessage());
+            $this->errorAlert('Failed to resend orders: '.$e->getMessage());
         }
     }
 
@@ -278,7 +283,7 @@ class OrderManager extends Component
             'service:id,name,category_id',
             'service.category:id,name',
             'user:id,name,email',
-            'apiProvider:id,name'
+            'apiProvider:id,name',
         ])->findOrFail($orderId);
 
         $this->editData = [
@@ -297,7 +302,7 @@ class OrderManager extends Component
     public function cancelEdit()
     {
         $this->editingOrder = null;
-        $this->page = "list";
+        $this->page = 'list';
     }
 
     public function updateOrder()
@@ -316,7 +321,7 @@ class OrderManager extends Component
             $order = $this->editingOrder;
             $user = $order->user;
 
-            if (!$order || !$user) {
+            if (! $order || ! $user) {
                 throw new \Exception('Order or user not found.');
             }
 
@@ -336,7 +341,7 @@ class OrderManager extends Component
             if (
                 in_array($newStatus, ['canceled', 'partial', 'refunded']) &&
                 $oldRemains > 0 &&
-                !in_array($oldStatus, ['canceled', 'completed', 'refunded'])
+                ! in_array($oldStatus, ['canceled', 'completed', 'refunded'])
             ) {
                 $perOrder = $order->quantity > 0 ? ($order->price / $order->quantity) : 0;
                 $refundAmount = $oldRemains * $perOrder;
@@ -384,7 +389,7 @@ class OrderManager extends Component
             $this->loadStatusCounts();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to update order: ' . $e->getMessage());
+            $this->errorAlert('Failed to update order: '.$e->getMessage());
         }
     }
 
@@ -395,7 +400,7 @@ class OrderManager extends Component
             $subject = 'Order Status Updated';
             $message = view('emails.order-updated', [
                 'order' => $order,
-                'user' => $user
+                'user' => $user,
             ])->render();
 
             // You can replace this with your actual email sending method
@@ -404,7 +409,7 @@ class OrderManager extends Component
             // In-app notification (if you have a notification system)
             $user->notifications()->create([
                 'title' => 'Order Status Updated',
-                'message' => "Your Order #{$order->id} status has been updated to: " . ucfirst($order->status),
+                'message' => "Your Order #{$order->id} status has been updated to: ".ucfirst($order->status),
                 'type' => 'order_update',
                 'data' => [
                     'order_id' => $order->id,
@@ -414,7 +419,7 @@ class OrderManager extends Component
             ]);
         } catch (\Exception $e) {
             // Log notification error but don't fail the main operation
-            \Log::warning('Failed to send order update notification: ' . $e->getMessage());
+            \Log::warning('Failed to send order update notification: '.$e->getMessage());
         }
     }
 
@@ -433,7 +438,7 @@ class OrderManager extends Component
             $this->deletingOrder = null;
             $this->loadStatusCounts();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to delete order: ' . $e->getMessage());
+            $this->errorAlert('Failed to delete order: '.$e->getMessage());
         }
     }
 
@@ -467,7 +472,7 @@ class OrderManager extends Component
                 $this->errorAlert('Order is not in error state');
             }
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend order: ' . $e->getMessage());
+            $this->errorAlert('Failed to resend order: '.$e->getMessage());
         }
     }
 
@@ -545,7 +550,7 @@ class OrderManager extends Component
 
         // Apply search filter
         if ($this->search) {
-            $query->search('%' . $this->search . '%');
+            $query->search('%'.$this->search.'%');
         }
     }
 

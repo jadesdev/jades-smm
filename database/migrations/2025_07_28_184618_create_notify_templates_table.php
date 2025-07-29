@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('notify_templates', function (Blueprint $table) {
-            $table->ulid('id')->primary();            
+            $table->ulid('id')->primary();
             $table->string('type', 40)->unique();
             $table->string('name', 100)->nullable();
             $table->string('title', 255)->nullable();

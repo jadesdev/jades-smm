@@ -9,13 +9,11 @@ use App\Models\Order;
 use App\Models\Setting;
 use App\Services\ApiProviderService;
 use Carbon\Carbon;
-use Http;
 use Illuminate\Http\Request;
 
 class CronController extends Controller
 {
-
-    function __construct(private ApiProviderService $providerService) {}
+    public function __construct(private ApiProviderService $providerService) {}
 
     /**
      * Handle cron jobs
@@ -55,12 +53,13 @@ class CronController extends Controller
             ->get();
         if ($orders->isEmpty()) {
             echo 'No orders found to process <br>';
+
             return 'No orders found to process';
         }
         foreach ($orders as $order) {
             $provider = $order->provider;
             if (! $provider) {
-                $response = ['error' => "API Provider does not exists"];
+                $response = ['error' => 'API Provider does not exists'];
                 $order->error = 1;
                 $order->error_message = $response['error'];
                 $order->response = $response;
@@ -75,73 +74,73 @@ class CronController extends Controller
             // add based on service type
             switch ($order->service_type) {
                 case 'subscriptions':
-                    $requestData["username"] = $order->username;
-                    $requestData["min"]      = $order->sub_min;
-                    $requestData["max"]      = $order->sub_max;
-                    $requestData["posts"]    = ($order->sub_posts == -1) ? 0 : $order->sub_posts;
-                    $requestData["delay"]    = $order->sub_delay;
-                    $requestData["expiry"]   = (!empty($order->sub_expiry)) ? date("d/m/Y",  strtotime($order->sub_expiry)) : ""; //change date format dd/mm/YYYY
+                    $requestData['username'] = $order->username;
+                    $requestData['min'] = $order->sub_min;
+                    $requestData['max'] = $order->sub_max;
+                    $requestData['posts'] = ($order->sub_posts == -1) ? 0 : $order->sub_posts;
+                    $requestData['delay'] = $order->sub_delay;
+                    $requestData['expiry'] = (! empty($order->sub_expiry)) ? date('d/m/Y', strtotime($order->sub_expiry)) : ''; // change date format dd/mm/YYYY
                     break;
 
                 case 'custom_comments':
-                    $requestData["link"]     = $order->link;
-                    $requestData["comments"] = ($order->comments);
+                    $requestData['link'] = $order->link;
+                    $requestData['comments'] = ($order->comments);
                     break;
 
                 case 'mentions_with_hashtags':
-                    $requestData["link"]         = $order->link;
-                    $requestData["quantity"]     = $order->quantity;
-                    $requestData["usernames"]    = $order->usernames;
-                    $requestData["hashtags"]     = $order->hashtags;
+                    $requestData['link'] = $order->link;
+                    $requestData['quantity'] = $order->quantity;
+                    $requestData['usernames'] = $order->usernames;
+                    $requestData['hashtags'] = $order->hashtags;
                     break;
 
                 case 'mentions_custom_list':
-                    $requestData["link"]         = $order->link;
-                    $requestData["usernames"]    = ($order->usernames);
+                    $requestData['link'] = $order->link;
+                    $requestData['usernames'] = ($order->usernames);
                     break;
 
                 case 'mentions_hashtag':
-                    $requestData["link"]         = $order->link;
-                    $requestData["quantity"]     = $order->quantity;
-                    $requestData["hashtag"]      = $order->hashtag;
+                    $requestData['link'] = $order->link;
+                    $requestData['quantity'] = $order->quantity;
+                    $requestData['hashtag'] = $order->hashtag;
                     break;
 
                 case 'mentions_user_followers':
-                    $requestData["link"]         = $order->link;
-                    $requestData["quantity"]     = $order->quantity;
-                    $requestData["username"]     = $order->username;
+                    $requestData['link'] = $order->link;
+                    $requestData['quantity'] = $order->quantity;
+                    $requestData['username'] = $order->username;
                     break;
 
                 case 'mentions_media_likers':
-                    $requestData["link"]         = $order->link;
-                    $requestData["quantity"]     = $order->quantity;
-                    $requestData["media"]        = $order->media;
+                    $requestData['link'] = $order->link;
+                    $requestData['quantity'] = $order->quantity;
+                    $requestData['media'] = $order->media;
                     break;
 
                 case 'package':
-                    $requestData["link"]         = $order->link;
+                    $requestData['link'] = $order->link;
                     break;
 
                 case 'custom_comments_package':
-                    $requestData["link"]         = $order->link;
-                    $requestData["comments"]     = ($order->comments);
+                    $requestData['link'] = $order->link;
+                    $requestData['comments'] = ($order->comments);
                     break;
 
                 case 'comment_likes':
-                    $requestData["link"]         = $order->link;
-                    $requestData["quantity"]     = $order->quantity;
-                    $requestData["username"]     = $order->username;
+                    $requestData['link'] = $order->link;
+                    $requestData['quantity'] = $order->quantity;
+                    $requestData['username'] = $order->username;
                     break;
 
                 default:
-                    $requestData["link"] = $order->link;
-                    $requestData["quantity"] = $order->quantity;
+                    $requestData['link'] = $order->link;
+                    $requestData['quantity'] = $order->quantity;
                     if ($order->is_drip_feed) {
-                        $requestData["runs"]     = $order->runs;
-                        $requestData["interval"] = $order->interval;
-                        $requestData["quantity"] = $order->dripfeed_quantity;
+                        $requestData['runs'] = $order->runs;
+                        $requestData['interval'] = $order->interval;
+                        $requestData['quantity'] = $order->dripfeed_quantity;
                     } else {
-                        $requestData["quantity"] = $order->quantity;
+                        $requestData['quantity'] = $order->quantity;
                     }
                     break;
             }
@@ -160,6 +159,7 @@ class CronController extends Controller
                 $order->save();
             }
         }
+
         return 'success';
     }
 
@@ -178,6 +178,7 @@ class CronController extends Controller
 
         if ($orders->isEmpty()) {
             echo 'No orders found to update. <br>';
+
             return 'No orders found to update.';
         }
 
@@ -185,7 +186,7 @@ class CronController extends Controller
 
         foreach ($ordersByProvider as $providerId => $ordersGroup) {
             $provider = ApiProvider::find($providerId);
-            if (!$provider) {
+            if (! $provider) {
                 continue;
             }
 
@@ -208,7 +209,6 @@ class CronController extends Controller
                             $order->status = $received_status;
                             $order->start_counter = $apiOrderData['start_count'] ?? $order->start_counter;
                             $order->remains = $apiOrderData['remains'] ?? $order->remains;
-
 
                             if (in_array($received_status, ['partial', 'canceled', 'refunded'])) {
                                 $order->load('user');
@@ -246,6 +246,7 @@ class CronController extends Controller
                 }
             }
         }
+
         return 'Status update process completed.';
     }
 
@@ -262,13 +263,14 @@ class CronController extends Controller
 
         if ($orders->isEmpty()) {
             echo 'No pending refills to check. <br>';
+
             return 'No pending refills to check.';
         }
 
         $ordersByProvider = $orders->groupBy('service.provider.id');
 
         foreach ($ordersByProvider as $providerId => $ordersGroup) {
-            if (!$providerId) {
+            if (! $providerId) {
                 continue;
             }
 
@@ -296,8 +298,10 @@ class CronController extends Controller
                 }
             }
         }
+
         return 'Refill status check complete.';
     }
+
     /**
      * Send scheduled email
      */
@@ -342,13 +346,16 @@ class CronController extends Controller
 
         if ($orders->isEmpty()) {
             echo 'No active Drip-Feed orders found. <br>';
+
             return 'No active Drip-Feed orders found.';
         }
 
         $ordersByProvider = $orders->groupBy('service.provider.id');
 
         foreach ($ordersByProvider as $providerId => $ordersGroup) {
-            if (!$providerId || !$ordersGroup->first()->service->provider) continue;
+            if (! $providerId || ! $ordersGroup->first()->service->provider) {
+                continue;
+            }
 
             $provider = $ordersGroup->first()->service->provider;
             $response = $this->providerService->multipleStatus($provider, $ordersGroup->pluck('api_order_id')->toArray());
@@ -362,7 +369,7 @@ class CronController extends Controller
                         $order->runs = $dripData['runs'] ?? $order->runs;
                         $order->save();
 
-                        if (!empty($dripData['orders'])) {
+                        if (! empty($dripData['orders'])) {
                             $this->createChildOrdersFromProvider($order, $dripData['orders']);
                         }
                         echo "Drip-Feed #{$order->id} status updated to: {$order->status}. <br>";
@@ -370,6 +377,7 @@ class CronController extends Controller
                 }
             }
         }
+
         return 'Drip-Feed status check complete.';
     }
 
@@ -394,7 +402,9 @@ class CronController extends Controller
         $ordersByProvider = $orders->groupBy('service.provider.id');
 
         foreach ($ordersByProvider as $providerId => $ordersGroup) {
-            if (!$providerId || !$ordersGroup->first()->service->provider) continue;
+            if (! $providerId || ! $ordersGroup->first()->service->provider) {
+                continue;
+            }
 
             $provider = $ordersGroup->first()->service->provider;
             $response = $this->providerService->multipleStatus($provider, $ordersGroup->pluck('api_order_id')->toArray());
@@ -412,7 +422,7 @@ class CronController extends Controller
 
                         $order->save();
 
-                        if (!empty($subData['orders'])) {
+                        if (! empty($subData['orders'])) {
                             $this->createChildOrdersFromProvider($order, $subData['orders']);
                         }
                         echo "Subscription #{$order->id} status updated to: {$order->sub_status}. <br>";
@@ -420,6 +430,7 @@ class CronController extends Controller
                 }
             }
         }
+
         return 'Subscription status check complete.';
     }
 
@@ -469,9 +480,9 @@ class CronController extends Controller
             ];
         }
 
-        if (!empty($newOrdersData)) {
+        if (! empty($newOrdersData)) {
             Order::insert($newOrdersData);
-            echo "Created " . count($newOrdersData) . " child orders for Parent #{$parentOrder->id}. <br>";
+            echo 'Created '.count($newOrdersData)." child orders for Parent #{$parentOrder->id}. <br>";
         }
     }
 }

@@ -5,14 +5,13 @@ namespace App\Livewire\Admin;
 use App\Traits\LivewireToast;
 use App\Traits\SettingsTrait;
 use Exception;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class EmailSetting extends Component
 {
     use LivewireToast;
-
     use SettingsTrait;
 
     public $email_gateway;
@@ -71,7 +70,7 @@ class EmailSetting extends Component
 
             $this->toast('success', 'Test email sent successfully!', 'success');
         } catch (Exception $exception) {
-            $this->toast('error', 'Failed to send test email: ' . $exception->getMessage(), 'error');
+            $this->toast('error', 'Failed to send test email: '.$exception->getMessage(), 'error');
         }
     }
 

@@ -72,7 +72,7 @@ class OrderService
                 'type' => 'debit',
                 'code' => getTrx(),
                 'service' => 'order',
-                'message' => 'You place an order of ' . format_price($charge) . " for {$service->name}",
+                'message' => 'You place an order of '.format_price($charge)." for {$service->name}",
                 'gateway' => 'order',
                 'amount' => $charge,
                 'image' => 'order.png',
@@ -106,7 +106,7 @@ class OrderService
     {
         $links = $bulkData['links'] ?? [];
         $quantities = $bulkData['quantity'] ?? [];
-        
+
         $validOrders = [];
         $errorDetails = [];
         $totalCharge = 0;
@@ -116,11 +116,13 @@ class OrderService
 
             if ($quantity < $service->min) {
                 $errorDetails[$link] = "Quantity must be at least {$service->min}.";
+
                 continue;
             }
 
             if ($quantity > $service->max) {
                 $errorDetails[$link] = "Quantity must not exceed {$service->max}.";
+
                 continue;
             }
 
@@ -174,19 +176,19 @@ class OrderService
                 'success' => false,
                 'orders' => [],
                 'errors' => $errorDetails,
-                'message' => 'No valid orders found. Please check your input.'
+                'message' => 'No valid orders found. Please check your input.',
             ];
         }
 
         if ($user->balance < $totalCharge) {
-            throw new InsufficientBalanceException('Insufficient balance. Required: ' . format_price($totalCharge) . ', Available: ' . format_price($user->balance));
+            throw new InsufficientBalanceException('Insufficient balance. Required: '.format_price($totalCharge).', Available: '.format_price($user->balance));
         }
 
         DB::beginTransaction();
         try {
             $trxCode = getTrx();
             $orderCount = count($validOrders);
-            $trxMessage = "Bulk order of " . format_price($totalCharge) . " for {$orderCount} orders of {$service->name}";
+            $trxMessage = 'Bulk order of '.format_price($totalCharge)." for {$orderCount} orders of {$service->name}";
 
             Transaction::create([
                 'user_id' => $user->id,
@@ -222,9 +224,9 @@ class OrderService
                 'total_charge' => $totalCharge,
                 'order_count' => $orderCount,
                 'transaction_code' => $trxCode,
-                'message' => empty($errorDetails) 
-                    ? "All {$orderCount} orders placed successfully." 
-                    : "{$orderCount} orders placed successfully, with some errors."
+                'message' => empty($errorDetails)
+                    ? "All {$orderCount} orders placed successfully."
+                    : "{$orderCount} orders placed successfully, with some errors.",
             ];
 
         } catch (\Exception $e) {

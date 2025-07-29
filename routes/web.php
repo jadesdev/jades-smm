@@ -25,7 +25,6 @@ Route::get('queue-work', function () {
 // Cron job
 Route::get('/cron-job', [App\Http\Controllers\CronController::class, 'handle'])->name('cron');
 
-
 // user
 Route::prefix('user')->as('user.')->middleware(['auth'])->group(function (): void {
     require __DIR__.'/user.php';

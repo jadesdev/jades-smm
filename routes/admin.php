@@ -61,5 +61,3 @@ Route::get('email/templates/edit/{id}', EmailTemplate::class)->name('email.templ
 Route::get('email/bulk', BulkEmail::class)->name('email.bulk');
 Route::get('email/bulk/add', BulkEmail::class)->name('email.bulk.add');
 Route::get('email/bulk/edit/{id}', BulkEmail::class)->name('email.bulk.edit');
-
-

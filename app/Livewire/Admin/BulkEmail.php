@@ -4,8 +4,8 @@ namespace App\Livewire\Admin;
 
 use App\Models\Newsletter;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 use Livewire\WithPagination;
 
 #[Layout('admin.layouts.main')]
@@ -15,16 +15,24 @@ class BulkEmail extends Component
     use WithPagination;
 
     public $view = 'list';
+
     // meta
-    public string $metaTitle = "BulkEmail";
+    public string $metaTitle = 'BulkEmail';
+
     public $deletingItem;
 
     public $newsletterId;
+
     public $user_emails = false;
+
     public $other_emails;
+
     public $subject;
+
     public $content;
+
     public $date;
+
     public $status = 2;
 
     public function backToList()
@@ -63,7 +71,7 @@ class BulkEmail extends Component
             'subject',
             'content',
             'date',
-            'status'
+            'status',
         ]);
     }
 
@@ -75,7 +83,7 @@ class BulkEmail extends Component
             'subject' => 'required|string|max:255',
             'content' => 'required|string',
             'date' => 'required|date',
-            'status' => 'required|in:1,2'
+            'status' => 'required|in:1,2',
         ]);
 
         if ($this->newsletterId) {
@@ -118,9 +126,11 @@ class BulkEmail extends Component
             $this->view = 'list';
         }
     }
+
     public function render()
     {
         $newsletters = Newsletter::paginate(10);
+
         return view('livewire.admin.bulk-email', compact('newsletters'));
     }
 }

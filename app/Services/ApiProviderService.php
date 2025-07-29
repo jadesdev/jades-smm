@@ -90,9 +90,9 @@ class ApiProviderService
     public function multipleStatus(ApiProvider $provider, array $orderIds)
     {
         $payload = [
-            'key'    => $provider->api_key,
+            'key' => $provider->api_key,
             'action' => 'status',
-            'orders' => implode(",", $orderIds)
+            'orders' => implode(',', $orderIds),
         ];
 
         return $this->postRequest($provider, $payload);
@@ -101,9 +101,9 @@ class ApiProviderService
     public function multipleRefillStatus(ApiProvider $provider, array $refillIds)
     {
         $payload = [
-            'key'    => $provider->api_key,
+            'key' => $provider->api_key,
             'action' => 'refill_status',
-            'refills' => implode(",", $refillIds)
+            'refills' => implode(',', $refillIds),
         ];
 
         return $this->postRequest($provider, $payload);
@@ -116,7 +116,7 @@ class ApiProviderService
 
             return $res->json();
         } catch (Exception $e) {
-            Log::error('Provider request exception:' . $e->getMessage());
+            Log::error('Provider request exception:'.$e->getMessage());
             throw $e;
         }
     }

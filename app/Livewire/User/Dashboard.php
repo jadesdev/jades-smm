@@ -3,7 +3,6 @@
 namespace App\Livewire\User;
 
 use App\Models\Order;
-use App\Models\Service;
 use App\Models\SupportTicket;
 use App\Models\Transaction;
 use App\Traits\LivewireToast;
@@ -17,16 +16,21 @@ class Dashboard extends Component
     use LivewireToast;
 
     public string $randomQuotes;
+
     // meta
     public string $metaTitle;
+
     public string $totalOrders;
+
     public string $userBalance;
+
     public string $totalSpent;
+
     public string $totalTickets;
 
     public function mount()
     {
-        $user= Auth::user();
+        $user = Auth::user();
         // set meta
         $this->metaTitle = 'Dashboard';
         $this->totalOrders = Order::where('user_id', $user->id)->count();
@@ -40,11 +44,11 @@ class Dashboard extends Component
     {
         $quotes = [
             "Here's what's happening with your SMM campaigns today.",
-            "Welcome back! Ready to grow your audience?",
-            "Keep pushing! consistency is key to success!",
+            'Welcome back! Ready to grow your audience?',
+            'Keep pushing! consistency is key to success!',
             "Success is built on strategy and timing. Let's optimize.",
-            "Another day, another opportunity to level up.",
-            "Your digital presence just got stronger.",
+            'Another day, another opportunity to level up.',
+            'Your digital presence just got stronger.',
             "Good to see you! Let's make some impact today.",
             "Marketing magic starts with smart moves you're on track.",
             "Take control of your brand you're doing great.",
@@ -57,10 +61,10 @@ class Dashboard extends Component
         return $quotes[array_rand($quotes)];
     }
 
-
     public function render()
     {
         $recentActivities = Transaction::where('user_id', Auth::user()->id)->latest()->take(5)->get();
+
         return view('livewire.user.dashboard', compact('recentActivities'));
     }
 }

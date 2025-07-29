@@ -23,6 +23,7 @@ class SendMailJob implements ShouldQueue
     public $tries = 5;
 
     public $backoff = 600;
+
     /**
      * Create a new job instance.
      */
