@@ -201,7 +201,7 @@
                                             class="copied-indicator-{{ $transaction->code }} hidden text-green-600 text-xs">Copied!</span>
                                     </div>
                                     <div class="text-sm text-gray-500 dark:text-gray-300">
-                                        {{ $transaction->created_at->format('Y-m-d') }}
+                                        {{ $transaction->created_at->format('Y-m-d h:i A') }}
                                     </div>
                                 </div>
                             </div>

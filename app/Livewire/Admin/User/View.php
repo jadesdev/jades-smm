@@ -227,10 +227,22 @@ class View extends Component
         // Create transaction record
         Transaction::create([
             'user_id' => $this->user->id,
-            'type' => $type === 'add' ? 'deposit' : 'debit',
+            'type' => $type === 'add' ? 'credit' : 'debit',
+            'code' => getTrx(),
+            'service' => 'deposit',
+            'message' => $message,
+            'gateway' => $type === 'add' ? 'deposit' : 'system',
             'amount' => $amount,
-            'description' => "Admin adjustment - {$message}",
-            'status' => 'completed',
+            'image' => 'deposit.png',
+            'charge' => 0,
+            'old_balance' => $this->user->balance,
+            'new_balance' => $type === 'add' ? $this->user->balance + $amount : $this->user->balance - $amount,
+            'meta' => [
+                'gateway' => $type === 'add' ? 'deposit' : 'system',
+                'amount' => $amount,
+                'fee' => 0,
+            ],
+            'status' => 'successful',
         ]);
 
         $this->user->refresh();
