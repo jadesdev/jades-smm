@@ -28,14 +28,14 @@ class ApiOrderController extends Controller
         }
         $actionExists = ['services', 'add', 'status', 'refill', 'refill_status', 'balance', 'cancel'];
 
-        if (! in_array($request->action, $actionExists)) {
+        $action = $request->action;
+        if (!method_exists($this, $action) ||! in_array($action, $actionExists)) {
             return response()->json(['error' => 'Invalid action']);
         }
         $user = User::where('api_token', $request->key)->first();
         if (! $user) {
             return response()->json(['error' => 'Invalid api key']);
         }
-        $action = $request->action;
 
         return $this->$action($user, $request);
     }
@@ -295,7 +295,7 @@ class ApiOrderController extends Controller
         $canRefill = $order->status === 'completed' &&
             $order->remains > 0 &&
             optional($order->service)->refill != 3 &&
-            $order->refilled_at->lt(Carbon::now()->subHours(24)) &&
+            ($order->refilled_at && $order->refilled_at->lt(Carbon::now()->subHours(24))) &&
             (
                 ! isset($order->refill_status) ||
                 in_array($order->refill_status, ['completed', 'partial', 'canceled', 'refunded'])

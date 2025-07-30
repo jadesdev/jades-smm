@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email_verify',
         'sms_verify',
         'is_active',
+        'api_token',
     ];
 
     /**
