@@ -157,7 +157,7 @@ class ServiceManager extends Component
 
     private function getServices()
     {
-        return Service::with(['category', 'apiProvider'])
+        return Service::with(['category', 'provider'])
             ->when($this->search, fn ($query) => $query->where('name', 'like', '%'.$this->search.'%')
                 ->orWhere('description', 'like', '%'.$this->search.'%')
                 ->orWhere('id', 'like', '%'.$this->search.'%')
@@ -189,7 +189,7 @@ class ServiceManager extends Component
         return view('livewire.admin.service-manager', [
             'services' => $this->servicesOnPage,
             'categories' => $categories,
-            'apiProviders' => $apiProviders,
+            'providers' => $apiProviders,
         ]);
     }
 }

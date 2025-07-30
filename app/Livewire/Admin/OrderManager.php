@@ -283,7 +283,7 @@ class OrderManager extends Component
             'service:id,name,category_id',
             'service.category:id,name',
             'user:id,name,email',
-            'apiProvider:id,name',
+            'provider:id,name',
         ])->findOrFail($orderId);
 
         $this->editData = [
@@ -556,7 +556,7 @@ class OrderManager extends Component
 
     public function render()
     {
-        $query = Order::with(['service', 'user', 'apiProvider']);
+        $query = Order::with(['service', 'user', 'provider']);
         $this->applyFilters($query);
         $orders = $query->latest()->paginate($this->perPage);
 

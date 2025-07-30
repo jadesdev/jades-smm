@@ -1,6 +1,7 @@
 <nav class="flex-1 px-2 py-4 space-y-1 side-menu overflow-y-auto">
     {{-- Dashboard --}}
     <x-sidebar.menu-item href="{{ route('admin.dashboard') }}" icon="fad fa-tachometer-alt" name="Dashboard" />
+    <x-sidebar.menu-item href="{{ route('admin.statistics') }}" icon="fad fa-chart-line" name="Statistics" />
 
     <h6 class="font-medium text-sm tracking-wider text-gray-400 dark:text-gray-500 uppercase">Services</h6>
     <x-sidebar.menu-item href="{{ route('admin.api-providers') }}" icon="fad fa-plug" name="API Providers" />

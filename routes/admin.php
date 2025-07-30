@@ -11,6 +11,7 @@ use App\Livewire\Admin\GeneralSettings;
 use App\Livewire\Admin\OrderManager;
 use App\Livewire\Admin\ServiceForm;
 use App\Livewire\Admin\ServiceManager;
+use App\Livewire\Admin\Statistics;
 use App\Livewire\Admin\Support\Message;
 use App\Livewire\Admin\Support\Tickets;
 use App\Livewire\Admin\Transactions;
@@ -19,6 +20,7 @@ use App\Livewire\Admin\User\Settings as UserSettings;
 use App\Livewire\Admin\User\View as UserView;
 
 Route::get('dashboard', Dashboard::class)->name('dashboard');
+Route::get('statistics', Statistics::class)->name('statistics');
 
 Route::get('categories', CategoryManager::class)->name('categories');
 

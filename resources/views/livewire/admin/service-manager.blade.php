@@ -27,7 +27,7 @@
             <x-forms.select wire:model.live="providerFilter" name="providerFilter">
                 <option value="">All Providers</option>
                 <option value="manual">Manual</option>
-                @foreach ($apiProviders as $id => $name)
+                @foreach ($providers as $id => $name)
                     <option value="{{ $id }}">{{ $name }}</option>
                 @endforeach
             </x-forms.select>
