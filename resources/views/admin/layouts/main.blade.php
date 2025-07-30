@@ -100,7 +100,7 @@
         src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/copy-to-clipboard/prism-copy-to-clipboard.min.js"
         crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script>
-
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
 
 </body>
 

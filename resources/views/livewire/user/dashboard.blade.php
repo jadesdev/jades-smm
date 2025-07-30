@@ -17,54 +17,41 @@
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 px-3">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Balance</p>
-                    <p class="text-md font-bold text-gray-900 dark:text-gray-100">{{ format_price($userBalance) }}</p>
-                </div>
-                <div class="bg-emerald-100 dark:bg-emerald-800 p-1.5 px-2 rounded-full">
-                    <i class="fad fa-wallet text-emerald-600 dark:text-emerald-100 text-md"></i>
-                </div>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 mb-6">
+        <div
+            class="relative block p-6 rounded-xl text-white overflow-hidden bg-gradient-to-br from-green-500 to-green-700 transform hover:scale-105 transition-transform duration-300">
+            <div class="relative z-10">
+                <p class="text-sm font-medium text-white/80">Balance</p>
+                <p class="mt-2 text-xl font-bold">{{ format_price($userBalance) }}</p>
             </div>
+            <i class="fa-solid fa-wallet absolute -right-4 -bottom-4 text-8xl text-white/20"></i>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 px-3">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
-                    <p class="text-md font-bold text-gray-900 dark:text-gray-100">{{ $totalOrders }}</p>
-                </div>
-                <div class="bg-sky-100 dark:bg-sky-800 p-1.5 px-2 rounded-full">
-                    <i class="fad fa-box text-sky-600 dark:text-sky-100 text-md"></i>
-                </div>
+        <div
+            class="relative block p-6 rounded-xl text-white overflow-hidden bg-gradient-to-br from-primary-500 to-primary-700 transform hover:scale-105 transition-transform duration-300">
+            <div class="relative z-10">
+                <p class="text-sm font-medium text-white/80">Total Orders</p>
+                <p class="mt-2 text-xl font-bold">{{ $totalOrders }}</p>
             </div>
+            <i class="fa-solid fa-cart-shopping absolute -right-4 -bottom-4 text-8xl text-white/20"></i>
+        </div>
+        <div
+            class="relative block p-6 rounded-xl text-white overflow-hidden bg-gradient-to-br from-rose-500 to-rose-700 transform hover:scale-105 transition-transform duration-300">
+            <div class="relative z-10">
+                <p class="text-sm font-medium text-white/80">Total Spent</p>
+                <p class="mt-2 text-xl font-bold">{{ format_price($totalSpent) }}</p>
+            </div>
+            <i class="fa-solid fa-money-bill absolute -right-4 -bottom-4 text-8xl text-white/20"></i>
+        </div>
+        <div
+            class="relative block p-6 rounded-xl text-white overflow-hidden bg-gradient-to-br from-indigo-500 to-indigo-700 transform hover:scale-105 transition-transform duration-300">
+            <div class="relative z-10">
+                <p class="text-sm font-medium text-white/80">Total Tickets</p>
+                <p class="mt-2 text-xl font-bold">{{ $totalTickets }}</p>
+            </div>
+            <i class="fa-solid fa-headset absolute -right-4 -bottom-4 text-8xl text-white/20"></i>
         </div>
 
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 px-3">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Spent</p>
-                    <p class="text-md font-bold text-gray-900 dark:text-gray-100">{{ format_price($totalSpent) }}</p>
-                </div>
-                <div class="bg-rose-100 dark:bg-rose-800 p-1.5 px-2 rounded-full">
-                    <i class="fad fa-coins text-rose-600 dark:text-rose-100 text-md"></i>
-                </div>
-            </div>
-        </div>
-
-        <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 px-3">
-            <div class="flex items-center justify-between">
-                <div>
-                    <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Tickets</p>
-                    <p class="text-md font-bold text-gray-900 dark:text-gray-100">{{ $totalTickets }}</p>
-                </div>
-                <div class="bg-indigo-100 dark:bg-indigo-800 p-1.5 px-2 rounded-full">
-                    <i class="fad fa-life-ring text-indigo-600 dark:text-indigo-100 text-md"></i>
-                </div>
-            </div>
-        </div>
     </div>
 
     <h4 class="text-lg font-semibold my-2 dark:text-white">Quick Actions</h4>
