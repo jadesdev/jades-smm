@@ -136,7 +136,7 @@
                                 <select wire:model.live="typeFilter"
                                     class="w-full px-3 py-2 border border-gray-300 dark:bg-gray-700 dark:text-gray-200 rounded-lg focus:ring-2 focus:ring-primary-500 dark:focus:ring-primary-400">
                                     @foreach ($this->availableServices as $value => $label)
-                                        <option value="{{ $value }}">{{ $label }}</option>
+                                        <option value="{{ $value }}">{{ str_replace('-',' ', $label) }}</option>
                                     @endforeach
                                 </select>
                             </div>
