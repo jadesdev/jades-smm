@@ -123,4 +123,12 @@ class User extends Authenticatable
     {
         return $this->hasMany(Transaction::class)->where('type', 'deposit');
     }
+
+    /**
+     * Get all orders for this user
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
 }
