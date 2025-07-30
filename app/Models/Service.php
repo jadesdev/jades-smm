@@ -68,11 +68,6 @@ class Service extends Model
     /**
      * Get the API provider that owns the service.
      */
-    public function apiProvider(): BelongsTo
-    {
-        return $this->belongsTo(ApiProvider::class);
-    }
-
     public function provider(): BelongsTo
     {
         return $this->belongsTo(ApiProvider::class, 'api_provider_id');

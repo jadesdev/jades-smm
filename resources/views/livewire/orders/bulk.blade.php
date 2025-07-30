@@ -102,11 +102,14 @@
 
                                 </div>
 
-                                @if (!empty($order['quantity']) && is_numeric($order['quantity']) && $selectedService)
-                                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">
-                                        <strong>Order Cost:</strong>
-                                        {{ format_price(($order['quantity'] / 1000) * $selectedService->price) }}
-                                    </div>
+                                @if (!empty($order['quantity']) 
+                                     && is_numeric($order['quantity']) 
+                                     && $order['quantity'] > 0 
+                                     && $selectedService)  
+                                    <div class="mt-2 text-sm text-gray-600 dark:text-gray-300">  
+                                        <strong>Order Cost:</strong>  
+                                        {{ e(format_price(($order['quantity'] / 1000) * $selectedService->price)) }}  
+                                    </div>  
                                 @endif
                             </div>
                         @endforeach

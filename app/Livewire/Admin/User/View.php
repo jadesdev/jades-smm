@@ -216,13 +216,18 @@ class View extends Component
 
     public function adjustBalance($amount, $type = 'add')
     {
-        if ($type === 'add') {
-            $this->user->increment('balance', $amount);
-            $message = 'Added '.format_price($amount).' to user balance';
-        } else {
-            $this->user->decrement('balance', $amount);
-            $message = 'Deducted '.format_price($amount).' from user balance';
-        }
+        $oldBalance = $this->user->balance;  
+        
+        if ($type === 'add') {  
+            $this->user->increment('balance', $amount);  
+            $message = 'Added '.format_price($amount).' to user balance';  
+            $newBalance = $oldBalance + $amount;  
+        } else {  
+            $this->user->decrement('balance', $amount);  
+            $message = 'Deducted '.format_price($amount).' from user balance';  
+            $newBalance = $oldBalance - $amount;  
+        }  
+    
 
         // Create transaction record
         Transaction::create([
@@ -235,8 +240,8 @@ class View extends Component
             'amount' => $amount,
             'image' => 'deposit.png',
             'charge' => 0,
-            'old_balance' => $this->user->balance,
-            'new_balance' => $type === 'add' ? $this->user->balance + $amount : $this->user->balance - $amount,
+            'old_balance' => $oldBalance,
+            'new_balance' => $newBalance,
             'meta' => [
                 'gateway' => $type === 'add' ? 'deposit' : 'system',
                 'amount' => $amount,
@@ -246,7 +251,7 @@ class View extends Component
         ]);
 
         $this->user->refresh();
-        $this->balance = $this->user->balance;
+        $this->balance = $newBalance;
         $this->loadStats();
 
         $this->successAlert($message);

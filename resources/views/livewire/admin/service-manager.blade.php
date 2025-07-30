@@ -95,7 +95,7 @@
                                 {{ $service->id }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                 <p>{{ $service->api_service_id }}</p>
-                                {{ $service->apiProvider?->name ?? 'Manual' }}
+                                {{ $service->provider?->name ?? 'Manual' }}
                             </td>
                             <td class="px-6 py-4 whitespace- text-sm font-medium text-gray-900 dark:text-gray-100">
                                 {{ textTrim($service->name) }}</td>
@@ -105,7 +105,7 @@
                                 {{ format_price($service->price, 2) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 <p>{{ format_price($service->original_price) }}</p>
-                                {{ $service->apiProvider?->currency ?? '$' }}{{ number_format($service->api_price, 2) }}
+                                {{ $service->provider?->currency ?? '$' }}{{ number_format($service->api_price, 2) }}
 
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">

@@ -223,14 +223,11 @@ class CronController extends Controller
                                     } else {
                                         $refundAmount = $price;
                                     }
-                                    $order->status = 'refunded';
 
                                     if ($refundAmount > 0) {
                                         $user = $order->user;
                                         $user->balance += $refundAmount;
                                         $user->save();
-
-                                        $order->is_refunded = 1;
                                         echo "Refunded {$refundAmount} to user {$user->id}. <br>";
                                     }
                                 }
@@ -307,26 +304,26 @@ class CronController extends Controller
      */
     public function sendScheduledEmail(Request $request)
     {
-        $currentDateTime = Carbon::now(); // Get the current date and time
+        $currentDateTime = Carbon::now();
         $newsletters = Newsletter::where('status', 2)
             ->where('date', '<=', $currentDateTime)
             ->get();
 
         foreach ($newsletters as $newsletter) {
-            $delayMinutes = rand(1, 10);
-            // Update its status before sending emails
-            $newsletter->status = 1;
-            $newsletter->save();
-
             if ($newsletter->user_emails) {
+                $delayMinutes = rand(1, 10);
                 dispatch(new SendMailJob($newsletter))->delay(now()->addMinutes($delayMinutes));
             }
 
             $otherEmails = array_filter(array_map('trim', explode(',', $newsletter->other_emails)));
+            $delayMinutes = rand(1, 10);
             foreach ($otherEmails as $email) {
-                $delayMinutes = rand(1, 10);
-                dispatch(new SendMailJob($newsletter, $email))->delay(now()->addMinutes($delayMinutes));
+                if (filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                    dispatch(new SendMailJob($newsletter, $email))->delay(now()->addMinutes($delayMinutes));
+                }
             }
+            $newsletter->status = 1;
+            $newsletter->save();
         }
     }
 
@@ -457,6 +454,9 @@ class CronController extends Controller
             } elseif ($parentOrder->service_type === 'subscriptions' && $parentOrder->sub_posts > 0) {
                 $charge = $parentOrder->price / $parentOrder->sub_posts;
                 $apiPrice = $parentOrder->api_price / $parentOrder->sub_posts;
+            } else {
+                \Log::warning("Cannot calculate charge for parent order {$parentOrder->id}: runs or sub_posts is zero");
+                return;
             }
 
             $newOrdersData[] = [
@@ -482,7 +482,7 @@ class CronController extends Controller
 
         if (! empty($newOrdersData)) {
             Order::insert($newOrdersData);
-            echo 'Created '.count($newOrdersData)." child orders for Parent #{$parentOrder->id}. <br>";
+            echo 'Created ' . count($newOrdersData) . " child orders for Parent #{$parentOrder->id}. <br>";
         }
     }
 }

@@ -8,4 +8,4 @@ use Illuminate\Support\Facades\Route;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('v2', [ApiOrderController::class, 'process'])->name('api.v2');
+Route::post('v2', [ApiOrderController::class, 'process'])->middleware(['throttle:api'])->name('api.v2');

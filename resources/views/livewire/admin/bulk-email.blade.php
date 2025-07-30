@@ -42,7 +42,8 @@
                                 </td>
                                 <td
                                     class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                    {{ $item->subject }}
+                                    {{ e($item->subject) }}
+
                                 </td>
                                 <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                     {{ $item->date->format('Y-m-d H:i') }}
@@ -106,7 +107,7 @@
                     placeholder="other@example.com, another@example.com" rows="3" />
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <x-forms.input label="Send Date" required wire:model="date" type="text" />
+                    <x-forms.input label="Send Date" required wire:model="date" type="datetime-local" />
 
                     <x-forms.select label="Status" wire:model="status">
                         <option value="2">Scheduled</option>

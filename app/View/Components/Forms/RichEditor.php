@@ -17,10 +17,7 @@ class RichEditor extends Component
         public string $height = '350px',
         public string $label = 'Description'
     ) {
-        $this->name = $name;
-        $this->id = $id ?? 'editor_'.uniqid();
-        $this->height = $height;
-        $this->label = $label;
+        $this->id = $id ?: 'editor_' . uniqid();
     }
 
     /**

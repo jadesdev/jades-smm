@@ -85,7 +85,6 @@ class EmailTemplate extends Component
         $this->name = $template->name;
         $this->shortcodes = $template->shortcodes;
         $this->view = 'edit';
-        $this->title = 'Edit Template';
 
         $this->dispatch('editorReinitialize');
     }

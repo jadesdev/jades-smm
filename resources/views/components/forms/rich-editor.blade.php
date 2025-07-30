@@ -21,9 +21,13 @@
                 }
             });
     
-            if (this.content) {
-                this.editor.root.innerHTML = this.content;
-                @this.set('{{ $name }}', this.content);
+            if (this.content) {  
+                try {  
+                    this.editor.clipboard.dangerouslyPasteHTML(this.content);  
+                    @this.set('{{ $name }}', this.content);  
+                } catch (e) {  
+                    console.error('Error setting editor content:', e);  
+                }  
             }
             this.editor.on('text-change', () => {
                 this.content = this.editor.root.innerHTML;

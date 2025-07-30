@@ -77,8 +77,8 @@ class OrderService
                 'amount' => $charge,
                 'image' => 'order.png',
                 'charge' => 0,
-                'new_balance' => $user->balance,
-                'old_balance' => $user->balance + $charge,
+                'new_balance' => $user->balance - $charge,  
+                'old_balance' => $user->balance,  
                 'meta' => [
                     'service_id' => $service->id,
                     'order_id' => $order->id,
@@ -114,15 +114,19 @@ class OrderService
         foreach ($links as $index => $link) {
             $quantity = isset($quantities[$index]) ? (int) $quantities[$index] : 0;
 
+            // Validate link
+            if (empty($link) || !filter_var($link, FILTER_VALIDATE_URL)) {
+                $errorDetails[$link ?: "Link #".($index+1)] = "Invalid or empty link provided.";
+                continue;
+            }
+
             if ($quantity < $service->min) {
                 $errorDetails[$link] = "Quantity must be at least {$service->min}.";
-
                 continue;
             }
 
             if ($quantity > $service->max) {
                 $errorDetails[$link] = "Quantity must not exceed {$service->max}.";
-
                 continue;
             }
 

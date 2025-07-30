@@ -2,11 +2,13 @@
 
 namespace App\Livewire\Admin;
 
+use App\Mail\SendMail;
 use App\Traits\LivewireToast;
 use App\Traits\SettingsTrait;
 use Exception;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Mail;
 
 #[Layout('admin.layouts.main')]
 class EmailSetting extends Component
@@ -56,6 +58,7 @@ class EmailSetting extends Component
         foreach ($this->settings as $key => $value) {
             $this->overWriteEnvFile($key, $value);
         }
+        \Artisan::call('config:clear');
 
         $this->successAlert('Email settings updated successfully.', 'Settings Saved');
     }
@@ -67,10 +70,13 @@ class EmailSetting extends Component
         ]);
 
         try {
-
+            Mail::to($this->test_email)->send(new SendMail(
+                'Test Email',
+                'This is a test email to verify your email configuration is working correctly.'
+            ));
             $this->toast('success', 'Test email sent successfully!', 'success');
         } catch (Exception $exception) {
-            $this->toast('error', 'Failed to send test email: '.$exception->getMessage(), 'error');
+            $this->toast('error', 'Failed to send test email: ' . $exception->getMessage(), 'error');
         }
     }
 

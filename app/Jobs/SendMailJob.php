@@ -40,16 +40,21 @@ class SendMailJob implements ShouldQueue
     {
         $data['view'] = 'emails.newsletter';
         $data['subject'] = $this->newsletter->subject;
-        $data['email'] = env('MAIL_FROM_ADDRESS');
+        $data['email'] = config('mail.from.address');
         $data['message'] = $this->newsletter->content;
 
         if ($this->email) {
             Mail::to($this->email)->queue(new SendMail($data));
         } else {
-            $emails = User::where('is_active', 1)->pluck('email')->toArray();
-            foreach ($emails as $email) {
-                Mail::to($email)->queue(new SendMail($data));
-            }
+            User::where('is_active', 1)
+                ->select('email')
+                ->chunk(100, function ($users) use ($data) {
+                    foreach ($users as $user) {
+                        Mail::to($user->email)->queue(
+                            (new SendMail($data))->delay(now()->addMinutes(rand(1, 10)))
+                        );
+                    }
+                });
         }
     }
 }

@@ -60,7 +60,7 @@
                                         @foreach ($shortcodes as $shortcode => $key)
                                             <tr>
                                                 <td class="p-2 font-mono text-gray-700 dark:text-gray-300">
-                                                    @php echo "{". $key ."}" @endphp</td>
+                                                    {{ "{" . e($key) . "}" }}</td>
                                                 <td class="p-2 text-gray-600 dark:text-gray-400">
                                                     {{ ucfirst(str_replace('_', ' ', $key)) }}</td>
                                             </tr>
@@ -69,7 +69,7 @@
                                             @foreach ($settings->shortcodes as $shortcode => $key)
                                                 <tr>
                                                     <td class="p-2 font-mono text-gray-700 dark:text-gray-300">
-                                                        @php echo "{". $shortcode ."}"  @endphp</td>
+                                                        {{ "{" . e($shortcode) . "}" }}</td>
                                                     <td class="p-2 text-gray-600 dark:text-gray-400">{{ $key }}
                                                     </td>
                                                 </tr>
@@ -149,11 +149,11 @@
                                 <tr class="hover:bg-gray-50 dark:hover:bg-gray-800">
                                     <td
                                         class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 dark:text-gray-100">
-                                        {{ $template->name }}</td>
+                                        {{ e($template->name) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $template->type }}</td>
+                                        {{ e($template->type) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
-                                        {{ $template->subject }}</td>
+                                        {{ e($template->subject) }}</td>
                                     <td class="px-6 py-4 whitespace-nowrap text-sm">
                                         @if ($template->email_status)
                                             <span

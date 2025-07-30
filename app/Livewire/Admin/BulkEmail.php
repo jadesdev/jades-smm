@@ -7,6 +7,7 @@ use App\Traits\LivewireToast;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Stevebauman\Purify\Facades\Purify;
 
 #[Layout('admin.layouts.main')]
 class BulkEmail extends Component
@@ -78,13 +79,29 @@ class BulkEmail extends Component
     public function save()
     {
         $validated = $this->validate([
-            'user_emails' => 'required|boolean',
-            'other_emails' => 'nullable|string',
-            'subject' => 'required|string|max:255',
-            'content' => 'required|string',
-            'date' => 'required|date',
-            'status' => 'required|in:1,2',
+            'user_emails'  => 'required|boolean',
+            'other_emails' => [
+                'nullable',
+                'string',
+                function ($attribute, $value, $fail) {
+                    if ($value) {
+                        $emails = array_map('trim', explode(',', $value));
+                        foreach ($emails as $email) {
+                            if (! filter_var($email, FILTER_VALIDATE_EMAIL)) {
+                                $fail("The email '{$email}' is not valid.");
+                            }
+                        }
+                    }
+                },
+            ],
+            'subject'      => 'required|string|max:255',
+            'content'      => 'required|string',
+            'date'         => 'required|date',
+            'status'       => 'required|in:1,2',
         ]);
+
+        $cleanHtml = Purify::clean($this->content);
+        $validated['content'] = $cleanHtml;
 
         if ($this->newsletterId) {
             $newsletter = Newsletter::findOrFail($this->newsletterId);

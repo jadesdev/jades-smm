@@ -87,11 +87,6 @@ class Order extends Model
         return $this->belongsTo(Service::class);
     }
 
-    public function apiProvider()
-    {
-        return $this->belongsTo(ApiProvider::class);
-    }
-
     public function provider()
     {
         return $this->belongsTo(ApiProvider::class, 'api_provider_id');

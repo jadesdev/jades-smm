@@ -356,7 +356,7 @@ class OrderManager extends Component
                         'type' => 'credit',
                         'code' => getTrx(),
                         'service' => 'order',
-                        'message' => 'Refund for order #{$order->id}',
+                        'message' => "Refund for order #{$order->id}",
                         'amount' => $refundAmount,
                         'image' => 'order.png',
                         'charge' => 0,

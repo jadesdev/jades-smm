@@ -68,8 +68,8 @@ class Bulk extends Component
             if ($service) {
                 $this->category_id = $service->category_id;
                 $this->updatedCategoryId($service->category_id);
-                $this->updatedServiceId($service_id);
                 $this->service_id = (int) $service_id;
+                $this->updatedServiceId($service_id);
                 $this->successAlert('Service selected successfully!');
             }
         }
