@@ -86,11 +86,13 @@ class View extends Component
         $this->userId = $id;
         $this->user = User::findOrFail($id);
 
-        // Set meta
+        if (request()->route()->getName() === 'admin.users.login') {
+            $this->loginAsUser($id);
+        }   
+
         $this->metaTitle = "{$this->user->username} profile";
         $this->metaDescription = "View and manage user {$this->user->name}";
 
-        // Initialize form data
         $this->initializeFormData();
 
         // Load stats
@@ -115,15 +117,11 @@ class View extends Component
     private function loadStats()
     {
         $this->stats = [
-            // 'total_orders' => Order::where('user_id', $this->user->id)->count(),
-            // 'completed_orders' => Order::where('user_id', $this->user->id)->where('status', 'completed')->count(),
-            // 'pending_orders' => Order::where('user_id', $this->user->id)->where('status', 'pending')->count(),
-            // 'total_spent' => Order::where('user_id', $this->user->id)->sum('charge'),
-            'total_orders' => 12,
-            'completed_orders' => 42,
-            'pending_orders' => 62,
-            'total_spent' => 125,
-            'total_deposits' => Transaction::where('user_id', $this->user->id)->where('type', 'deposit')->sum('amount'),
+            'total_orders' => Order::where('user_id', $this->user->id)->count(),
+            'completed_orders' => Order::where('user_id', $this->user->id)->where('status', 'completed')->count(),
+            'pending_orders' => Order::where('user_id', $this->user->id)->where('status', 'pending')->count(),
+            'total_spent' => Transaction::where('user_id', $this->user->id)->where('type', 'debit')->sum('amount'),
+            'total_deposits' => Transaction::where('user_id', $this->user->id)->where('service', 'deposit')->sum('amount'),
             'total_transactions' => Transaction::where('user_id', $this->user->id)->count(),
             'open_tickets' => SupportTicket::where('user_id', $this->user->id)->where('status', 'open')->count(),
             'total_tickets' => SupportTicket::where('user_id', $this->user->id)->count(),
@@ -255,6 +253,15 @@ class View extends Component
         $this->loadStats();
 
         $this->successAlert($message);
+    }
+
+    public function loginAsUser($userId)
+    {
+        $user = User::findOrFail($userId);
+
+        auth('web')->login($user, false);
+
+        $this->redirectIntended(default: route('user.dashboard'), navigate: true);
     }
 
     public function render()

@@ -117,9 +117,8 @@
                     <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-4">Order Trend (Last 7 Days)</h4>
                     <x-forms.select wire:model.live.debounce.300ms="orderTrendPeriod" placeholder="Select Period">
                         <option value="7">Last 7 Days</option>
+                        <option value="14">Last 14 Days</option>
                         <option value="30">Last 30 Days</option>
-                        <option value="90">Last 90 Days</option>
-                        <option value="180">Last 180 Days</option>
                     </x-forms.select>
                 </div>
 
@@ -210,7 +209,7 @@
                         this.chart = new ApexCharts(this.$refs.lineChart, options);
                         this.chart.render();
                     }
-                }" wire:ignore wire:key="{{ $orderTrendPeriod }}">
+                }" wire:ignore wire:key="{{ $orderTrendPeriod }}" class="border border-primary-200 dark:border-primary-700 rounded-lg">
                     <div x-ref="lineChart" class="w-full"></div>
                 </div>
             </div>

@@ -41,7 +41,7 @@ Route::prefix('user')->as('user.')->middleware(['auth'])->group(function (): voi
 });
 
 // Admin
-Route::prefix('admin')->as('admin.')->group(function (): void {
+Route::prefix('admin')->as('admin.')->middleware(['admin'])->group(function (): void {
     require __DIR__ . '/admin.php';
 });
 

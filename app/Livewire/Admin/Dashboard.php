@@ -178,6 +178,7 @@ class Dashboard extends Component
         $dateRange = [];
         foreach ($period as $date) {
             $dateRange[] = $date->format('Y-m-d');
+            $formatedDate[] = $date->format('m/d');
         }
 
         // Get unique statuses
@@ -197,7 +198,7 @@ class Dashboard extends Component
             ];
         }
 
-        $this->orderTrendLabels = $dateRange;
+        $this->orderTrendLabels = $formatedDate;
         $this->orderTrendData = $seriesData;
     }
 

@@ -55,6 +55,7 @@
             'name' => 'Bulk Email',
         ],
     ]" />
+    <x-sidebar.menu-item href="{{ route('admin.staffs') }}" icon="fad fa-users" name="Staffs" />
 
     <x-sidebar.submenu icon="fad fa-cogs" name="Settings" :submenu-items="[
         [
