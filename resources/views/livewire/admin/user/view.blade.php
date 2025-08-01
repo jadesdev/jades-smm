@@ -287,6 +287,89 @@
                     @endif
                 </div>
             </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6">
+                <!-- Referral Info -->
+                @if ($user->referrer || $stats['referrals_count'] > 0)
+                    <div
+                        class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                        <div class="p-6">
+                            <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Referral Information
+                            </h3>
+                            <div class="space-y-3">
+                                @if ($user->referrer)
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-gray-500 dark:text-gray-400">Referred
+                                            By</label>
+                                        <a href="{{ route('admin.users.view', $user->referrer->id) }}"
+                                            class="mt-1 text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                                            {{ $user->referrer->name }} ({{ $user->referrer->username }})
+                                        </a>
+                                    </div>
+                                @endif
+
+                                @if ($stats['referrals_count'] > 0)
+                                    <div>
+                                        <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Total
+                                            Referrals</label>
+                                        <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                                            {{ number_format($stats['referrals_count']) }} users</p>
+
+                                        <ul>
+                                            @foreach ($user->referrals as $referral)
+                                                <li>
+                                                    <a href="{{ route('admin.users.view', $referral->id) }}"
+                                                        class="mt-1 text-sm text-primary-600 dark:text-primary-400 hover:underline">
+                                                        {{ $referral->name }} ({{ $referral->username }})
+                                                    </a>
+                                                </li>
+                                            @endforeach
+                                        </ul>
+                                    </div>
+                                @endif
+                            </div>
+                        </div>
+                    </div>
+                @endif
+                <!-- Recent Activity -->
+                <div
+                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
+                    <div class="p-6">
+                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Account Info</h3>
+                        <div class="space-y-3">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">User
+                                    ID</label>
+                                <p class="mt-1 text-sm font-mono text-gray-900 dark:text-white">{{ $user->id }}
+                                </p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Member
+                                    Since</label>
+                                <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                                    {{ $user->created_at->format('M d, Y \a\t g:i A') }}</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Last
+                                    Updated</label>
+                                <p class="mt-1 text-sm text-gray-900 dark:text-white">
+                                    {{ $user->updated_at->format('M d, Y \a\t g:i A') }}</p>
+                            </div>
+                            @if ($user->api_token)
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">API
+                                        Access</label>
+                                    <p class="mt-1 text-sm text-green-600 dark:text-green-400">
+                                        <i class="fas fa-check-circle mr-1"></i>
+                                        API Token Active
+                                    </p>
+                                </div>
+                            @endif
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <!-- Quick Actions & Additional Stats -->
@@ -366,71 +449,6 @@
                 </div>
             </div>
 
-            <!-- Referral Info -->
-            @if ($user->referrer || $stats['referrals_count'] > 0)
-                <div
-                    class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                    <div class="p-6">
-                        <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Referral Information</h3>
-                        <div class="space-y-3">
-                            @if ($user->referrer)
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Referred
-                                        By</label>
-                                    <a href="{{ route('admin.users.view', $user->referrer->id) }}"
-                                        class="mt-1 text-sm text-primary-600 dark:text-primary-400 hover:underline">
-                                        {{ $user->referrer->name }} ({{ $user->referrer->username }})
-                                    </a>
-                                </div>
-                            @endif
-
-                            @if ($stats['referrals_count'] > 0)
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Total
-                                        Referrals</label>
-                                    <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                        {{ number_format($stats['referrals_count']) }} users</p>
-                                </div>
-                            @endif
-                        </div>
-                    </div>
-                </div>
-            @endif
-
-            <!-- Recent Activity -->
-            <div class="bg-white dark:bg-gray-800 rounded-xl shadow-sm border border-gray-200 dark:border-gray-700">
-                <div class="p-6">
-                    <h3 class="text-lg font-medium text-gray-900 dark:text-white mb-4">Account Info</h3>
-                    <div class="space-y-3">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">User ID</label>
-                            <p class="mt-1 text-sm font-mono text-gray-900 dark:text-white">{{ $user->id }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Member
-                                Since</label>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ $user->created_at->format('M d, Y \a\t g:i A') }}</p>
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">Last
-                                Updated</label>
-                            <p class="mt-1 text-sm text-gray-900 dark:text-white">
-                                {{ $user->updated_at->format('M d, Y \a\t g:i A') }}</p>
-                        </div>
-                        @if ($user->api_token)
-                            <div>
-                                <label class="block text-sm font-medium text-gray-500 dark:text-gray-400">API
-                                    Access</label>
-                                <p class="mt-1 text-sm text-green-600 dark:text-green-400">
-                                    <i class="fas fa-check-circle mr-1"></i>
-                                    API Token Active
-                                </p>
-                            </div>
-                        @endif
-                    </div>
-                </div>
-            </div>
         </div>
     </div>
 </div>

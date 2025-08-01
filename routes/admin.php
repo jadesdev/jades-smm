@@ -2,12 +2,18 @@
 
 use App\Http\Controllers\SettingsController;
 use App\Livewire\Admin\ApiProviderManager;
+use App\Livewire\Admin\BulkEmail;
 use App\Livewire\Admin\CategoryManager;
 use App\Livewire\Admin\Dashboard;
+use App\Livewire\Admin\EmailSetting;
+use App\Livewire\Admin\EmailTemplate;
 use App\Livewire\Admin\GeneralSettings;
 use App\Livewire\Admin\OrderManager;
+use App\Livewire\Admin\Profile;
 use App\Livewire\Admin\ServiceForm;
 use App\Livewire\Admin\ServiceManager;
+use App\Livewire\Admin\Staffs;
+use App\Livewire\Admin\Statistics;
 use App\Livewire\Admin\Support\Message;
 use App\Livewire\Admin\Support\Tickets;
 use App\Livewire\Admin\Transactions;
@@ -16,6 +22,9 @@ use App\Livewire\Admin\User\Settings as UserSettings;
 use App\Livewire\Admin\User\View as UserView;
 
 Route::get('dashboard', Dashboard::class)->name('dashboard');
+Route::get('statistics', Statistics::class)->name('statistics');
+Route::get('profile', Profile::class)->name('profile');
+Route::get('staffs', Staffs::class)->name('staffs');
 
 Route::get('categories', CategoryManager::class)->name('categories');
 
@@ -50,3 +59,11 @@ Route::controller(SettingsController::class)->as('settings.')->prefix('settings'
     Route::post('/system/store', 'storeSettings')->name('store_settings');
     Route::post('env_key', 'envkeyUpdate')->name('env_key');
 });
+
+// Email Setting
+Route::get('email/settings', EmailSetting::class)->name('email.settings');
+Route::get('email/templates', EmailTemplate::class)->name('email.templates');
+Route::get('email/templates/edit/{id}', EmailTemplate::class)->name('email.templates.edit');
+Route::get('email/bulk', BulkEmail::class)->name('email.bulk');
+Route::get('email/bulk/add', BulkEmail::class)->name('email.bulk.add');
+Route::get('email/bulk/edit/{id}', BulkEmail::class)->name('email.bulk.edit');

@@ -99,7 +99,7 @@
                         </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm">
                             @php
-                                $completed = $order->start_counter + ($order->quantity - $order->remains);
+                                $completed = ($order->quantity - $order->remains);
                                 $progress = $order->quantity > 0 ? ($completed / $order->quantity) * 100 : 0;
                             @endphp
                             <div class="w-full bg-gray-200 rounded-full h-2 mb-1">

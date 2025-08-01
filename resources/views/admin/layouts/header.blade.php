@@ -8,7 +8,7 @@
         <h3></h3>
         <div class="flex items-center space-x-4">
             <!-- Currency Selector (Desktop) -->
-            <div class="hidden md:flex items-center">
+            {{-- <div class="hidden md:flex items-center">
                 <select
                     class="text-sm border-gray-300 dark:border-gray-600 rounded-md focus:ring-primary-500 focus:border-primary-500 bg-gray-100 dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1">
                     <option value="USD">USD</option>
@@ -27,19 +27,19 @@
                     <option value="fr">FR</option>
                     <option value="de">DE</option>
                 </select>
-            </div>
+            </div> --}}
 
             <!-- Dark Mode Toggle -->
             <button id="dark-mode-toggle"
                 class="relative p-2 rounded-lg text-gray-400 dark:text-yellow-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-1 focus:ring-primary-500 transition-colors">
                 <i id="dark-mode-icon" class="fas fa-moon text-lg "></i>
             </button>
-            <!-- Notifications -->
+            {{-- <!-- Notifications -->
             <button
                 class="relative p-2 rounded-full text-gray-400 dark:text-gray-300 hover:text-gray-500 dark:hover:text-gray-200 focus:outline-none focus:ring-2 focus:ring-primary-500">
                 <i class="fad fa-bell text-lg"></i>
                 <span class="absolute top-0 right-0 block h-2 w-2 rounded-full bg-red-400"></span>
-            </button>
+            </button> --}}
 
             <!-- User Profile Dropdown -->
             <div class="relative">
@@ -50,34 +50,29 @@
                         alt="Profile">
                 </button>
 
-                <!-- Dropdown Menu -->
+                @php
+                    $adminSidebar = Auth::guard('admin')->user();
+                @endphp
                 <div id="user-dropdown"
                     class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
                     <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">John Doe</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">john@example.com</p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $adminSidebar->name }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $adminSidebar->email }}</p>
                     </div>
 
-                    <a href="{{ route('user.profile') }}" wire:navigate
+                    <a href="{{ route('admin.profile') }}" wire:navigate
                         class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fad fa-user mr-3 text-gray-400"></i>
                         Profile
                     </a>
 
-                    <a href="{{ route('user.wallet') }}" wire:navigate
-                        class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
-                        <i class="fad fa-wallet mr-3 text-gray-400"></i>
-                        Add Money
-                    </a>
-
-                    <a href="{{ route('user.support') }}" wire:navigate
+                    <a href="{{ route('admin.support.tickets') }}" wire:navigate
                         class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                         <i class="fad fa-envelope mr-3 text-gray-400"></i>
                         Support
                     </a>
 
-                    <!-- Mobile Currency & Language -->
-                    <div class="md:hidden border-t border-gray-200 dark:border-gray-700 mt-1">
+                    {{-- <div class="md:hidden border-t border-gray-200 dark:border-gray-700 mt-1">
                         <div class="px-4 py-2">
                             <p
                                 class="text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider mb-2">
@@ -99,10 +94,10 @@
                                 </select>
                             </div>
                         </div>
-                    </div>
+                    </div> --}}
 
                     <div class="border-t border-gray-200 dark:border-gray-700 mt-1">
-                        <a href="{{ route('user.logout') }}"
+                        <a href="{{ route('admin.logout') }}"
                             class="flex items-center px-4 py-2 text-sm text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700">
                             <i class="fad fa-sign-out-alt mr-3 text-gray-400"></i>
                             Sign Out

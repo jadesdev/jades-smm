@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Cache;
 use Illuminate\Database\Eloquent\Model;
 
 class ApiProvider extends Model
@@ -38,5 +39,13 @@ class ApiProvider extends Model
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    protected static function boot()
+    {
+        parent::boot();
+        static::saved(function () {
+            Cache::forget('api_providers_list');
+        });
     }
 }

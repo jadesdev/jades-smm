@@ -205,7 +205,7 @@
                 class="bg-gradient-to-r from-purple-50 to-indigo-50 dark:from-purple-100 dark:to-indigo-100 rounded-2xl p-6 border border-purple-200">
                 <div class="flex items-center justify-between mb-4">
                     <h3 class="text-lg font-semibold text-gray-800">Service Details</h3>
-                    <span class="service-tag bg-primary-600 text-white px-2 py-1 rounded-full">Premium</span>
+                    <span class="service-tag bg-primary-600 text-white px-2 py-1 rounded-full text-sm">{{ custom_text($selectedService->type) }}</span>
                 </div>
 
                 <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">

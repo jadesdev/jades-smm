@@ -86,6 +86,7 @@
         <script src="{{ asset('public/vendor/livewire/livewire.js') }}" data-csrf="{{ csrf_token() }}"
             data-update-uri="{{ url('livewire/update') }}" data-navigate-once="true"></script>
     @endif
+    <script src="{{ static_asset('js/main.js') }}"></script>
     @stack('scripts')
     @yield('scripts')
     @include('inc.scripts')

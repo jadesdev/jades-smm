@@ -33,6 +33,7 @@ class User extends Authenticatable
         'email_verify',
         'sms_verify',
         'is_active',
+        'api_token',
     ];
 
     /**
@@ -43,6 +44,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'api_token'
     ];
 
     /**
@@ -120,5 +122,13 @@ class User extends Authenticatable
     public function deposits(): HasMany
     {
         return $this->hasMany(Transaction::class)->where('type', 'deposit');
+    }
+
+    /**
+     * Get all orders for this user
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

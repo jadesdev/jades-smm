@@ -77,7 +77,7 @@
                                     {{ format_price($transaction->amount) }}
                                 </div>
                                 @if ($transaction->charge > 0)
-                                    <div class="text-xs text-gray-500 dark:text-gray-400">Charge:
+                                    <div class="text-xs text-gray-500 dark:text-gray-400">Fee:
                                         {{ format_price($transaction->charge) }}</div>
                                 @endif
                             </td>
