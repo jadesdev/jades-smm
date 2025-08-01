@@ -110,22 +110,28 @@
     <div
         class="bg-white dark:bg-gray-800 p-4 sm:p-6 lg:p-8 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700">
         <h3 class="text-lg font-semibold text-gray-900 dark:text-white mb-4">Order Analytics</h3>
-        <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div class="grid grid-cols-1 xl:grid-cols-3 gap-8">
 
-            {{-- Line Chart: Recent Orders Trend --}}
-            <div class="lg:col-span-2">
-                <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-4">Order Trend (Last 7 Days)</h4>
+            <div class="xl:col-span-2">
+                <div class="flex justify-between">
+                    <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-4">Order Trend (Last 7 Days)</h4>
+                    <x-forms.select wire:model.live.debounce.300ms="orderTrendPeriod" placeholder="Select Period">
+                        <option value="7">Last 7 Days</option>
+                        <option value="30">Last 30 Days</option>
+                        <option value="90">Last 90 Days</option>
+                        <option value="180">Last 180 Days</option>
+                    </x-forms.select>
+                </div>
+
                 <div x-data="{
                     chart: null,
                     labels: @js($orderTrendLabels),
                     data: @js($orderTrendData),
-                
                     init() {
                         this.$nextTick(() => {
                             this.renderChart();
-                        });
+                        }); 
                     },
-                
                     renderChart() {
                         if (typeof ApexCharts === 'undefined') {
                             console.error('ApexCharts is not loaded');
@@ -174,11 +180,11 @@
                                 gradient: {
                                     shade: isDark ? 'dark' : 'light',
                                     type: 'vertical',
-                                    shadeIntensity: 0.5,
-                                    gradientToColors: ['#3B82F6'],
+                                    shadeIntensity: 0.9,
+                                    gradientToColors: ['#10B981', '#F59E0B', '#3B82F6', '#EF4444', '#8B5CF6', '#14B8A6', '#F97316'],
                                     inverseColors: false,
-                                    opacityFrom: 0.6,
-                                    opacityTo: 0.1,
+                                    opacityFrom: 0.9,
+                                    opacityTo: 0.5,
                                     stops: [0, 100]
                                 }
                             },
@@ -204,13 +210,12 @@
                         this.chart = new ApexCharts(this.$refs.lineChart, options);
                         this.chart.render();
                     }
-                }" wire:ignore>
+                }" wire:ignore wire:key="{{ $orderTrendPeriod }}">
                     <div x-ref="lineChart" class="w-full"></div>
                 </div>
             </div>
 
-            {{-- Pie Chart: Order Status Distribution --}}
-            <div class="lg:col-span-1">
+            <div class="xl:col-span-1">
                 <h4 class="text-md font-medium text-gray-700 dark:text-gray-300 mb-4">Order Status Distribution</h4>
                 <div x-data="{
                     chart: null,
@@ -324,7 +329,8 @@
                     </div>
                     <h3 class="text-gray-500 dark:text-gray-400 font-medium">Pending Orders</h3>
                 </div>
-                <p class="mt-4 text-xl font-bold text-gray-900 dark:text-white">{{ number_format($pendingOrders) }}</p>
+                <p class="mt-4 text-xl font-bold text-gray-900 dark:text-white">{{ number_format($pendingOrders) }}
+                </p>
             </a>
 
             <a href="{{ route('admin.orders.index') }}?status=processing" wire:navigate

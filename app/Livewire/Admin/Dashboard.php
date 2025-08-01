@@ -49,6 +49,7 @@ class Dashboard extends Component
     public $recentUsers = [];
     public $bestServices = [];
     public $recentOrders = [];
+    public $orderTrendPeriod = 7;
     public array $orderStatusData = [];
     public array $orderStatusLabels = [];
     public array $orderTrendData = [];
@@ -147,8 +148,15 @@ class Dashboard extends Component
         });
     }
 
+    public function updatedOrderTrendPeriod()
+    {
+        $this->loadChartData();
+    }
+
     public function loadChartData()
     {
+        $cacheKey = "admin.dashboard.chart_data.{$this->orderTrendPeriod}";
+        
         $statusCounts = Order::query()
             ->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
@@ -160,13 +168,13 @@ class Dashboard extends Component
         // Get order trend data grouped by status for last 7 days
         $orderTrend = Order::query()
             ->select(DB::raw('DATE(created_at) as date'), 'status', DB::raw('count(*) as count'))
-            ->where('created_at', '>=', now()->subDays(7))
+            ->where('created_at', '>=', now()->subDays($this->orderTrendPeriod))
             ->groupBy('date', 'status')
             ->orderBy('date', 'asc')
             ->get();
 
         // Create date range for last 7 days
-        $period = now()->subDays(6)->toPeriod(now());
+        $period = now()->subDays($this->orderTrendPeriod - 1)->toPeriod(now());
         $dateRange = [];
         foreach ($period as $date) {
             $dateRange[] = $date->format('Y-m-d');
