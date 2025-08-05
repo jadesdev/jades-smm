@@ -37,7 +37,7 @@ Route::get('/cron-job', function (Request $request) {
 })->name('cron');
 
 // user
-Route::prefix('user')->as('user.')->middleware(['auth'])->group(function (): void {
+Route::prefix('user')->as('user.')->middleware(['auth','user'])->group(function (): void {
     require __DIR__ . '/user.php';
 });
 

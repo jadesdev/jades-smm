@@ -10,7 +10,6 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use URL;
 
 #[Layout('components.layouts.auth')]
 class Register extends Component
@@ -53,7 +52,7 @@ class Register extends Component
             $validated['ref_id'] = $referUser->id;
         }
         $user = User::create($validated);
-        $this->sendEmailVerification($user);
+        $user->sendEmailVerification();
         Auth::login($user);
 
         $this->successAlert('Registration successful! Welcome to our platform.');
@@ -78,26 +77,4 @@ class Register extends Component
         ]);
     }
 
-    private function sendEmailVerification($user)
-    {
-        $link = URL::temporarySignedRoute(
-            'verification.verify',
-            now()->addMinutes(60),
-            [
-                'id' => $user->getKey(),
-                'hash' => sha1($user->getEmailForVerification()),
-            ]
-        );
-
-        sendNotification(
-            'EMAIL_VERIFICATION',
-            $user,
-            [
-                'name' => $user->name,
-                'first_name' => $user->first_name,
-                'email' => $user->email,
-                'verification_link' => $link,
-            ]
-        );
-    }
 }

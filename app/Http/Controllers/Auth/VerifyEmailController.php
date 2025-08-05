@@ -16,6 +16,7 @@ class VerifyEmailController extends Controller
     {
         $user = $request->user();
         if ($user->email_verify) {
+            session()->flash('success', 'Your email is already verified!');
             return redirect()->intended(route('user.dashboard', absolute: false) . '?verified=1');
         }
         $user->email_verify = true;
@@ -35,7 +36,7 @@ class VerifyEmailController extends Controller
             );
         }
 
-
+        session()->flash('success', 'Your email is verified!');
         return redirect()->intended(route('user.dashboard', absolute: false) . '?verified=1');
     }
 }

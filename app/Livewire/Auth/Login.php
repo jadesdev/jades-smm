@@ -47,7 +47,11 @@ class Login extends Component
             $this->errorAlert('Login failed. Please check your credentials and try again.');
             throw $e;
         }
-
+        $user = Auth::user();
+        if (!$user->is_active) {
+            Auth::logout();
+            $this->errorAlert('Your account has been disabled or suspended');
+        }
         RateLimiter::clear($this->throttleKey());
         Session::regenerate();
 
