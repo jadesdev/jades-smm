@@ -12,7 +12,7 @@
                 </h2>
                 @if ($view == 'edit')
                     <div>
-                        <x-button wire:click="backToList" variant="secondary" outline>
+                        <x-button wire:click="backToList" variant="primary" outline>
                             <i class="fa fa-arrow-left mr-2"></i>
                             Back to List
                         </x-button>
@@ -31,13 +31,14 @@
                             label="Email Subject" class="w-full" />
 
                         {{-- Note: For a rich text editor, you'll need Alpine.js to sync the data. --}}
-                        <x-forms.textarea wire:model.defer="content" name="content" id="content" label="Email Content"
+                        <x-forms.rich-editor wire:model.defer="content" name="content" id="content" label="Email Content"
                             class="w-full" rows="15" />
 
                         <x-forms.select wire:model.defer="email_status" name="email_status" id="email_status"
-                            label="Status" class="w-full">
-                            <option value="1">Active</option>
-                            <option value="0">Inactive</option>
+                            label="Status" class="w-full" :options="[
+                                1 => 'Active',
+                                0 => 'Inactive',
+                            ]">
                         </x-forms.select>
                     </div>
 
@@ -60,7 +61,8 @@
                                         @foreach ($shortcodes as $shortcode => $key)
                                             <tr>
                                                 <td class="p-2 font-mono text-gray-700 dark:text-gray-300">
-                                                    {{ "{" . e($key) . "}" }}</td>
+                                                    &#123;&#123;{{ $shortcode }}&#125;&#125;
+                                                </td>
                                                 <td class="p-2 text-gray-600 dark:text-gray-400">
                                                     {{ ucfirst(str_replace('_', ' ', $key)) }}</td>
                                             </tr>

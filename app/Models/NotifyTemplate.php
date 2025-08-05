@@ -12,9 +12,9 @@ class NotifyTemplate extends Model
     protected $casts = [
         'shortcodes' => 'object',
         'channels' => 'array',
-        'email_status' => 'boolean',
-        'push_status' => 'boolean',
-        'inapp_status' => 'boolean',
+        // 'email_status' => 'boolean',
+        // 'push_status' => 'boolean',
+        // 'inapp_status' => 'boolean',
     ];
 
     protected $fillable = [
