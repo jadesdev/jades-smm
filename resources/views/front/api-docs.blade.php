@@ -1,5 +1,5 @@
 @extends('front.layouts.main')
-@section('title', "APi Docs")
+@section('title', "API Docs")
 @section('content')
 <div class="container mx-auto px-4 sm:px-6 lg:px-8 py-16 pb-6 " x-data>
     <!-- Section 1: API Information -->

@@ -154,9 +154,7 @@ class Dashboard extends Component
     }
 
     public function loadChartData()
-    {
-        $cacheKey = "admin.dashboard.chart_data.{$this->orderTrendPeriod}";
-        
+    {        
         $statusCounts = Order::query()
             ->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')

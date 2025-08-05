@@ -117,7 +117,7 @@ class Staffs extends Component
             $this->errorAlert('You cannot delete super admin');
             return;
         }
-        // $staff->delete();
+        $staff->delete();
         $this->closeDeleteModal();
         $this->successAlert('Staff deleted successfully');
     }

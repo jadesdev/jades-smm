@@ -20,7 +20,7 @@
 
     <div class="space-y-4 relative min-h-[50vh]">
         <!-- Loading state -->
-        <div wire:loading.delay.long wire:target="search,selectedCategory,loadFilteredCategories" class="absolute inset-0 w-full">
+        <div wire:loading.delay.long wire:target="selectedCategory,loadCategories" class="absolute inset-0 w-full">
             <div class="w-full space-y-4">
                 @for ($i = 0; $i < 2; $i++)
                     <div class="bg-white dark:bg-gray-800 rounded-lg shadow p-6 animate-pulse">

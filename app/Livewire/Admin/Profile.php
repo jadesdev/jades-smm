@@ -20,7 +20,7 @@ class Profile extends Component
     public function update()
     {
         $admin = Auth::guard('admin')->user();
-        $validated = $this->validate([
+        $this->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
             'phone' => 'nullable|string|max:255',
@@ -34,6 +34,9 @@ class Profile extends Component
         if ($this->password != null) {
             $admin->password = bcrypt($this->password);
         }
+        /**
+         * @var \App\Models\Admin $admin
+         */
         $admin->save();
         $this->successAlert('Profile updated successfully');
     }

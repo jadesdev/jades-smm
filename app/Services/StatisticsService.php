@@ -411,7 +411,16 @@ class StatisticsService
             $cacheKey = $this->getCacheKey($type, $duration);
             Cache::forget($cacheKey);
         } else {
-            Cache::flush();
+            // Clear only statistics-related cache keys  
+            $types = ['provider', 'user', 'service', 'order'];
+            $durations = ['yesterday', 'thisweek', 'lastweek', 'thismonth', 'lastmonth', 'thisyear', 'lastyear'];
+
+            foreach ($types as $cacheType) {
+                foreach ($durations as $cacheDuration) {
+                    $cacheKey = $this->getCacheKey($cacheType, $cacheDuration);
+                    Cache::forget($cacheKey);
+                }
+            }
         }
     }
 

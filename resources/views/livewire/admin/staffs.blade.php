@@ -139,7 +139,7 @@
     {{-- Delete Confirmation Modal --}}
     <x-modal name="delete-modal" title="Confirm Deletion" persistent="true">
         <p class="text-gray-600 dark:text-gray-300">
-            Are you sure you want to delete this newsletter "{{ $deletingStaff?->name }}"?
+            Are you sure you want to delete this staff member "{{ $deletingStaff?->name }}"?
         </p>
         <x-slot name="footer">
             <x-button variant="secondary" wire:click="closeDeleteModal">Cancel</x-button>

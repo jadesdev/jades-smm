@@ -57,7 +57,7 @@ class AdminLogin extends Component
         $url = route('admin.dashboard');
 
         if (session('admin_link') != null) {
-            $url = (session('admin_link'));
+            $url = url(session('admin_link'));
         }
 
         $this->redirectIntended(default: $url, navigate: true);

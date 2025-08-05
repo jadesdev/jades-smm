@@ -108,7 +108,7 @@
         </div>
         <div class="p-6">
             <div class="space-y-4">
-                @foreach ($recentActivities as $activity)
+                @forelse ($recentActivities as $activity)
                     <div class="flex items-center space-x-4">
                         <div class="bg-primary-100 p-2 rounded-full">
                             <img src="{{ static_asset('services/' . $activity->image) }}" alt=""
@@ -121,7 +121,14 @@
                                 {{ $activity->created_at->diffForHumans() }}</p>
                         </div>
                     </div>
-                @endforeach
+                @empty
+                    <div class="text-center py-8">
+                        <i class="fa fa-clock text-gray-400 text-3xl mb-2"></i>
+                        <p class="text-gray-500 dark:text-gray-400">
+                            No recent activity to display
+                        </p>
+                    </div>
+                @endforelse
             </div>
         </div>
     </div>

@@ -14,6 +14,9 @@ use Validator;
 
 class ApiOrderController extends Controller
 {
+
+    public function __construct(private OrderService $orderService) {}
+
     /**
      * Handle API requests
      */
@@ -29,7 +32,7 @@ class ApiOrderController extends Controller
         $actionExists = ['services', 'add', 'status', 'refill', 'refill_status', 'balance', 'cancel'];
 
         $action = $request->action;
-        if (!method_exists($this, $action) ||! in_array($action, $actionExists)) {
+        if (!method_exists($this, $action) || ! in_array($action, $actionExists)) {
             return response()->json(['error' => 'Invalid action']);
         }
         $user = User::where('api_token', $request->key)->first();
@@ -57,7 +60,7 @@ class ApiOrderController extends Controller
     /**
      * List of services
      */
-    public function services($user, $request)
+    private function services()
     {
         $services = Service::whereStatus(1)->with('category')->orderBy('category_id')->get();
         $modifyService = [];
@@ -131,7 +134,7 @@ class ApiOrderController extends Controller
     /**
      * Place order
      */
-    public function add($user, $request, OrderService $orderService)
+    public function add($user, $request)
     {
         $service = Service::where('id', $request->service)->where('status', 1)->first();
         if (! $service) {
@@ -232,7 +235,7 @@ class ApiOrderController extends Controller
         ];
         try {
 
-            $order = $orderService->createOrder(
+            $order = $this->orderService->createOrder(
                 $user,
                 $service,
                 $data
@@ -401,8 +404,7 @@ class ApiOrderController extends Controller
                 $order->save();
 
                 // Refund user
-                $order->user->balance += $order->price;
-                $order->user->save();
+                $this->orderService->processRefund($order, $order->price);
 
                 $orderData['cancel'] = 1;
             }
@@ -438,8 +440,7 @@ class ApiOrderController extends Controller
                     $order->save();
 
                     // Refund user
-                    $order->user->balance += $order->price;
-                    $order->user->save();
+                    $this->orderService->processRefund($order, $order->price);
 
                     $orderData['cancel'] = 1;
                 }

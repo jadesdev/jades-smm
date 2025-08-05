@@ -77,7 +77,7 @@
                                             </div>
                                             @if ($stat['provider']->url)
                                                 <div class="text-xs text-gray-500 dark:text-gray-400">
-                                                    {{ parse_url($stat['provider']->url, PHP_URL_HOST) }}
+                                                    {{ parse_url($stat['provider']->url, PHP_URL_HOST) ?: 'Invalid URL' }}
                                                 </div>
                                             @endif
                                         </div>
@@ -679,7 +679,5 @@
         </x-card>
     @endif
 </div>
-
-
 
 @include('layouts.meta')

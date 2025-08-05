@@ -131,7 +131,7 @@
             .content,
             .header,
             .footer {
-                padding: 150px;
+                padding: 15px;
             }
         }
     </style>

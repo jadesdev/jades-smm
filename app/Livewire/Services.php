@@ -16,8 +16,6 @@ class Services extends Component
 {
     use LivewireToast;
 
-    use LivewireToast;
-
     #[Url(as: 'q')]
     public string $search = '';
 
@@ -39,7 +37,7 @@ class Services extends Component
     public function categoriesForFilter()
     {
         return Category::where('is_active', true)
-            ->whereHas('services', fn ($q) => $q->active())
+            ->whereHas('services', fn($q) => $q->active())
             ->orderBy('name')
             ->get(['id', 'name']);
     }
@@ -52,10 +50,15 @@ class Services extends Component
 
     public function loadCategories()
     {
-        $this->categories = Cache::remember('categories_actives', now()->addHours(2), function () {
+        $cacheKey = 'categories_actives_' . md5($this->search . '_' . $this->selectedCategory);
+        $this->categories = Cache::remember($cacheKey, now()->addHours(2), function () {
             return Category::where('is_active', true)
-                ->whereHas('services', fn ($q) => $q->active())
-                ->with(['services' => fn ($q) => $q->active()])
+                ->whereHas('services', fn($q) => $q->active())
+                ->with([
+                    'services' => fn($q) => $q->active()
+                        ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'))
+                ])
+                ->when($this->selectedCategory, fn($q) => $q->where('id', $this->selectedCategory))
                 ->orderBy('name')
                 ->get();
         });
@@ -77,12 +80,12 @@ class Services extends Component
             ->with([
                 'services' => function ($query) {
                     $query->active()
-                        ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'));
+                        ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
                 },
             ])
             ->whereHas('services', function ($query) {
                 $query->active()
-                    ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'));
+                    ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
             });
 
         if ($this->selectedCategory) {
