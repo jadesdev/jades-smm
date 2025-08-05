@@ -31,8 +31,8 @@
     @if (!config('livewire.server'))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
-        <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
+    <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
     @endif
     <link rel="stylesheet" href="{{ static_asset('css/main.css') }}">
     @yield('styles')
@@ -41,16 +41,13 @@
 
 </head>
 
-<body
-    class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
-    @include('front.layouts.header')
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+    <div class="min-h-dvh">
 
-    <main class="flex-grow">
         @yield('content')
 
         {{ $slot ?? '' }}
-    </main>
-    @include('front.layouts.footer')
+    </div>
 
     <script src="{{ static_asset('js/vendors.min.js') }}"></script>
     @if (!config('livewire.server'))

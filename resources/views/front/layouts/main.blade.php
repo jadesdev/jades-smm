@@ -40,11 +40,10 @@
     @livewireStyles()
 
 </head>
-
-<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
     @include('front.layouts.header')
 
-    <main class="min-h-80">
+    <main class="flex-grow">
         @yield('content')
 
         {{ $slot ?? '' }}

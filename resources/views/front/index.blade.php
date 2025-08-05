@@ -417,7 +417,7 @@
                 <a href="{{ route('register') }}" wire:navigate
                     class="w-full sm:w-auto inline-flex items-center justify-center px-10 py-4 text-xl font-bold text-gray-900 bg-white rounded-xl shadow-2xl hover:bg-gray-100 transform hover:scale-105 transition-all duration-300">
                     <i class="fas fa-user-plus mr-2 text-yellow-500"></i>
-                    Claim $5 Free Credit
+                    Sign Up Now
                 </a>
                 <a href="{{ route('user.support.create') }}" wire:navigate
                     class="w-full sm:w-auto inline-flex items-center justify-center px-10 py-4 text-xl font-bold text-white border-2 border-white rounded-xl hover:bg-white hover:text-gray-900 transform hover:scale-105 transition-all duration-300">

@@ -15,9 +15,6 @@ Route::controller(HomeController::class)->group(function (): void {
     Route::get('/how-it-works', 'howItWorks')->name('how-it-works');
 });
 Route::get('services', Services::class)->name('services');
-Route::get('/dashboard', function () {
-    return view('dashboard');
-});
 
 require __DIR__ . '/auth.php';
 
