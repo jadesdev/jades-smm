@@ -28,14 +28,12 @@
 
     <!-- Font Awesome 6 -->
 
-    <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
-    <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
     <link rel="stylesheet" href="{{ static_asset('css/vendors.min.css') }}">
     @if (!config('livewire.server'))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
-        <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
+        <link rel="stylesheet" href="{{ static_asset('css/styles.css') }}">
+        <script src="{{ static_asset('js/app.js') }}" defer></script>
     @endif
     <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-okaidia.min.css" rel="stylesheet"
         crossorigin="anonymous" />

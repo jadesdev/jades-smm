@@ -13,13 +13,13 @@
     @if (!config('livewire.server'))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     @else
-        <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
-        <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
+        <link rel="stylesheet" href="{{ static_asset('css/styles.css') }}">
+        <script src="{{ static_asset('js/app.js') }}" defer></script>
     @endif
     {{-- @vite(['resources/css/app.css', 'resources/js/app.js']) --}}
 
-    <link rel="stylesheet" href="{{ static_asset('build/app-Ckbkdahw.css') }}">
-    <script src="{{ static_asset('build/app-l0sNRNKZ.js') }}" defer></script>
+    <link rel="stylesheet" href="{{ static_asset('css/styles.css') }}">
+    <script src="{{ static_asset('js/app.js') }}" defer></script>
     {{-- <link href="{{ asset('css/app.css') }}" rel="stylesheet"> --}}
 
     @stack('styles')
