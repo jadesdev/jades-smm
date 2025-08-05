@@ -13,7 +13,7 @@ return Application::configure(basePath: dirname(__DIR__))
     )
     ->withMiddleware(function (Middleware $middleware) {
         //
-        $middleware->redirectUsersTo('/user/dashboard');
+        $middleware->redirectUsersTo(route('user.dashboard'));
         $middleware->alias([
             'admin' => \App\Http\Middleware\Admin::class,
             'admin.guest' => \App\Http\Middleware\AdminGuest::class,
