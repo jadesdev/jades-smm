@@ -297,7 +297,7 @@ class ApiOrderController extends Controller
         $canRefill = $order->status === 'completed' &&
             $order->remains > 0 &&
             optional($order->service)->refill != 3 &&
-            (!$order->refilled_at || $order->refilled_at->lt(Carbon::now()->subHours(24))) &&
+            (! $order->refilled_at || $order->refilled_at->lt(Carbon::now()->subHours(24))) &&
             (
                 ! isset($order->refill_status) ||
                 in_array($order->refill_status, ['completed', 'partial', 'canceled', 'refunded'])
