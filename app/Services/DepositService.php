@@ -129,7 +129,7 @@ class DepositService
                 'transaction_code' => $transaction->code,
                 'new_balance' => format_price($transaction->new_balance),
             ], [
-                'link' => route('user.dashboard', absolute: false),
+                'link' => route('user.dashboard'),
                 'link_text' => 'View Dashboard',
             ]);
         } catch (Exception $e) {

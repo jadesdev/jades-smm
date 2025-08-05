@@ -4,6 +4,7 @@ use App\Http\Controllers\CronController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use App\Livewire\Services;
+use App\Livewire\User\Dashboard;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
@@ -16,6 +17,7 @@ Route::controller(HomeController::class)->group(function (): void {
 });
 Route::get('services', Services::class)->name('services');
 
+Route::get('user/dashboard', Dashboard::class)->name('dashboard');
 require __DIR__.'/auth.php';
 
 // queue

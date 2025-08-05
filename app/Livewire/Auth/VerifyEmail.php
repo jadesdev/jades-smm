@@ -22,7 +22,7 @@ class VerifyEmail extends Component
         $user = Auth::user();
 
         if ($user->email_verify) {
-            $this->redirectIntended(default: route('user.dashboard', absolute: false), navigate: true);
+            $this->redirectIntended(default: route('user.dashboard'), navigate: true);
 
             return;
         }
@@ -49,7 +49,7 @@ class VerifyEmail extends Component
         $user = Auth::user();
         if ($user->email_verify || ! sys_setting('verify_email')) {
             $this->successAlert('Your email is already verified!');
-            $this->redirectIntended(default: route('user.dashboard', absolute: false), navigate: true);
+            $this->redirectIntended(default: route('user.dashboard'), navigate: true);
 
             return;
         }

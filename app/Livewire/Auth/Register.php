@@ -55,7 +55,7 @@ class Register extends Component
         Auth::login($user);
 
         $this->successAlert('Registration successful! Welcome to our platform.');
-        $this->redirect(route('user.dashboard', absolute: false), navigate: true);
+        $this->redirect(route('user.dashboard'), navigate: true);
     }
 
     /**

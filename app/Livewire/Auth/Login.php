@@ -56,7 +56,7 @@ class Login extends Component
         Session::regenerate();
 
         $this->successAlert('Successfully logged in!');
-        $this->redirectIntended(default: route('user.dashboard', absolute: false), navigate: true);
+        $this->redirectIntended(default: route('user.dashboard'), navigate: true);
     }
 
     /**
