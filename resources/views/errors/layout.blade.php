@@ -6,9 +6,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'Error') - {{ config('app.name') }}</title>
 
-    @vite(['resources/css/app.css'])
+    @if (!config('livewire.server'))
+        @vite(['resources/css/app.css'])
+    @else
+        <link rel="stylesheet" href="{{ static_asset('css/styles.css') }}">
+        <script src="{{ static_asset('js/app.js') }}" defer></script>
+    @endif
     <link rel="icon shortcut" href="{{ my_asset(get_setting('favicon', 'favicon.png')) }}">
-    <link rel="stylesheet" href="{{ static_asset('css/styles.css') }}">
     <style>
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
