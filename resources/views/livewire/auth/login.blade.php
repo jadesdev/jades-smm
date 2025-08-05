@@ -10,8 +10,8 @@
             <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                 Or
                 <a href="{{ route('register') }}"
-                    class="font-medium text-primary-600 hover:text-primary-500 dark:hover:text-primary-400">
-                    create a new account
+                    class="font-medium text-primary-600 hover:text-primary-500 dark:hover:text-primary-400 uppercase">
+                    Create a new account
                 </a>
             </p>
         </div>
