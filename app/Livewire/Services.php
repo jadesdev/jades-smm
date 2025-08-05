@@ -30,13 +30,11 @@ class Services extends Component
 
     public string $metaKeywords;
 
-    public string $metaImage;
-
     #[Computed(persist: true)]
     public function categoriesForFilter()
     {
         return Category::where('is_active', true)
-            ->whereHas('services', fn ($q) => $q->active())
+            ->whereHas('services', fn($q) => $q->active())
             ->orderBy('name')
             ->get(['id', 'name']);
     }
@@ -49,15 +47,15 @@ class Services extends Component
 
     public function loadCategories()
     {
-        $cacheKey = 'categories_actives_'.md5($this->search.'_'.$this->selectedCategory);
+        $cacheKey = 'categories_actives_' . md5($this->search . '_' . $this->selectedCategory);
         $this->categories = Cache::remember($cacheKey, now()->addHours(2), function () {
             return Category::where('is_active', true)
-                ->whereHas('services', fn ($q) => $q->active())
+                ->whereHas('services', fn($q) => $q->active())
                 ->with([
-                    'services' => fn ($q) => $q->active()
-                        ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%')),
+                    'services' => fn($q) => $q->active()
+                        ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%')),
                 ])
-                ->when($this->selectedCategory, fn ($q) => $q->where('id', $this->selectedCategory))
+                ->when($this->selectedCategory, fn($q) => $q->where('id', $this->selectedCategory))
                 ->orderBy('name')
                 ->get();
         });
@@ -74,25 +72,29 @@ class Services extends Component
 
     public function render()
     {
-        $categoriesQuery = Category::query()
-            ->where('is_active', true)
-            ->with([
-                'services' => function ($query) {
+        $cacheKey = 'categories_actives_' . md5($this->search . '_' . $this->selectedCategory);
+        $categories = Cache::remember($cacheKey, now()->addHours(2), function () {
+            $categoriesQuery = Category::query()
+                ->where('is_active', true)
+                ->with([
+                    'services' => function ($query) {
+                        $query->active()
+                            ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
+                    },
+                ])
+                ->whereHas('services', function ($query) {
                     $query->active()
-                        ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'));
-                },
-            ])
-            ->whereHas('services', function ($query) {
-                $query->active()
-                    ->when($this->search, fn ($q) => $q->where('name', 'like', '%'.$this->search.'%'));
-            });
+                        ->when($this->search, fn($q) => $q->where('name', 'like', '%' . $this->search . '%'));
+                });
 
-        if ($this->selectedCategory) {
-            $categoriesQuery->where('id', $this->selectedCategory);
-        }
+            if ($this->selectedCategory) {
+                $categoriesQuery->where('id', $this->selectedCategory);
+            }
+            return $categoriesQuery->orderBy('name')->get();
+        });
 
         return view('livewire.services', [
-            'filteredCategories' => $categoriesQuery->orderBy('name')->get(),
+            'filteredCategories' => $categories,
         ]);
     }
 }

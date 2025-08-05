@@ -429,7 +429,7 @@ class OrderManager extends Component
 
         // Handle refunds if necessary
         if ($this->shouldRefundForStatusChange($oldStatus, $newStatus, $oldRemains)) {
-            $this->processRefundForUpdate($order, $user, $oldRemains);
+            $this->processRefundForUpdate($order, $oldRemains);
         }
 
         if ($newStatus === 'completed') {
@@ -473,7 +473,7 @@ class OrderManager extends Component
         }
     }
 
-    private function processRefundForUpdate(Order $order, $user, float $oldRemains): void
+    private function processRefundForUpdate(Order $order, float $oldRemains): void
     {
         $refundAmount = $this->calculateRefundAmount($order, $oldRemains);
 
@@ -640,7 +640,6 @@ class OrderManager extends Component
 
     public function render()
     {
-        $query = Order::with(['service', 'user', 'provider']);
         $query = $this->buildFilteredQuery()->with(['service', 'user', 'provider']);
         $orders = $query->latest()->paginate($this->perPage);
 

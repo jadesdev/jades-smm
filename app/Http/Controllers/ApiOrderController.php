@@ -98,7 +98,7 @@ class ApiOrderController extends Controller
             $result['status'] = $order->status;
             $result['charge'] = $order->service->price;
             $result['start_count'] = (int) $order->start_counter;
-            $result['remains'] = (int) $order->remain;
+            $result['remains'] = (int) $order->remains;
             $result['currency'] = get_setting('currency_code');
 
             return response()->json($result, 200);
@@ -122,7 +122,7 @@ class ApiOrderController extends Controller
                 'status' => $order->status,
                 'charge' => $order->service->price,
                 'start_count' => (int) $order->start_counter,
-                'remains' => (int) $order->remain,
+                'remains' => (int) $order->remains,
                 'currency' => get_setting('currency_code'),
             ];
         });
@@ -297,7 +297,7 @@ class ApiOrderController extends Controller
         $canRefill = $order->status === 'completed' &&
             $order->remains > 0 &&
             optional($order->service)->refill != 3 &&
-            ($order->refilled_at && $order->refilled_at->lt(Carbon::now()->subHours(24))) &&
+            (!$order->refilled_at || $order->refilled_at->lt(Carbon::now()->subHours(24))) &&
             (
                 ! isset($order->refill_status) ||
                 in_array($order->refill_status, ['completed', 'partial', 'canceled', 'refunded'])

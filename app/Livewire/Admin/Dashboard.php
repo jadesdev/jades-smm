@@ -199,9 +199,10 @@ class Dashboard extends Component
         // Create date range for last 7 days
         $period = now()->subDays($this->orderTrendPeriod - 1)->toPeriod(now());
         $dateRange = [];
+        $formattedDate = [];
         foreach ($period as $date) {
             $dateRange[] = $date->format('Y-m-d');
-            $formatedDate[] = $date->format('m/d');
+            $formattedDate[] = $date->format('m/d');
         }
 
         // Get unique statuses
@@ -221,7 +222,7 @@ class Dashboard extends Component
             ];
         }
 
-        $this->orderTrendLabels = $formatedDate;
+        $this->orderTrendLabels = $formattedDate;
         $this->orderTrendData = $seriesData;
     }
 
