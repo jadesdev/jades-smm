@@ -3,6 +3,7 @@
 namespace App\Livewire\User;
 
 use App\Models\Transaction;
+use App\Models\User;
 use App\Services\DepositService;
 use App\Traits\LivewireToast;
 use Auth;
@@ -92,7 +93,7 @@ class Wallet extends Component
 
     public function getTransactionsProperty()
     {
-        $filtered = Transaction::where('user_id', Auth::id())->orderBy('updated_at', 'desc');
+        $filtered = Transaction::where('user_id', Auth::id())->where('status', '!=', 'initiated')->orderBy('updated_at', 'desc');
 
         // Search filter
         if ($this->search) {
@@ -156,12 +157,13 @@ class Wallet extends Component
         $this->processingPayment = true;
 
         try {
+            $user = User::find(Auth::id());
             $depositService = app(DepositService::class);
 
             return $depositService->initiateDeposit(
-                amount: (float) $this->amount,
-                gateway: $this->selectedGateway,
-                user: Auth::user()
+                (float) $this->amount,
+                $this->selectedGateway,
+                $user
             );
             $this->successAlert('Deposit successful!');
         } catch (Exception $exception) {

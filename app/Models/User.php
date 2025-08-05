@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Str;
+use URL;
 
 class User extends Authenticatable
 {
@@ -33,6 +34,7 @@ class User extends Authenticatable
         'email_verify',
         'sms_verify',
         'is_active',
+        'api_token',
     ];
 
     /**
@@ -43,6 +45,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'api_token',
     ];
 
     /**
@@ -120,5 +123,39 @@ class User extends Authenticatable
     public function deposits(): HasMany
     {
         return $this->hasMany(Transaction::class)->where('type', 'deposit');
+    }
+
+    /**
+     * Get all orders for this user
+     */
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function sendEmailVerification(): void
+    {
+        $link = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $this->getKey(),
+                'hash' => sha1($this->getEmailForVerification()),
+            ]
+        );
+
+        sendNotification(
+            'EMAIL_VERIFICATION',
+            $this,
+            [
+                'name' => $this->name,
+                'first_name' => $this->first_name,
+                'email' => $this->email,
+                'verification_link' => $link,
+            ], [
+                'link' => $link,
+                'link_text' => 'Verify Email',
+            ]
+        );
     }
 }

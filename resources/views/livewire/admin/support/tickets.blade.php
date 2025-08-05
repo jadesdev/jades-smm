@@ -126,9 +126,9 @@
                         <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-gray-100">
                             <div class="flex items-center">
                                 <div>
-                                    <div class="font-medium">{{ $ticket->user->name ?? 'N/A' }}</div>
+                                    <a class="font-medium text-primary-600 hover:text-primary-900 dark:text-primary-400 dark:hover:text-primary-300" href="{{ route('admin.users.view', $ticket->user_id) }}">{{ $ticket->user?->name ?? 'N/A' }}</a>
                                     <div class="text-gray-500 dark:text-gray-400 text-xs">
-                                        {{ $ticket->user->email ?? 'N/A' }}</div>
+                                        {{ $ticket->user?->email ?? 'N/A' }}</div>
                                 </div>
                             </div>
                         </td>

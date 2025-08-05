@@ -167,12 +167,36 @@ class Create extends Component
 
             $messageContent = $this->buildConcatenatedMessage();
 
-            $ticket->messages()->create([
+            $message = $ticket->messages()->create([
                 'user_id' => $user->id,
                 'message' => Purify::clean($messageContent),
                 'type' => $this->image ? SupportMessage::TYPE_IMAGE : SupportMessage::TYPE_TEXT,
                 'image' => $imagePath ? 'support/'.basename($imagePath) : null,
                 'is_admin' => false,
+            ]);
+            // notify admin
+            sendAdminNotification('SUPPORT_TICKET_OPENED_ADMIN', [
+                'ticket_id' => $ticket->code,
+                'ticket_subject' => $ticket->subject,
+                'reply_preview' => textTrim($messageContent, 50),
+                'user_name' => $user->name,
+                'user_email' => $user->email,
+                'admin_ticket_link' => route('admin.support.messages', $ticket->id),
+            ], [
+                'link' => route('admin.support.messages', $ticket->id),
+                'link_text' => 'View Ticket',
+            ]);
+
+            // send notification to user
+            sendNotification('SUPPORT_TICKET_OPENED_USER', $user, [
+                'ticket_id' => $ticket->code,
+                'ticket_subject' => $ticket->subject,
+                'ticket_link' => route('user.support.view', $ticket->code),
+                'reply_preview' => textTrim($messageContent, 50),
+                'name' => $user->name,
+            ], [
+                'link' => route('user.support.view', $ticket->code),
+                'link_text' => 'View Ticket',
             ]);
 
             $this->reset(['orderid', 'want', 'payment', 'transactionId', 'addamount', 'message', 'image']);

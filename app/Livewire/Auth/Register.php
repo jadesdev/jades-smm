@@ -4,7 +4,6 @@ namespace App\Livewire\Auth;
 
 use App\Models\User;
 use App\Traits\LivewireToast;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
@@ -51,9 +50,8 @@ class Register extends Component
         if ($referUser && $referUser->email !== $this->email) {
             $validated['ref_id'] = $referUser->id;
         }
-
-        event(new Registered(($user = User::create($validated))));
-
+        $user = User::create($validated);
+        $user->sendEmailVerification();
         Auth::login($user);
 
         $this->successAlert('Registration successful! Welcome to our platform.');

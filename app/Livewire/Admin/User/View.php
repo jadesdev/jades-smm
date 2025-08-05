@@ -86,11 +86,13 @@ class View extends Component
         $this->userId = $id;
         $this->user = User::findOrFail($id);
 
-        // Set meta
+        if (request()->route()->getName() === 'admin.users.login') {
+            $this->loginAsUser($id);
+        }
+
         $this->metaTitle = "{$this->user->username} profile";
         $this->metaDescription = "View and manage user {$this->user->name}";
 
-        // Initialize form data
         $this->initializeFormData();
 
         // Load stats
@@ -115,15 +117,11 @@ class View extends Component
     private function loadStats()
     {
         $this->stats = [
-            // 'total_orders' => Order::where('user_id', $this->user->id)->count(),
-            // 'completed_orders' => Order::where('user_id', $this->user->id)->where('status', 'completed')->count(),
-            // 'pending_orders' => Order::where('user_id', $this->user->id)->where('status', 'pending')->count(),
-            // 'total_spent' => Order::where('user_id', $this->user->id)->sum('charge'),
-            'total_orders' => 12,
-            'completed_orders' => 42,
-            'pending_orders' => 62,
-            'total_spent' => 125,
-            'total_deposits' => Transaction::where('user_id', $this->user->id)->where('type', 'deposit')->sum('amount'),
+            'total_orders' => Order::where('user_id', $this->user->id)->count(),
+            'completed_orders' => Order::where('user_id', $this->user->id)->where('status', 'completed')->count(),
+            'pending_orders' => Order::where('user_id', $this->user->id)->where('status', 'pending')->count(),
+            'total_spent' => Transaction::where('user_id', $this->user->id)->where('type', 'debit')->sum('amount'),
+            'total_deposits' => Transaction::where('user_id', $this->user->id)->where('service', 'deposit')->sum('amount'),
             'total_transactions' => Transaction::where('user_id', $this->user->id)->count(),
             'open_tickets' => SupportTicket::where('user_id', $this->user->id)->where('status', 'open')->count(),
             'total_tickets' => SupportTicket::where('user_id', $this->user->id)->count(),
@@ -176,7 +174,6 @@ class View extends Component
             $this->password_confirmation = '';
 
             $this->successAlert('User updated successfully!');
-
         } catch (\Exception $e) {
             $this->errorAlert('Failed to update user. Please try again.');
             \Log::error('User update failed: '.$e->getMessage());
@@ -216,28 +213,54 @@ class View extends Component
 
     public function adjustBalance($amount, $type = 'add')
     {
+        $oldBalance = $this->user->balance;
+
         if ($type === 'add') {
-            $this->user->increment('balance', $amount);
+            creditUser($this->user, $amount);
             $message = 'Added '.format_price($amount).' to user balance';
+            $newBalance = $oldBalance + $amount;
         } else {
-            $this->user->decrement('balance', $amount);
+            debitUser($this->user, $amount);
             $message = 'Deducted '.format_price($amount).' from user balance';
+            $newBalance = $oldBalance - $amount;
         }
 
         // Create transaction record
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => $this->user->id,
-            'type' => $type === 'add' ? 'deposit' : 'debit',
+            'type' => $type === 'add' ? 'credit' : 'debit',
+            'code' => getTrx(),
+            'service' => 'deposit',
+            'message' => $message,
+            'gateway' => $type === 'add' ? 'deposit' : 'system',
             'amount' => $amount,
-            'description' => "Admin adjustment - {$message}",
-            'status' => 'completed',
+            'image' => 'deposit.png',
+            'charge' => 0,
+            'old_balance' => $oldBalance,
+            'new_balance' => $newBalance,
+            'meta' => [
+                'gateway' => $type === 'add' ? 'deposit' : 'system',
+                'amount' => $amount,
+                'fee' => 0,
+            ],
+            'status' => 'successful',
         ]);
+        sendTransactionEmail($this->user, $transaction);
 
         $this->user->refresh();
-        $this->balance = $this->user->balance;
+        $this->balance = $newBalance;
         $this->loadStats();
 
         $this->successAlert($message);
+    }
+
+    public function loginAsUser($userId)
+    {
+        $user = User::findOrFail($userId);
+
+        auth('web')->login($user, false);
+
+        $this->redirectIntended(default: route('user.dashboard'), navigate: true);
     }
 
     public function render()

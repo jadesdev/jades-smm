@@ -2,6 +2,8 @@
 
 use App\Models\Setting;
 use App\Models\SystemSetting;
+use App\Models\User;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
@@ -56,7 +58,6 @@ if (! function_exists('get_setting')) {
 if (! function_exists('sys_setting')) {
     function sys_setting($key, $default = null)
     {
-        // // Check if the system_settings table exists
         if (! Schema::hasTable('system_settings')) {
             return $default;
         }
@@ -119,7 +120,6 @@ function formatNumber($number)
 
     return number_format($number);
 }
-// Trim text and append ellipsis if needed
 function textTrim($string, $length = null)
 {
     if (empty($length)) {
@@ -129,10 +129,8 @@ function textTrim($string, $length = null)
     return Str::limit($string, $length, '...');
 }
 
-// Trim text without appending ellipsis
 function text_trimer($string, $length = null)
 {
-    // Set default length to 100 if not provided
     if (empty($length)) {
         $length = 100;
     }
@@ -140,13 +138,11 @@ function text_trimer($string, $length = null)
     return Str::limit($string, $length);
 }
 
-// Generate a random alphanumeric string of a specified length
 function getTrx($length = 15): string
 {
     $characters = 'ABCDEFGHJKMNOPQRSTUVWXYZ123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0';
     $charactersLength = strlen($characters);
     $randomString = '';
-    // Generate a random string by selecting characters from the given set
     for ($i = 0; $i < $length; $i++) {
         $randomString .= $characters[random_int(0, $charactersLength - 1)];
     }
@@ -166,20 +162,16 @@ function getTrans(string $prefix, $len = 15): string
     return $prefix.'_'.$randomString;
 }
 
-// Round the given amount to a specified number of decimal places
 function getAmount($amount, $length = 2): float
 {
-    // Ensure the returned amount is treated as a numeric value
     return round($amount, $length);
 }
 
-// Format and display a datetime using Carbon library
 function show_datetime($date, $format = 'Y-m-d h:ia'): string
 {
     return Carbon::parse($date)->format($format);
 }
 
-// Format and display a datetime using Carbon library
 function show_date($date, $format = 'Y-m-d'): string
 {
     return Carbon::parse($date)->format($format);
@@ -190,7 +182,6 @@ function trans_date($date, $format = 'M d, Y'): string
     return Carbon::parse($date)->format($format);
 }
 
-// Format and display a time
 function show_time($date, $format = 'h:ia'): string
 {
     return Carbon::parse($date)->format($format);
@@ -321,5 +312,71 @@ if (! function_exists('render_sortable_header')) {
                 </div>
             </th>
         HTML;
+    }
+}
+
+function formatOrderStatus($status)
+{
+    if (! is_string($status)) {
+        return '';
+    }
+
+    $status = str_replace('_', '', $status);
+    $status = str_replace(' ', '', $status);
+
+    return strtolower($status);
+}
+
+function sendNotification(string $type, $user, array $shortcodes, $custom = [])
+{
+    try {
+        $ns = new NotificationService;
+        $ns->send($type, $user, $shortcodes, $custom);
+    } catch (\Exception $e) {
+        \Log::error($e);
+    }
+}
+
+function sendTransactionEmail($user, $transaction)
+{
+    $emailData = [
+        'name' => $user->name,
+        'first_name' => $user->first_name,
+        'transaction_code' => $transaction->code,
+        'transaction_date' => $transaction->created_at,
+        'transaction_type' => ucfirst($transaction->type),
+        'transaction_service' => ucfirst($transaction->service),
+        'transaction_amount' => format_price($transaction->amount),
+        'transaction_details' => $transaction->message,
+        'new_balance' => format_price($user->balance),
+    ];
+
+    sendNotification('TRANSACTION_NOTIFICATION', $user, $emailData);
+}
+
+function debitUser($user, $amount)
+{
+    DB::transaction(function () use ($user, $amount) {
+        User::where('id', $user->id)->lockForUpdate()->decrement('balance', $amount);
+    });
+
+    return true;
+}
+function creditUser($user, $amount)
+{
+    DB::transaction(function () use ($user, $amount) {
+        User::where('id', $user->id)->lockForUpdate()->increment('balance', $amount);
+    });
+
+    return true;
+}
+
+function sendAdminNotification(string $type, array $shortcodes, $custom = [])
+{
+    try {
+        $ns = new NotificationService;
+        $ns->sendAdmin($type, $shortcodes, $custom);
+    } catch (\Exception $e) {
+        \Log::error($e);
     }
 }

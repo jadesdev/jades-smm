@@ -27,7 +27,7 @@
             <x-forms.select wire:model.live="providerFilter" name="providerFilter">
                 <option value="">All Providers</option>
                 <option value="manual">Manual</option>
-                @foreach ($apiProviders as $id => $name)
+                @foreach ($providers as $id => $name)
                     <option value="{{ $id }}">{{ $name }}</option>
                 @endforeach
             </x-forms.select>
@@ -95,7 +95,7 @@
                                 {{ $service->id }}</td>
                             <td class="px-6 py-4 text-sm text-gray-500 dark:text-gray-400">
                                 <p>{{ $service->api_service_id }}</p>
-                                {{ $service->apiProvider?->name ?? 'Manual' }}
+                                {{ $service->provider?->name ?? 'Manual' }}
                             </td>
                             <td class="px-6 py-4 whitespace- text-sm font-medium text-gray-900 dark:text-gray-100">
                                 {{ textTrim($service->name) }}</td>
@@ -105,14 +105,14 @@
                                 {{ format_price($service->price, 2) }}</td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500 dark:text-gray-400">
                                 <p>{{ format_price($service->original_price) }}</p>
-                                {{ $service->apiProvider?->currency ?? '$' }}{{ number_format($service->api_price, 2) }}
+                                {{ $service->provider?->currency ?? '$' }}{{ number_format($service->api_price, 2) }}
 
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm">
                                 <x-status-badge :status="$service->status" />
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-1">
-                                <x-button wire:navigate href="{{ route('admin.services.edit', $service->id) }}"
+                                <x-button href="{{ route('admin.services.edit', $service->id) }}"
                                     variant="primary" size="xs"><i class="fa fa-edit"></i></x-button>
                                 <x-button wire:click="delete({{ $service->id }})" variant="danger" size="xs"><i
                                         class="fa fa-trash"></i></x-button>

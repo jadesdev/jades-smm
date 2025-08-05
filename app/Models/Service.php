@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Service extends Model
@@ -44,7 +45,7 @@ class Service extends Model
         'dripfeed' => 'boolean',
         'refill' => 'boolean',
         'refill_automatic' => 'boolean',
-        'status' => 'boolean',
+        // 'status' => 'boolean',
         'cancel' => 'boolean',
     ];
 
@@ -67,8 +68,14 @@ class Service extends Model
     /**
      * Get the API provider that owns the service.
      */
-    public function apiProvider(): BelongsTo
+    public function provider(): BelongsTo
     {
-        return $this->belongsTo(ApiProvider::class);
+        return $this->belongsTo(ApiProvider::class, 'api_provider_id');
+    }
+
+    // orders
+    public function orders(): HasMany
+    {
+        return $this->hasMany(Order::class);
     }
 }

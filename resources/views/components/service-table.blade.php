@@ -38,7 +38,7 @@
                     <td class="px-4 py-4" data-label="Rate per 1000">
                         <span
                             class="inline-block text-blue-800 dark:text-blue-300 text-sm font-medium px-2 py-1 rounded">
-                            {{ ($service['rate']) }}
+                            {{ $service['rate'] }}
                         </span>
                     </td>
                     <td class="px-4 py-4" data-label="Min Order">
@@ -112,7 +112,7 @@
                                 </p>
                             </div>
                         </div>
-                        {{-- Service Details Grid (Intentionally hidden for future use or pending requirements) --}}  
+                        {{-- Service Details Grid (Intentionally hidden for future use or pending requirements) --}}
                         <div class="grid-cols-1 md:grid-cols-2 gap-4 hidden">
                             <div class="bg-gray-50 dark:bg-gray-700 p-4 rounded-lg">
                                 <h4 class="font-medium text-gray-900 dark:text-gray-100 mb-2">Order Limits</h4>
@@ -154,7 +154,10 @@
 
             <div
                 class="px-6 py-4 bg-gray-50 dark:bg-gray-700 border-t border-gray-200 dark:border-gray-600 flex justify-end space-x-3">
-                <a :href="`{{ route('user.orders.create') }}?service_id=${selectedService.id}`"
+                <a :href="`{{ route('user.orders.bulk') }}?service_id=${selectedService.id}`" wire:navigate
+                    class="inline-flex items-center px-4 py-2 bg-purple-600 text-white rounded hover:bg-purple-700">
+                    <i class="fas fa-layer-group mr-1"></i> Bulk order
+                </a><a :href="`{{ route('user.orders.create') }}?service_id=${selectedService.id}`"
                     class="inline-flex items-center px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700">
                     <i class="fas fa-shopping-cart mr-1"></i> Order Now
                 </a>

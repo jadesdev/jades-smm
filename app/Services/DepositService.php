@@ -6,7 +6,6 @@ use App\Http\Controllers\PaymentController;
 use App\Models\Transaction;
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class DepositService
@@ -25,10 +24,8 @@ class DepositService
      *
      * @throws Exception
      */
-    public function initiateDeposit(float $amount, string $gateway, ?User $user = null)
+    public function initiateDeposit(float $amount, string $gateway, User $user)
     {
-        $user = $user ?? Auth::user();
-
         $fee = $this->calculateDepositFee($amount, $gateway);
         $total = $amount + $fee;
 
@@ -75,9 +72,12 @@ class DepositService
      */
     protected function calculateDepositFee(float $amount, string $gateway): float
     {
-        // TODO: Implement dynamic fee calculation based on gateway
-        // For now, return a flat fee of 10 NGN
-        return 10.00;
+        $rate = (float) sys_setting('card_fee');
+        $cap = (float) sys_setting('card_fee_cap');
+
+        $fee = $amount * ($rate / 100);
+
+        return ($fee > $cap) ? $cap : $fee;
     }
 
     /**
@@ -107,7 +107,7 @@ class DepositService
             $user = $transaction->user;
 
             // Update user balance
-            $user->increment('balance', $transaction->amount);
+            creditUser($user, $transaction->amount);
 
             // Update transaction status
             if ($transaction->status != 'successful') {
@@ -119,7 +119,19 @@ class DepositService
             }
 
             // TODO: Send notification to user
-
+            sendNotification('DEPOSIT_SUCCESSFUL', $user, [
+                'name' => $user->name,
+                'email' => $user->email,
+                'deposit_amount' => format_price($transaction->amount),
+                'payment_gateway' => $transaction->meta['gateway'],
+                'deposit_details' => $transaction->message,
+                'transaction_id' => $transaction->code,
+                'transaction_code' => $transaction->code,
+                'new_balance' => format_price($transaction->new_balance),
+            ], [
+                'link' => route('user.dashboard', absolute: false),
+                'link_text' => 'View Dashboard',
+            ]);
         } catch (Exception $e) {
             Log::error('Failed to complete deposit: '.$e->getMessage());
             throw $e;

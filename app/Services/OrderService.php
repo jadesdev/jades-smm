@@ -5,12 +5,16 @@ namespace App\Services;
 use App\Exceptions\InsufficientBalanceException;
 use App\Models\Order;
 use App\Models\Service;
+use App\Models\Transaction;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class OrderService
 {
+    /**
+     * Create a single order
+     */
     public function createOrder(User $user, Service $service, array $data): Order
     {
         $totalQuantity = $this->calculateTotalQuantity($service, $data);
@@ -62,8 +66,29 @@ class OrderService
                 'dripfeed_quantity' => $data['is_drip_feed'] ? ($data['quantity'] ?? 0) : 0,
             ];
             $order = Order::create($orderData);
-            $user->decrement('balance', $charge);
-
+            // create transaction
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'type' => 'debit',
+                'code' => getTrx(),
+                'service' => 'order',
+                'message' => 'You place an order of '.format_price($charge)." for {$service->name}",
+                'gateway' => 'order',
+                'amount' => $charge,
+                'image' => 'order.png',
+                'charge' => 0,
+                'new_balance' => $user->balance - $charge,
+                'old_balance' => $user->balance,
+                'meta' => [
+                    'service_id' => $service->id,
+                    'order_id' => $order->id,
+                    'service_name' => $service->name,
+                ],
+                'status' => 'successful',
+            ]);
+            // debit user
+            debitUser($user, $charge);
+            sendTransactionEmail($user, $transaction);
             DB::commit();
 
             return $order;
@@ -72,6 +97,193 @@ class OrderService
             Log::error('Order creation failed in OrderService: '.$e->getMessage());
             throw new \Exception('Failed to create the order due to a server error.');
         }
+    }
+
+    /**
+     * Create bulk orders
+     */
+    public function createBulkOrder(User $user, Service $service, array $bulkData): array
+    {
+        $links = $bulkData['links'] ?? [];
+        $quantities = $bulkData['quantity'] ?? [];
+
+        $validOrders = [];
+        $errorDetails = [];
+        $totalCharge = 0;
+
+        foreach ($links as $index => $link) {
+            $quantity = isset($quantities[$index]) ? (int) $quantities[$index] : 0;
+
+            // Validate link
+            if (empty($link) || ! filter_var($link, FILTER_VALIDATE_URL)) {
+                $errorDetails[$link ?: 'Link #'.($index + 1)] = 'Invalid or empty link provided.';
+
+                continue;
+            }
+
+            if ($quantity < $service->min) {
+                $errorDetails[$link] = "Quantity must be at least {$service->min}.";
+
+                continue;
+            }
+
+            if ($quantity > $service->max) {
+                $errorDetails[$link] = "Quantity must not exceed {$service->max}.";
+
+                continue;
+            }
+
+            $charge = $this->calculateCharge($service, $quantity, ['quantity' => $quantity]);
+            $apiPrice = $this->calculateApiPrice($service, $quantity, ['quantity' => $quantity]);
+            $profit = $charge - $apiPrice;
+
+            $orderData = [
+                'user_id' => $user->id,
+                'category_id' => $service->category_id,
+                'service_id' => $service->id,
+                'api_provider_id' => $service->api_provider_id,
+                'api_service_id' => $service->api_service_id,
+                'type' => $service->api_provider_id ? 'api' : 'direct',
+                'service_type' => $service->type,
+                'link' => $link,
+                'quantity' => $quantity,
+                'remains' => $quantity,
+                'price' => $charge,
+                'api_price' => $apiPrice,
+                'profit' => $profit,
+                'status' => 'pending',
+                'created_at' => now(),
+                'updated_at' => now(),
+
+                // Default null values for service-specific fields in bulk orders
+                'comments' => null,
+                'usernames' => null,
+                'username' => null,
+                'hashtags' => null,
+                'hashtag' => null,
+                'media' => null,
+                'sub_status' => null,
+                'sub_posts' => null,
+                'sub_min' => null,
+                'sub_max' => null,
+                'sub_delay' => null,
+                'sub_expiry' => null,
+                'is_drip_feed' => false,
+                'runs' => 0,
+                'interval' => 0,
+                'dripfeed_quantity' => 0,
+            ];
+
+            $validOrders[] = $orderData;
+            $totalCharge += $charge;
+        }
+
+        if (empty($validOrders)) {
+            return [
+                'success' => false,
+                'orders' => [],
+                'errors' => $errorDetails,
+                'message' => 'No valid orders found. Please check your input.',
+            ];
+        }
+
+        if ($user->balance < $totalCharge) {
+            throw new InsufficientBalanceException('Insufficient balance. Required: '.format_price($totalCharge).', Available: '.format_price($user->balance));
+        }
+
+        DB::beginTransaction();
+        try {
+            $trxCode = getTrx();
+            $orderCount = count($validOrders);
+            $trxMessage = 'Bulk order of '.format_price($totalCharge)." for {$orderCount} orders of {$service->name}";
+
+            $transaction = Transaction::create([
+                'user_id' => $user->id,
+                'type' => 'debit',
+                'code' => $trxCode,
+                'service' => 'bulk-order',
+                'message' => $trxMessage,
+                'gateway' => 'bulk-order',
+                'amount' => $totalCharge,
+                'image' => 'order.png',
+                'charge' => 0,
+                'new_balance' => $user->balance - $totalCharge,
+                'old_balance' => $user->balance,
+                'meta' => [
+                    'service_id' => $service->id,
+                    'service_name' => $service->name,
+                    'order_count' => $orderCount,
+                    'total_charge' => $totalCharge,
+                ],
+                'status' => 'successful',
+            ]);
+
+            Order::insert($validOrders);
+
+            debitUser($user, $totalCharge);
+            sendTransactionEmail($user, $transaction);
+
+            DB::commit();
+
+            return [
+                'success' => true,
+                'orders' => $validOrders,
+                'errors' => $errorDetails,
+                'total_charge' => $totalCharge,
+                'order_count' => $orderCount,
+                'transaction_code' => $trxCode,
+                'message' => empty($errorDetails)
+                    ? "All {$orderCount} orders placed successfully."
+                    : "{$orderCount} orders placed successfully, with some errors.",
+            ];
+        } catch (\Exception $e) {
+            DB::rollBack();
+            Log::error('Bulk order creation failed in OrderService: '.$e->getMessage());
+            throw new \Exception('Failed to create bulk orders due to a server error.');
+        }
+    }
+
+    /**
+     * Resend order to api
+     */
+    public function resendOrder(string $orderId): void
+    {
+        // Set status to pending for cron to pick up
+        $order = Order::find($orderId);
+        if ($order) {
+            $order->update([
+                'status' => 'pending',
+            ]);
+        }
+    }
+
+    /**
+     * Process Order Refund
+     */
+    public function processRefund(Order $order, float $amount): void
+    {
+        $user = $order->user;
+        creditUser($user, $amount);
+
+        // Create transaction record
+        $transaction = Transaction::create([
+            'user_id' => $user->id,
+            'type' => 'credit',
+            'code' => getTrx(),
+            'service' => 'order',
+            'message' => "Refund for order #{$order->id}",
+            'amount' => $amount,
+            'image' => 'order.png',
+            'charge' => 0,
+            'new_balance' => $user->balance,
+            'old_balance' => $user->balance - $amount,
+            'meta' => [
+                'service_id' => $order->service_id,
+                'order_id' => $order->id,
+            ],
+            'status' => 'successful',
+        ]);
+        sendTransactionEmail($user, $transaction);
     }
 
     private function ensureStringOrNull($value)
