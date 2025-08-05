@@ -31,8 +31,8 @@
                             label="Email Subject" class="w-full" />
 
                         {{-- Note: For a rich text editor, you'll need Alpine.js to sync the data. --}}
-                        <x-forms.rich-editor wire:model.defer="content" name="content" id="content" label="Email Content"
-                            class="w-full" rows="15" />
+                        <x-forms.rich-editor wire:model.defer="content" name="content" id="content"
+                            label="Email Content" class="w-full" rows="15" />
 
                         <x-forms.select wire:model.defer="email_status" name="email_status" id="email_status"
                             label="Status" class="w-full" :options="[
@@ -67,16 +67,16 @@
                                                     {{ ucfirst(str_replace('_', ' ', $key)) }}</td>
                                             </tr>
                                         @endforeach
-                                        @if (isset($settings))
-                                            @foreach ($settings->shortcodes as $shortcode => $key)
-                                                <tr>
-                                                    <td class="p-2 font-mono text-gray-700 dark:text-gray-300">
-                                                        {{ "{" . e($shortcode) . "}" }}</td>
-                                                    <td class="p-2 text-gray-600 dark:text-gray-400">{{ $key }}
-                                                    </td>
-                                                </tr>
-                                            @endforeach
-                                        @endif
+                                        @foreach (get_setting('shortcodes') as $shortcode => $key)
+                                            <tr>
+                                                <td class="p-2 font-mono text-gray-700 dark:text-gray-300">
+                                                    {{-- {{ '{' . $shortcode . '}' }} --}}
+                                                    &#123;&#123;{{ $shortcode }}&#125;&#125;
+                                                </td>
+                                                <td class="p-2 text-gray-600 dark:text-gray-400">{{ $key }}
+                                                </td>
+                                            </tr>
+                                        @endforeach
                                     </tbody>
                                 </table>
                             </div>

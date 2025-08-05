@@ -67,18 +67,18 @@ class OrderService
             ];
             $order = Order::create($orderData);
             // create transaction
-            Transaction::create([
+            $transaction = Transaction::create([
                 'user_id' => $user->id,
                 'type' => 'debit',
                 'code' => getTrx(),
                 'service' => 'order',
-                'message' => 'You place an order of '.format_price($charge)." for {$service->name}",
+                'message' => 'You place an order of ' . format_price($charge) . " for {$service->name}",
                 'gateway' => 'order',
                 'amount' => $charge,
                 'image' => 'order.png',
                 'charge' => 0,
-                'new_balance' => $user->balance - $charge,  
-                'old_balance' => $user->balance,  
+                'new_balance' => $user->balance - $charge,
+                'old_balance' => $user->balance,
                 'meta' => [
                     'service_id' => $service->id,
                     'order_id' => $order->id,
@@ -87,14 +87,14 @@ class OrderService
                 'status' => 'successful',
             ]);
             // debit user
-            $user->decrement('balance', $charge);
-
+            debitUser($user, $charge);
+            sendTransactionEmail($user, $transaction);
             DB::commit();
 
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Order creation failed in OrderService: '.$e->getMessage());
+            Log::error('Order creation failed in OrderService: ' . $e->getMessage());
             throw new \Exception('Failed to create the order due to a server error.');
         }
     }
@@ -116,7 +116,7 @@ class OrderService
 
             // Validate link
             if (empty($link) || !filter_var($link, FILTER_VALIDATE_URL)) {
-                $errorDetails[$link ?: "Link #".($index+1)] = "Invalid or empty link provided.";
+                $errorDetails[$link ?: "Link #" . ($index + 1)] = "Invalid or empty link provided.";
                 continue;
             }
 
@@ -185,16 +185,16 @@ class OrderService
         }
 
         if ($user->balance < $totalCharge) {
-            throw new InsufficientBalanceException('Insufficient balance. Required: '.format_price($totalCharge).', Available: '.format_price($user->balance));
+            throw new InsufficientBalanceException('Insufficient balance. Required: ' . format_price($totalCharge) . ', Available: ' . format_price($user->balance));
         }
 
         DB::beginTransaction();
         try {
             $trxCode = getTrx();
             $orderCount = count($validOrders);
-            $trxMessage = 'Bulk order of '.format_price($totalCharge)." for {$orderCount} orders of {$service->name}";
+            $trxMessage = 'Bulk order of ' . format_price($totalCharge) . " for {$orderCount} orders of {$service->name}";
 
-            Transaction::create([
+            $transaction = Transaction::create([
                 'user_id' => $user->id,
                 'type' => 'debit',
                 'code' => $trxCode,
@@ -217,7 +217,8 @@ class OrderService
 
             Order::insert($validOrders);
 
-            $user->decrement('balance', $totalCharge);
+            debitUser($user, $totalCharge);
+            sendTransactionEmail($user, $transaction);
 
             DB::commit();
 
@@ -232,12 +233,54 @@ class OrderService
                     ? "All {$orderCount} orders placed successfully."
                     : "{$orderCount} orders placed successfully, with some errors.",
             ];
-
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Bulk order creation failed in OrderService: '.$e->getMessage());
+            Log::error('Bulk order creation failed in OrderService: ' . $e->getMessage());
             throw new \Exception('Failed to create bulk orders due to a server error.');
         }
+    }
+
+    /**
+     * Resend order to api
+     */
+    public function resendOrder(string $orderId): void
+    {
+        // Set status to pending for cron to pick up
+        $order = Order::find($orderId);
+        if ($order) {
+            $order->update([
+                'status' => 'pending',
+            ]);
+        }
+    }
+
+    /**
+     * Process Order Refund
+     */
+    public function processRefund(Order $order, float $amount): void
+    {
+        $user = $order->user;
+        creditUser($user, $amount);
+
+        // Create transaction record
+        $transaction = Transaction::create([
+            'user_id' => $user->id,
+            'type' => 'credit',
+            'code' => getTrx(),
+            'service' => 'order',
+            'message' => "Refund for order #{$order->id}",
+            'amount' => $amount,
+            'image' => 'order.png',
+            'charge' => 0,
+            'new_balance' => $user->balance,
+            'old_balance' => $user->balance - $amount,
+            'meta' => [
+                'service_id' => $order->service_id,
+                'order_id' => $order->id,
+            ],
+            'status' => 'successful',
+        ]);
+        sendTransactionEmail($user, $transaction);
     }
 
     private function ensureStringOrNull($value)

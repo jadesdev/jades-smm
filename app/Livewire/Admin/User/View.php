@@ -88,7 +88,7 @@ class View extends Component
 
         if (request()->route()->getName() === 'admin.users.login') {
             $this->loginAsUser($id);
-        }   
+        }
 
         $this->metaTitle = "{$this->user->username} profile";
         $this->metaDescription = "View and manage user {$this->user->name}";
@@ -174,10 +174,9 @@ class View extends Component
             $this->password_confirmation = '';
 
             $this->successAlert('User updated successfully!');
-
         } catch (\Exception $e) {
             $this->errorAlert('Failed to update user. Please try again.');
-            \Log::error('User update failed: '.$e->getMessage());
+            \Log::error('User update failed: ' . $e->getMessage());
         }
     }
 
@@ -214,21 +213,21 @@ class View extends Component
 
     public function adjustBalance($amount, $type = 'add')
     {
-        $oldBalance = $this->user->balance;  
-        
-        if ($type === 'add') {  
-            $this->user->increment('balance', $amount);  
-            $message = 'Added '.format_price($amount).' to user balance';  
-            $newBalance = $oldBalance + $amount;  
-        } else {  
-            $this->user->decrement('balance', $amount);  
-            $message = 'Deducted '.format_price($amount).' from user balance';  
-            $newBalance = $oldBalance - $amount;  
-        }  
-    
+        $oldBalance = $this->user->balance;
+
+        if ($type === 'add') {
+            creditUser($this->user, $amount);
+            $message = 'Added ' . format_price($amount) . ' to user balance';
+            $newBalance = $oldBalance + $amount;
+        } else {
+            debitUser($this->user, $amount);
+            $message = 'Deducted ' . format_price($amount) . ' from user balance';
+            $newBalance = $oldBalance - $amount;
+        }
+
 
         // Create transaction record
-        Transaction::create([
+        $transaction = Transaction::create([
             'user_id' => $this->user->id,
             'type' => $type === 'add' ? 'credit' : 'debit',
             'code' => getTrx(),
@@ -247,6 +246,7 @@ class View extends Component
             ],
             'status' => 'successful',
         ]);
+        sendTransactionEmail($this->user, $transaction);
 
         $this->user->refresh();
         $this->balance = $newBalance;

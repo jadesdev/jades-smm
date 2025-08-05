@@ -139,7 +139,7 @@ class NotifyTemplateSeeder extends Seeder
                     'deposit_amount' => 'Amount deposited.',
                     'payment_gateway' => 'Gateway used.',
                     'deposit_details' => 'Deposit details.',
-                    'transaction_id' => 'Transaction ID.',
+                    'transaction_code' => 'Transaction Code.',
                     'new_balance' => 'New wallet balance.',
                 ]),
                 'email_status' => true,
@@ -303,7 +303,7 @@ class NotifyTemplateSeeder extends Seeder
                     <table class="details-table" role="presentation" border="0" cellpadding="0" cellspacing="0" style="width:100%; margin: 20px 0; border-collapse: collapse;">
                         <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 40%;">Order ID:</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">#{{order_id}}</td></tr>
                         <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 40%;">Service:</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">{{service_name}}</td></tr>
-                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 40%;">Delivered:</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">{{remains}} / {{order_quantity}}</td></tr>
+                        <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 40%;">Delivered:</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;"> {{delivered}} /</td></tr>
                         <tr><td style="padding: 8px; border-bottom: 1px solid #e2e8f0; font-weight: bold; width: 40%;">Completion Date:</td><td style="padding: 8px; border-bottom: 1px solid #e2e8f0;">{{completion_date}}</td></tr>
                         <tr><td style="padding: 8px; font-weight: bold; width: 40%;">Total Charged:</td><td style="padding: 8px;">{{order_amount}}</td></tr>
                     </table>
@@ -318,6 +318,7 @@ class NotifyTemplateSeeder extends Seeder
                     'service_name' => 'Service name.',
                     'order_quantity' => 'Original quantity ordered.',
                     'remains' => 'quantity remaining.',
+                    'delivered' => 'quantity delivered.',
                     'completion_date' => 'Date order was completed.',
                     'order_amount' => 'Final amount charged.',
                 ]),

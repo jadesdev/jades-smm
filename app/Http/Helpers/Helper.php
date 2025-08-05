@@ -2,6 +2,8 @@
 
 use App\Models\Setting;
 use App\Models\SystemSetting;
+use App\Models\User;
+use App\Services\NotificationService;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Schema;
 
@@ -323,4 +325,58 @@ function formatOrderStatus($status)
     $status = str_replace(' ', '', $status);
 
     return strtolower($status);
+}
+
+function sendNotification(string $type, $user, array $shortcodes, $custom = [])
+{
+    try {
+        $ns = new NotificationService();
+        $ns->send($type, $user, $shortcodes, $custom);
+    } catch (\Exception $e) {
+        \Log::error($e);
+    }
+}
+
+function sendTransactionEmail($user, $transaction)
+{
+    $emailData = [
+        'name' => $user->name,
+        'first_name' => $user->first_name,
+        'transaction_code' => $transaction->code,
+        'transaction_date' => $transaction->created_at,
+        'transaction_type' => ucfirst($transaction->type),
+        'transaction_service' => ucfirst($transaction->service),
+        'transaction_amount' => format_price($transaction->amount),
+        'transaction_details' => $transaction->message,
+        'new_balance' => format_price($user->balance),
+    ];
+
+    sendNotification('TRANSACTION_NOTIFICATION', $user, $emailData);
+}
+
+function debitUser($user, $amount)
+{
+    DB::transaction(function () use ($user, $amount) {
+        User::where('id', $user->id)->lockForUpdate()->decrement('balance', $amount);
+    });
+
+    return true;
+}
+function creditUser($user, $amount)
+{
+    DB::transaction(function () use ($user, $amount) {
+        User::where('id', $user->id)->lockForUpdate()->increment('balance', $amount);
+    });
+
+    return true;
+}
+
+function sendAdminNotification(string $type, array $shortcodes, $custom = [])
+{
+    try {
+        $ns = new NotificationService();
+        $ns->sendAdmin($type, $shortcodes, $custom);
+    } catch (\Exception $e) {
+        \Log::error($e);
+    }
 }

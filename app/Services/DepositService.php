@@ -107,7 +107,7 @@ class DepositService
             $user = $transaction->user;
 
             // Update user balance
-            $user->increment('balance', $transaction->amount);
+            creditUser($user, $transaction->amount);
 
             // Update transaction status
             if ($transaction->status != 'successful') {
@@ -119,7 +119,19 @@ class DepositService
             }
 
             // TODO: Send notification to user
-
+            sendNotification('DEPOSIT_SUCCESSFUL', $user, [
+                'name' => $user->name,
+                'email' => $user->email,
+                'deposit_amount' => format_price($transaction->amount),
+                'payment_gateway' => $transaction->meta['gateway'],
+                'deposit_details' => $transaction->message,
+                'transaction_id' => $transaction->code,
+                'transaction_code' => $transaction->code,
+                'new_balance' => format_price($transaction->new_balance),
+            ], [
+                'link' => route('user.dashboard', absolute: false),
+                'link_text' => 'View Dashboard',
+            ]);
         } catch (Exception $e) {
             Log::error('Failed to complete deposit: ' . $e->getMessage());
             throw $e;

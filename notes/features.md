@@ -37,3 +37,5 @@
     -   referral email
     -   support tickets (admin and users)
     
+
+TODO: add a component for unverified email so they can resend

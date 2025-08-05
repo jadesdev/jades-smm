@@ -65,7 +65,7 @@ class ResetPassword extends Component
             return;
         }
 
-        $this->successToast('Password reset successfully');
+        $this->successAlert('Password reset successfully');
 
         $this->redirectRoute('login', navigate: true);
     }

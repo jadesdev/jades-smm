@@ -102,7 +102,7 @@ class Message extends Component
     public function assignToMe()
     {
         $this->ticket->update([
-            'assigned_to' => Auth::id(),
+            'assigned_to' => Auth::guard('admin')->user()->id,
             'updated_at' => now(),
         ]);
 
@@ -135,7 +135,7 @@ class Message extends Component
         if ($this->image) {
             try {
                 $storedPath = $this->image->store('support', 'uploads');
-                $imagePath = 'support/'.basename($storedPath);
+                $imagePath = 'support/' . basename($storedPath);
             } catch (\Exception $e) {
                 $this->errorAlert('Failed to upload image. Please try again.');
 
@@ -144,7 +144,7 @@ class Message extends Component
         }
 
         $this->ticket->messages()->create([
-            'user_id' => Auth::id() ?? null,
+            'user_id' => null,
             'message' => Purify::clean($this->message),
             'type' => $this->image ? SupportMessage::TYPE_IMAGE : SupportMessage::TYPE_TEXT,
             'image' => $imagePath,
@@ -157,6 +157,17 @@ class Message extends Component
 
         $this->reset(['message', 'image']);
 
+        // send notification to user
+        sendNotification('SUPPORT_TICKET_REPLY_USER', $this->ticket->user, [
+            'ticket_id' => $this->ticket->code,
+            'ticket_subject' => $this->ticket->subject,
+            'ticket_link' => route('user.support.view', $this->ticket->code),
+            'reply_preview' => textTrim($this->message, 50),
+            'name' => $this->ticket->user->name,
+        ], [
+            'link' => route('user.support.view', $this->ticket->code),
+            'link_text' => 'View Ticket',
+        ]);
         $this->dispatch('message-sent');
     }
 

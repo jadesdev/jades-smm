@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use URL;
 
 #[Layout('components.layouts.auth')]
 class Register extends Component
@@ -37,8 +38,8 @@ class Register extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
             'terms' => ['accepted'],
             'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
@@ -51,9 +52,8 @@ class Register extends Component
         if ($referUser && $referUser->email !== $this->email) {
             $validated['ref_id'] = $referUser->id;
         }
-
-        event(new Registered(($user = User::create($validated))));
-
+        $user = User::create($validated);
+        $this->sendEmailVerification($user);
         Auth::login($user);
 
         $this->successAlert('Registration successful! Welcome to our platform.');
@@ -76,5 +76,28 @@ class Register extends Component
         $this->validateOnly('referral_code', [
             'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
         ]);
+    }
+
+    private function sendEmailVerification($user)
+    {
+        $link = URL::temporarySignedRoute(
+            'verification.verify',
+            now()->addMinutes(60),
+            [
+                'id' => $user->getKey(),
+                'hash' => sha1($user->getEmailForVerification()),
+            ]
+        );
+
+        sendNotification(
+            'EMAIL_VERIFICATION',
+            $user,
+            [
+                'name' => $user->name,
+                'first_name' => $user->first_name,
+                'email' => $user->email,
+                'verification_link' => $link,
+            ]
+        );
     }
 }

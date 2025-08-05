@@ -4,6 +4,7 @@ namespace App\Mail;
 
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
+use Illuminate\Mail\Mailables\Address;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
@@ -12,12 +13,13 @@ class SendMail extends Mailable
 {
     use Queueable, SerializesModels;
 
+    public $data;
     /**
      * Create a new message instance.
      */
-    public function __construct()
+    public function __construct($data)
     {
-        //
+        $this->data = $data;
     }
 
     /**
@@ -25,8 +27,12 @@ class SendMail extends Mailable
      */
     public function envelope(): Envelope
     {
+        $femail = env('MAIL_FROM_ADDRESS');
+        $fname = env('MAIL_FROM_NAME');
+
         return new Envelope(
-            subject: 'Send Mail',
+            from: new Address($femail, $fname),
+            subject: $this->data['subject'],
         );
     }
 
@@ -36,7 +42,7 @@ class SendMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'view.name',
+            view: 'emails.main',
         );
     }
 
