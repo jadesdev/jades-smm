@@ -13,6 +13,7 @@
     @yield('meta')
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
+    <link rel="icon shortcut" href="{{my_asset(get_setting('favicon'))}}">
     <script>
         (function() {
             const theme = localStorage.getItem('color-theme') ||

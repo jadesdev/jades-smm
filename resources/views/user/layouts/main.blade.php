@@ -11,6 +11,7 @@
     <title>@yield('title', 'Dashboard') | @lang(get_setting('title', 'Jades SMM'))</title>
 
     @yield('meta')
+    <link rel="icon shortcut" href="{{my_asset(get_setting('favicon'))}}">
     <!-- Canonical URL -->
     <link rel="canonical" href="{{ url()->current() }}">
     <script>
