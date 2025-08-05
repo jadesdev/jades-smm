@@ -1,6 +1,6 @@
 @section('title', 'Sign Up')
 
-<div class="flex min-h-screen items-center justify-center bg-gray-100 py-10 px-4 dark:bg-gray-900 sm:px-6 lg:px-8">
+<div class="flex items-center justify-center bg-gray-100 py-10 px-4 dark:bg-gray-900 sm:px-6 lg:px-8">
     <div class="w-full max-w-md space-y-8">
 
         {{-- Header --}}
@@ -12,7 +12,7 @@
             <p class="mt-2 text-center text-sm text-gray-600 dark:text-gray-400">
                 Or
                 <a href="{{ route('login') }}"
-                    class="font-medium text-primary-600 hover:text-primary-500 dark:hover:text-primary-400">
+                    class="font-medium text-primary-600 hover:text-primary-500 dark:hover:text-primary-400 uppercase">
                     sign in to your existing account
                 </a>
             </p>

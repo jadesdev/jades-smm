@@ -40,9 +40,7 @@
     @livewireStyles()
 
 </head>
-
-<body
-    class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
+<body class="font-sans antialiased bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100 min-h-screen flex flex-col">
     @include('front.layouts.header')
 
     <main class="flex-grow">

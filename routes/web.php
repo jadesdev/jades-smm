@@ -3,20 +3,18 @@
 use App\Http\Controllers\CronController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
+use App\Livewire\Services;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 
-Route::get('/', function () {
-    return view('welcome');
-})->name('home');
-
-Route::get('/terms', function () {
-    return view('welcome');
-})->name('terms');
-
-Route::get('/dashboard', function () {
-    return view('dashboard');
+Route::controller(HomeController::class)->group(function (): void {
+    Route::get('/', 'index')->name('home');
+    Route::get('/terms', 'terms')->name('terms');
+    Route::get('/api-docs', 'apiDocs')->name('api-docs');
+    Route::get('/privacy', 'privacy')->name('privacy');
+    Route::get('/how-it-works', 'howItWorks')->name('how-it-works');
 });
+Route::get('services', Services::class)->name('services');
 
 require __DIR__ . '/auth.php';
 
@@ -37,7 +35,7 @@ Route::get('/cron-job', function (Request $request) {
 })->name('cron');
 
 // user
-Route::prefix('user')->as('user.')->middleware(['auth','user'])->group(function (): void {
+Route::prefix('user')->as('user.')->middleware(['auth', 'user'])->group(function (): void {
     require __DIR__ . '/user.php';
 });
 

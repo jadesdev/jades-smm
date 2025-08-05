@@ -79,8 +79,8 @@
                     icon="fab fa-instagram" />
                 <x-forms.input name="telegram" label="Telegram" type="text" :value="$settings->telegram"
                     icon="fab fa-telegram" />
-                <x-forms.input name="linkedin" label="LinkedIn" type="text" :value="$settings->linkedin"
-                    icon="fab fa-linkedin" />
+                {{-- <x-forms.input name="linkedin" label="LinkedIn" type="text" :value="$settings->linkedin"
+                    icon="fab fa-linkedin" /> --}}
                 <x-forms.input name="whatsapp" label="WhatsApp" type="text" :value="$settings->whatsapp"
                     icon="fab fa-whatsapp" />
                 <div class="md:col-span-2">
