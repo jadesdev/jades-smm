@@ -43,6 +43,11 @@ class Setting extends Model
         'currency_code',
         'currency_rate',
         'rejected_usernames',
+        'twitter',
+        'facebook',
+        'instagram',
+        'telegram',
+        'whatsapp',
     ];
 
     /**
