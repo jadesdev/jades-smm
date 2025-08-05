@@ -7,12 +7,10 @@ use Cache;
 
 trait HomeServiceTrait
 {
-
     private function getHomePlatforms()
     {
         return ['instagram', 'facebook', 'youtube', 'tiktok', 'telegram'];
     }
-
 
     private function getHomeServices()
     {
@@ -23,7 +21,7 @@ trait HomeServiceTrait
             foreach ($platforms as $platform) {
                 $platformServices = Cache::remember("home_services_{$platform}", 3600, function () use ($platform) {
                     return Service::where('status', 1)
-                        ->where('name', 'LIKE', '%' . $platform . '%')
+                        ->where('name', 'LIKE', '%'.$platform.'%')
                         ->orderBy('manual_order', 'asc')
                         ->orderBy('price', 'asc')
                         ->take(4)
@@ -97,7 +95,7 @@ trait HomeServiceTrait
 
         if (str_contains($serviceName, 'instagram')) {
             $features[] = 'High quality accounts';
-            if (!in_array('Refill guarantee', $features)) {
+            if (! in_array('Refill guarantee', $features)) {
                 $features[] = 'Fast delivery';
             }
         } elseif (str_contains($serviceName, 'youtube')) {
@@ -117,7 +115,7 @@ trait HomeServiceTrait
         if (count($features) < 3) {
             $defaultFeatures = ['Quality guaranteed', 'Fast delivery', '24/7 support'];
             foreach ($defaultFeatures as $feature) {
-                if (!in_array($feature, $features) && count($features) < 3) {
+                if (! in_array($feature, $features) && count($features) < 3) {
                     $features[] = $feature;
                 }
             }
@@ -125,7 +123,6 @@ trait HomeServiceTrait
 
         return array_slice($features, 0, 3);
     }
-
 
     private function getPlatformIcon($platform, $serviceName)
     {

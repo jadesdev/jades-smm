@@ -32,7 +32,6 @@ class NotifyTemplate extends Model
         'inapp_status',
     ];
 
-    
     protected static function boot()
     {
         parent::boot();

@@ -4,17 +4,22 @@ namespace App\Livewire\Admin;
 
 use App\Traits\LivewireToast;
 use Auth;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class Profile extends Component
 {
     use LivewireToast;
+
     public string $metaTitle = 'Admin Profile';
+
     public $name;
+
     public $email;
+
     public $phone;
+
     public $password;
 
     public function update()
@@ -22,7 +27,7 @@ class Profile extends Component
         $admin = Auth::guard('admin')->user();
         $this->validate([
             'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255|unique:admins,email,' . $admin->id,
+            'email' => 'required|email|max:255|unique:admins,email,'.$admin->id,
             'phone' => 'nullable|string|max:255',
             'password' => 'nullable|string|min:8',
         ]);

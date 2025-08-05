@@ -48,7 +48,7 @@ class Login extends Component
             throw $e;
         }
         $user = Auth::user();
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             Auth::logout();
             $this->errorAlert('Your account has been disabled or suspended');
         }

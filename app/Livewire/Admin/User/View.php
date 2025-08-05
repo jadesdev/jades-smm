@@ -176,7 +176,7 @@ class View extends Component
             $this->successAlert('User updated successfully!');
         } catch (\Exception $e) {
             $this->errorAlert('Failed to update user. Please try again.');
-            \Log::error('User update failed: ' . $e->getMessage());
+            \Log::error('User update failed: '.$e->getMessage());
         }
     }
 
@@ -217,14 +217,13 @@ class View extends Component
 
         if ($type === 'add') {
             creditUser($this->user, $amount);
-            $message = 'Added ' . format_price($amount) . ' to user balance';
+            $message = 'Added '.format_price($amount).' to user balance';
             $newBalance = $oldBalance + $amount;
         } else {
             debitUser($this->user, $amount);
-            $message = 'Deducted ' . format_price($amount) . ' from user balance';
+            $message = 'Deducted '.format_price($amount).' from user balance';
             $newBalance = $oldBalance - $amount;
         }
-
 
         // Create transaction record
         $transaction = Transaction::create([

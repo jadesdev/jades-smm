@@ -39,22 +39,30 @@ class OrderManager extends Component
 
     // Selection state
     public array $selectedOrders = [];
+
     public bool $selectAll = false;
 
     // Modal state
     public bool $showResponseModal = false;
+
     public ?string $selectedOrderResponse = null;
+
     public ?int $selectedOrderId = null;
+
     public ?Order $deletingOrder = null;
+
     public ?Order $editingOrder = null;
 
     // Page state
     public string $page = 'list';
+
     public array $editData = [];
 
     // Cached data
     public array $statusCounts = [];
+
     public array $providers = [];
+
     public array $serviceTypes = [];
 
     // Constants
@@ -67,14 +75,16 @@ class OrderManager extends Component
         'completed',
         'canceled',
         'refunded',
-        'fail'
+        'fail',
     ];
 
     public const REFUNDABLE_STATUSES = ['canceled', 'partial', 'refunded'];
+
     public const NON_REFUNDABLE_STATUSES = ['canceled', 'completed', 'refunded'];
 
     // Meta properties
     public string $metaTitle = 'Order Management';
+
     public string $metaDescription = 'Manage and monitor all orders';
 
     protected $queryString = ['search', 'status', 'provider', 'serviceType', 'perPage'];
@@ -101,7 +111,7 @@ class OrderManager extends Component
         return Cache::remember(
             $this->getCacheKey('filtered_ids'),
             300, // 5 minutes
-            fn() => $this->buildFilteredQuery()->pluck('id')->toArray()
+            fn () => $this->buildFilteredQuery()->pluck('id')->toArray()
         );
     }
 
@@ -273,7 +283,7 @@ class OrderManager extends Component
             $order = $this->editingOrder;
             $user = $order->user;
 
-            if (!$order || !$user) {
+            if (! $order || ! $user) {
                 throw new \InvalidArgumentException('Order or user not found.');
             }
 
@@ -285,11 +295,11 @@ class OrderManager extends Component
             $this->loadCachedData();
         } catch (\Exception $e) {
             DB::rollback();
-            $this->errorAlert('Failed to update order: ' . $e->getMessage());
+            $this->errorAlert('Failed to update order: '.$e->getMessage());
             Log::error('Order update failed', [
                 'order_id' => $this->editingOrder?->id,
                 'error' => $e->getMessage(),
-                'trace' => $e->getTraceAsString()
+                'trace' => $e->getTraceAsString(),
             ]);
         }
     }
@@ -308,7 +318,7 @@ class OrderManager extends Component
             $this->closeDeleteModal();
             $this->loadCachedData();
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to delete order: ' . $e->getMessage());
+            $this->errorAlert('Failed to delete order: '.$e->getMessage());
         }
     }
 
@@ -322,8 +332,9 @@ class OrderManager extends Component
     {
         $order = Order::find($orderId);
 
-        if (!$order || !$order->response) {
+        if (! $order || ! $order->response) {
             $this->errorAlert('No response data available for this order');
+
             return;
         }
 
@@ -337,15 +348,16 @@ class OrderManager extends Component
         try {
             $order = Order::findOrFail($orderId);
 
-            if (!$this->canResendOrder($order)) {
+            if (! $this->canResendOrder($order)) {
                 $this->errorAlert('Order is not in error state');
+
                 return;
             }
 
             app(OrderService::class)->resendOrder($orderId);
             $this->successAlert('Order resent to API');
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to resend order: ' . $e->getMessage());
+            $this->errorAlert('Failed to resend order: '.$e->getMessage());
         }
     }
 
@@ -360,7 +372,7 @@ class OrderManager extends Component
 
     private function validateStatus(string $status): void
     {
-        if (!in_array($status, self::STATUSES)) {
+        if (! in_array($status, self::STATUSES)) {
             throw new \InvalidArgumentException("Invalid status: {$status}");
         }
     }
@@ -437,20 +449,20 @@ class OrderManager extends Component
     {
         return in_array($status, self::REFUNDABLE_STATUSES) &&
             $order->remains > 0 &&
-            !in_array($order->status, self::NON_REFUNDABLE_STATUSES);
+            ! in_array($order->status, self::NON_REFUNDABLE_STATUSES);
     }
 
     private function shouldRefundForStatusChange(string $oldStatus, string $newStatus, float $oldRemains): bool
     {
         return in_array($newStatus, self::REFUNDABLE_STATUSES) &&
             $oldRemains > 0 &&
-            !in_array($oldStatus, self::NON_REFUNDABLE_STATUSES);
+            ! in_array($oldStatus, self::NON_REFUNDABLE_STATUSES);
     }
 
     private function processRefund(Order $order): void
     {
         $order->load('user');
-        if (!$order->user || $order->remains <= 0) {
+        if (! $order->user || $order->remains <= 0) {
             return;
         }
 
@@ -474,6 +486,7 @@ class OrderManager extends Component
     {
         $remainsToRefund = $remains ?? $order->remains;
         $perOrder = $order->quantity > 0 ? ($order->price / $order->quantity) : 0;
+
         return $remainsToRefund * $perOrder;
     }
 
@@ -493,11 +506,11 @@ class OrderManager extends Component
 
     private function handleBulkError(string $message, \Exception $e): void
     {
-        $this->errorAlert($message . ': ' . $e->getMessage());
+        $this->errorAlert($message.': '.$e->getMessage());
         Log::error($message, [
             'selected_orders' => $this->selectedOrders,
             'error' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
+            'trace' => $e->getTraceAsString(),
         ]);
     }
 
@@ -505,7 +518,7 @@ class OrderManager extends Component
     {
         $this->metaTitle = $status === 'all'
             ? 'Order Management'
-            : ucfirst($status) . ' Orders';
+            : ucfirst($status).' Orders';
     }
 
     private function sendOrderUpdateNotification(Order $order, $user): void
@@ -576,7 +589,7 @@ class OrderManager extends Component
                     ->where('service_type', '!=', '')
                     ->orderBy('service_type')
                     ->pluck('service_type')
-                    ->toArray()
+                    ->toArray(),
             ];
         });
 
@@ -601,7 +614,7 @@ class OrderManager extends Component
         }
 
         if ($this->search) {
-            $query->search('%' . $this->search . '%');
+            $query->search('%'.$this->search.'%');
         }
 
         return $query;
@@ -609,11 +622,11 @@ class OrderManager extends Component
 
     private function getCacheKey(string $suffix): string
     {
-        return "order_manager_{$suffix}_" . md5(serialize([
+        return "order_manager_{$suffix}_".md5(serialize([
             $this->search,
             $this->status,
             $this->provider,
-            $this->serviceType
+            $this->serviceType,
         ]));
     }
 

@@ -17,8 +17,9 @@ use Livewire\Component;
 class AdminLogin extends Component
 {
     use LivewireToast;
+
     // meta
-    public string $metaTitle = "Admin Login";
+    public string $metaTitle = 'Admin Login';
 
     #[Validate('required|string|email')]
     public string $email = '';
@@ -89,9 +90,8 @@ class AdminLogin extends Component
      */
     protected function throttleKey(): string
     {
-        return Str::transliterate(Str::lower($this->email) . '|' . request()->ip());
+        return Str::transliterate(Str::lower($this->email).'|'.request()->ip());
     }
-
 
     public function render()
     {

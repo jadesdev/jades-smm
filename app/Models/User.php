@@ -45,7 +45,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
-        'api_token'
+        'api_token',
     ];
 
     /**
@@ -71,7 +71,7 @@ class User extends Authenticatable
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 
@@ -133,7 +133,6 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
-
     public function sendEmailVerification(): void
     {
         $link = URL::temporarySignedRoute(
@@ -153,9 +152,9 @@ class User extends Authenticatable
                 'first_name' => $this->first_name,
                 'email' => $this->email,
                 'verification_link' => $link,
-            ],[
+            ], [
                 'link' => $link,
-                'link_text' => 'Verify Email'
+                'link_text' => 'Verify Email',
             ]
         );
     }

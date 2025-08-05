@@ -135,7 +135,7 @@ class Message extends Component
         if ($this->image) {
             try {
                 $storedPath = $this->image->store('support', 'uploads');
-                $imagePath = 'support/' . basename($storedPath);
+                $imagePath = 'support/'.basename($storedPath);
             } catch (\Exception $e) {
                 $this->errorAlert('Failed to upload image. Please try again.');
 

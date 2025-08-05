@@ -4,16 +4,19 @@ namespace App\Livewire\Admin;
 
 use App\Services\StatisticsService;
 use App\Traits\LivewireToast;
-use Livewire\Component;
 use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class Statistics extends Component
 {
     use LivewireToast;
+
     public string $tab = 'provider';
+
     public string $duration = 'thismonth';
-    public string $metaTitle = "Statistics";
+
+    public string $metaTitle = 'Statistics';
 
     protected $queryString = ['tab', 'duration'];
 
@@ -27,7 +30,7 @@ class Statistics extends Component
         'lastyear' => 'Last Year',
     ];
 
-    function changeTab($tab)
+    public function changeTab($tab)
     {
         $this->tab = $tab;
     }
@@ -43,11 +46,11 @@ class Statistics extends Component
         $orderStats = [];
         if ($this->tab == 'provider') {
             $providerStats = $statisticsService->getProviderStatistics($this->duration);
-        } else if ($this->tab == 'user') {
+        } elseif ($this->tab == 'user') {
             $userStats = $statisticsService->getUserStatistics($this->duration);
-        } else if ($this->tab == 'service') {
+        } elseif ($this->tab == 'service') {
             $serviceStats = $statisticsService->getServiceStatistics($this->duration);
-        } else if ($this->tab == 'order') {
+        } elseif ($this->tab == 'order') {
             $orderStats = $statisticsService->getOrderStatistics($this->duration);
         }
 

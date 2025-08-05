@@ -4,28 +4,37 @@ namespace App\Livewire\Admin;
 
 use App\Models\Admin;
 use App\Traits\LivewireToast;
-use Livewire\Component;
-use Livewire\Attributes\Layout;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Layout;
+use Livewire\Component;
 
 #[Layout('admin.layouts.main')]
 class Staffs extends Component
 {
     use LivewireToast;
+
     public $view = 'list';
+
     public $staffs = [];
+
     public $staffId;
+
     public $name;
+
     public $email;
+
     public $phone;
+
     public $password;
+
     public $type;
+
     public $is_active;
+
     public $deletingStaff;
 
-
     // meta
-    public string $metaTitle = "Staffs";
+    public string $metaTitle = 'Staffs';
 
     public function add()
     {
@@ -75,7 +84,7 @@ class Staffs extends Component
         ]);
 
         // Handle password only if filled
-        if (!empty($this->password)) {
+        if (! empty($this->password)) {
             $validated['password'] = bcrypt($this->password);
         } else {
             unset($validated['password']); // avoid null overwrite
@@ -98,6 +107,7 @@ class Staffs extends Component
         $this->view = 'list';
         $this->resetForm();
     }
+
     public function delete($id)
     {
         $this->deletingStaff = Admin::findOrFail($id);
@@ -115,6 +125,7 @@ class Staffs extends Component
         $staff = Admin::findOrFail($this->deletingStaff->id);
         if ($staff->type == 'super') {
             $this->errorAlert('You cannot delete super admin');
+
             return;
         }
         $staff->delete();
@@ -125,6 +136,7 @@ class Staffs extends Component
     public function render()
     {
         $this->staffs = Admin::all();
+
         return view('livewire.admin.staffs');
     }
 }

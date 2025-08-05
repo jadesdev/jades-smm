@@ -93,7 +93,7 @@ class Wallet extends Component
 
     public function getTransactionsProperty()
     {
-        $filtered = Transaction::where('user_id', Auth::id())->where('status','!=','initiated')->orderBy('updated_at', 'desc');
+        $filtered = Transaction::where('user_id', Auth::id())->where('status', '!=', 'initiated')->orderBy('updated_at', 'desc');
 
         // Search filter
         if ($this->search) {

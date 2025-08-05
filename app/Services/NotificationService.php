@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Jobs\FcmNotificationJob;
 use App\Mail\SendMail;
 use App\Models\Admin;
 use App\Models\NotifyTemplate;
@@ -40,7 +39,6 @@ class NotificationService
             }
 
             // other channels
-
 
             return true;
         } catch (\Exception $e) {
@@ -139,6 +137,7 @@ class NotificationService
             '/\{\{\s*(\w+)\s*\}\}/',
             function ($match) use ($replacements) {
                 $key = $match[1];
+
                 return $replacements[$key] ?? $match[0];
             },
             $text
@@ -149,6 +148,7 @@ class NotificationService
             '/\{\s*(\w+)\s*\}/',
             function ($match) use ($replacements) {
                 $key = $match[1];
+
                 return $replacements[$key] ?? $match[0];
             },
             $text
@@ -220,6 +220,7 @@ class NotificationService
             \Log::error($e);
         }
     }
+
     /**
      * Send notification based on type
      */

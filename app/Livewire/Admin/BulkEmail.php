@@ -79,7 +79,7 @@ class BulkEmail extends Component
     public function save()
     {
         $validated = $this->validate([
-            'user_emails'  => 'required|boolean',
+            'user_emails' => 'required|boolean',
             'other_emails' => [
                 'nullable',
                 'string',
@@ -94,10 +94,10 @@ class BulkEmail extends Component
                     }
                 },
             ],
-            'subject'      => 'required|string|max:255',
-            'content'      => 'required|string',
-            'date'         => 'required|date',
-            'status'       => 'required|in:1,2',
+            'subject' => 'required|string|max:255',
+            'content' => 'required|string',
+            'date' => 'required|date',
+            'status' => 'required|in:1,2',
         ]);
 
         $cleanHtml = Purify::clean($this->content);

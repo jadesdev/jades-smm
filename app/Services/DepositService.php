@@ -6,7 +6,6 @@ use App\Http\Controllers\PaymentController;
 use App\Models\Transaction;
 use App\Models\User;
 use Exception;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 
 class DepositService
@@ -63,7 +62,7 @@ class DepositService
 
             return $this->initiateGatewayPayment($gateway, $paymentData);
         } catch (Exception $exception) {
-            Log::error('Deposit initiation failed: ' . $exception->getMessage());
+            Log::error('Deposit initiation failed: '.$exception->getMessage());
             throw new Exception('Unable to process deposit. Please try again.');
         }
     }
@@ -77,6 +76,7 @@ class DepositService
         $cap = (float) sys_setting('card_fee_cap');
 
         $fee = $amount * ($rate / 100);
+
         return ($fee > $cap) ? $cap : $fee;
     }
 
@@ -133,7 +133,7 @@ class DepositService
                 'link_text' => 'View Dashboard',
             ]);
         } catch (Exception $e) {
-            Log::error('Failed to complete deposit: ' . $e->getMessage());
+            Log::error('Failed to complete deposit: '.$e->getMessage());
             throw $e;
         }
     }
@@ -154,7 +154,7 @@ class DepositService
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to fail deposit: ' . $e->getMessage());
+            Log::error('Failed to fail deposit: '.$e->getMessage());
             throw $e;
         }
     }

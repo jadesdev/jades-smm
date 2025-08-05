@@ -456,6 +456,7 @@ class CronController extends Controller
                 $apiPrice = $parentOrder->api_price / $parentOrder->sub_posts;
             } else {
                 \Log::warning("Cannot calculate charge for parent order {$parentOrder->id}: runs or sub_posts is zero");
+
                 return;
             }
 
@@ -482,7 +483,7 @@ class CronController extends Controller
 
         if (! empty($newOrdersData)) {
             Order::insert($newOrdersData);
-            echo 'Created ' . count($newOrdersData) . " child orders for Parent #{$parentOrder->id}. <br>";
+            echo 'Created '.count($newOrdersData)." child orders for Parent #{$parentOrder->id}. <br>";
         }
     }
 }

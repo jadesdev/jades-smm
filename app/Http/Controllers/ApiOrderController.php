@@ -14,7 +14,6 @@ use Validator;
 
 class ApiOrderController extends Controller
 {
-
     public function __construct(private OrderService $orderService) {}
 
     /**
@@ -32,7 +31,7 @@ class ApiOrderController extends Controller
         $actionExists = ['services', 'add', 'status', 'refill', 'refill_status', 'balance', 'cancel'];
 
         $action = $request->action;
-        if (!method_exists($this, $action) || ! in_array($action, $actionExists)) {
+        if (! method_exists($this, $action) || ! in_array($action, $actionExists)) {
             return response()->json(['error' => 'Invalid action']);
         }
         $user = User::where('api_token', $request->key)->first();

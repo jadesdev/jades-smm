@@ -116,7 +116,7 @@ class ApiProviderService
 
             return $res->json();
         } catch (Exception $e) {
-            Log::error('Provider request exception:' . $e->getMessage());
+            Log::error('Provider request exception:'.$e->getMessage());
             throw $e;
         }
     }

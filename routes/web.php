@@ -16,13 +16,14 @@ Route::controller(HomeController::class)->group(function (): void {
 });
 Route::get('services', Services::class)->name('services');
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
 
 // queue
 Route::get('queue-work', function (Request $request) {
     if ($request->query('key') !== env('CRON_SECRET')) {
         abort(403, 'Unauthorized');
     }
+
     return Artisan::call('queue:work', ['--stop-when-empty' => true]);
 })->name('queue.work');
 
@@ -31,17 +32,18 @@ Route::get('/cron-job', function (Request $request) {
     if ($request->query('key') !== env('CRON_SECRET')) {
         abort(403, 'Unauthorized');
     }
+
     return app(CronController::class)->handle($request);
 })->name('cron');
 
 // user
 Route::prefix('user')->as('user.')->middleware(['auth', 'user'])->group(function (): void {
-    require __DIR__ . '/user.php';
+    require __DIR__.'/user.php';
 });
 
 // Admin
 Route::prefix('admin')->as('admin.')->middleware(['admin'])->group(function (): void {
-    require __DIR__ . '/admin.php';
+    require __DIR__.'/admin.php';
 });
 
 // Payment Callback

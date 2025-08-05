@@ -23,36 +23,61 @@ class Dashboard extends Component
 
     // --- All Stats Properties ---
     public $totalUsers;
+
     public $totalUserBalance;
+
     public $totalReferralBalance;
+
     public $depositsToday;
+
     public $totalDeposits;
+
     public $profitsToday;
+
     public $profits7Days;
+
     public $profits30Days;
+
     public $allProfits;
+
     public $totalTickets;
+
     public $unreadTickets;
 
     // --- Order Stats Properties ---
     public $totalOrders;
+
     public $ordersToday;
+
     public $pendingOrders;
+
     public $processingOrders;
+
     public $completedOrders;
+
     public $inProgressOrders;
+
     public $partialOrders;
+
     public $refundedOrders;
+
     public $canceledOrders;
 
     // --- Table Data Properties ---
     public $recentUsers = [];
+
     public $bestServices = [];
+
     public $recentOrders = [];
+
     public $orderTrendPeriod = 7;
+
     public array $orderStatusData = [];
+
     public array $orderStatusLabels = [];
+
     public array $orderTrendData = [];
+
     public array $orderTrendLabels = [];
 
     /**
@@ -70,8 +95,8 @@ class Dashboard extends Component
      */
     public function loadData()
     {
-        $this->totalUsers = Cache::remember('admin.dashboard.total_users', 300, fn() => User::count());
-        $this->totalUserBalance = Cache::remember('admin.dashboard.total_user_balance', 300, fn() => User::sum('balance'));
+        $this->totalUsers = Cache::remember('admin.dashboard.total_users', 300, fn () => User::count());
+        $this->totalUserBalance = Cache::remember('admin.dashboard.total_user_balance', 300, fn () => User::sum('balance'));
 
         $this->totalReferralBalance = Cache::remember('admin.dashboard.total_referral_balance', 600, function () {
             return User::sum('bonus');
@@ -98,12 +123,12 @@ class Dashboard extends Component
             return Order::where('created_at', '>=', now()->subDays(30))->sum('profit');
         });
 
-        $this->allProfits = Cache::remember('admin.dashboard.all_profits', 600, fn() => Order::sum('profit'));
+        $this->allProfits = Cache::remember('admin.dashboard.all_profits', 600, fn () => Order::sum('profit'));
 
-        $this->totalTickets = Cache::remember('admin.dashboard.total_tickets', 120, fn() => SupportTicket::count());
-        $this->unreadTickets = Cache::remember('admin.dashboard.unread_tickets', 60, fn() => SupportTicket::open()->count());
+        $this->totalTickets = Cache::remember('admin.dashboard.total_tickets', 120, fn () => SupportTicket::count());
+        $this->unreadTickets = Cache::remember('admin.dashboard.unread_tickets', 60, fn () => SupportTicket::open()->count());
 
-        $this->totalOrders = Cache::remember('admin.dashboard.total_orders', 300, fn() => Order::count());
+        $this->totalOrders = Cache::remember('admin.dashboard.total_orders', 300, fn () => Order::count());
         $this->ordersToday = Cache::remember('admin.dashboard.orders_today', 60, function () {
             return Order::whereDate('created_at', today())->count();
         });
@@ -154,13 +179,13 @@ class Dashboard extends Component
     }
 
     public function loadChartData()
-    {        
+    {
         $statusCounts = Order::query()
             ->select('status', DB::raw('count(*) as count'))
             ->groupBy('status')
             ->get();
 
-        $this->orderStatusLabels = $statusCounts->pluck('status')->map(fn($status) => ucfirst($status))->toArray();
+        $this->orderStatusLabels = $statusCounts->pluck('status')->map(fn ($status) => ucfirst($status))->toArray();
         $this->orderStatusData = $statusCounts->pluck('count')->toArray();
 
         // Get order trend data grouped by status for last 7 days
@@ -192,7 +217,7 @@ class Dashboard extends Component
             }
             $seriesData[] = [
                 'name' => ucfirst($status),
-                'data' => $statusData
+                'data' => $statusData,
             ];
         }
 
@@ -246,8 +271,8 @@ class Dashboard extends Component
     public function render()
     {
         return view('livewire.admin.dashboard', [
-            'orders'   => $this->recentOrders,
-            'users'    => $this->recentUsers,
+            'orders' => $this->recentOrders,
+            'users' => $this->recentUsers,
             'services' => $this->bestServices,
         ]);
     }

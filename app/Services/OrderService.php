@@ -72,7 +72,7 @@ class OrderService
                 'type' => 'debit',
                 'code' => getTrx(),
                 'service' => 'order',
-                'message' => 'You place an order of ' . format_price($charge) . " for {$service->name}",
+                'message' => 'You place an order of '.format_price($charge)." for {$service->name}",
                 'gateway' => 'order',
                 'amount' => $charge,
                 'image' => 'order.png',
@@ -94,7 +94,7 @@ class OrderService
             return $order;
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Order creation failed in OrderService: ' . $e->getMessage());
+            Log::error('Order creation failed in OrderService: '.$e->getMessage());
             throw new \Exception('Failed to create the order due to a server error.');
         }
     }
@@ -115,18 +115,21 @@ class OrderService
             $quantity = isset($quantities[$index]) ? (int) $quantities[$index] : 0;
 
             // Validate link
-            if (empty($link) || !filter_var($link, FILTER_VALIDATE_URL)) {
-                $errorDetails[$link ?: "Link #" . ($index + 1)] = "Invalid or empty link provided.";
+            if (empty($link) || ! filter_var($link, FILTER_VALIDATE_URL)) {
+                $errorDetails[$link ?: 'Link #'.($index + 1)] = 'Invalid or empty link provided.';
+
                 continue;
             }
 
             if ($quantity < $service->min) {
                 $errorDetails[$link] = "Quantity must be at least {$service->min}.";
+
                 continue;
             }
 
             if ($quantity > $service->max) {
                 $errorDetails[$link] = "Quantity must not exceed {$service->max}.";
+
                 continue;
             }
 
@@ -185,14 +188,14 @@ class OrderService
         }
 
         if ($user->balance < $totalCharge) {
-            throw new InsufficientBalanceException('Insufficient balance. Required: ' . format_price($totalCharge) . ', Available: ' . format_price($user->balance));
+            throw new InsufficientBalanceException('Insufficient balance. Required: '.format_price($totalCharge).', Available: '.format_price($user->balance));
         }
 
         DB::beginTransaction();
         try {
             $trxCode = getTrx();
             $orderCount = count($validOrders);
-            $trxMessage = 'Bulk order of ' . format_price($totalCharge) . " for {$orderCount} orders of {$service->name}";
+            $trxMessage = 'Bulk order of '.format_price($totalCharge)." for {$orderCount} orders of {$service->name}";
 
             $transaction = Transaction::create([
                 'user_id' => $user->id,
@@ -235,7 +238,7 @@ class OrderService
             ];
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Bulk order creation failed in OrderService: ' . $e->getMessage());
+            Log::error('Bulk order creation failed in OrderService: '.$e->getMessage());
             throw new \Exception('Failed to create bulk orders due to a server error.');
         }
     }

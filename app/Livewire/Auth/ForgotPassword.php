@@ -7,7 +7,6 @@ use App\Traits\LivewireToast;
 use Illuminate\Support\Facades\Password;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use URL;
 
 #[Layout('components.layouts.auth')]
 class ForgotPassword extends Component

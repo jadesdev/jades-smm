@@ -13,21 +13,21 @@ class ShortcodeSeeder extends Seeder
     public function run(): void
     {
         $setting = Setting::first();
-        if (!$setting) {
+        if (! $setting) {
             $this->call([
                 SettingSeeder::class,
             ]);
         }
 
         $shortcodes = [
-            'date'          => 'Current date',
-            'time'          => 'Current time',
-            'currency'      => 'Currency symbol',
-            'datetime'      => 'Current date time',
-            'site_name'     => 'Site name',
-            'site_email'    => 'Site email address',
-            'site_phone'    => 'Site phone number',
-            'site_address'  => 'Site address',
+            'date' => 'Current date',
+            'time' => 'Current time',
+            'currency' => 'Currency symbol',
+            'datetime' => 'Current date time',
+            'site_name' => 'Site name',
+            'site_email' => 'Site email address',
+            'site_phone' => 'Site phone number',
+            'site_address' => 'Site address',
             'support_email' => 'Support email',
         ];
 

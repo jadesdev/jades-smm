@@ -17,13 +17,15 @@ class User
     public function handle(Request $request, Closure $next): Response
     {
         $user = Auth::user();
-        if (!$user->email_verify && sys_setting('verify_email') == 1) {
+        if (! $user->email_verify && sys_setting('verify_email') == 1) {
             return to_route('verification.notice');
         }
-        if (!$user->is_active) {
+        if (! $user->is_active) {
             Auth::logout();
+
             return to_route('login')->withError('Your account has been disabled or suspended');
         }
+
         return $next($request);
     }
 }

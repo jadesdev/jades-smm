@@ -13,7 +13,9 @@ use Carbon\Carbon;
 class StatisticsService
 {
     private const CACHE_TTL = 900; // 15 minutes
+
     private const HEAVY_QUERY_CACHE_TTL = 1800; // 30 minutes
+
     private const PROVIDER_CACHE_TTL = 3600; // 1 hour
 
     /**
@@ -29,7 +31,7 @@ class StatisticsService
             'end' => $dateRange['end']->format('Y-m-d H:i'),
         ], $additionalParams);
 
-        return 'stats_' . md5(json_encode($params));
+        return 'stats_'.md5(json_encode($params));
     }
 
     /**
@@ -42,35 +44,35 @@ class StatisticsService
         return match ($duration) {
             'yesterday' => [
                 'start' => $now->copy()->yesterday()->startOfDay(),
-                'end' => $now->copy()->yesterday()->endOfDay()
+                'end' => $now->copy()->yesterday()->endOfDay(),
             ],
             'thisweek' => [
                 'start' => $now->copy()->startOfWeek(),
-                'end' => $now->copy()->endOfWeek()
+                'end' => $now->copy()->endOfWeek(),
             ],
             'thismonth' => [
                 'start' => $now->copy()->startOfMonth(),
-                'end' => $now->copy()->endOfMonth()
+                'end' => $now->copy()->endOfMonth(),
             ],
             'thisyear' => [
                 'start' => $now->copy()->startOfYear(),
-                'end' => $now->copy()->endOfYear()
+                'end' => $now->copy()->endOfYear(),
             ],
             'lastweek' => [
                 'start' => $now->copy()->subWeek()->startOfWeek(),
-                'end' => $now->copy()->subWeek()->endOfWeek()
+                'end' => $now->copy()->subWeek()->endOfWeek(),
             ],
             'lastmonth' => [
                 'start' => $now->copy()->subMonth()->startOfMonth(),
-                'end' => $now->copy()->subMonth()->endOfMonth()
+                'end' => $now->copy()->subMonth()->endOfMonth(),
             ],
             'lastyear' => [
                 'start' => $now->copy()->subYear()->startOfYear(),
-                'end' => $now->copy()->subYear()->endOfYear()
+                'end' => $now->copy()->subYear()->endOfYear(),
             ],
             default => [
                 'start' => $now->copy()->startOfMonth(),
-                'end' => $now->copy()->endOfMonth()
+                'end' => $now->copy()->endOfMonth(),
             ]
         };
     }
@@ -81,6 +83,7 @@ class StatisticsService
     public function getProviderStatistics($duration = 'thismonth')
     {
         $cacheKey = $this->getCacheKey('provider', $duration);
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($duration) {
             return $this->buildProviderStatistics($duration);
         });
@@ -152,6 +155,7 @@ class StatisticsService
     public function getUserStatistics($duration = 'thismonth')
     {
         $cacheKey = $this->getCacheKey('user', $duration);
+
         return Cache::remember($cacheKey, self::HEAVY_QUERY_CACHE_TTL, function () use ($duration) {
             return $this->buildUserStatistics($duration);
         });
@@ -252,7 +256,6 @@ class StatisticsService
         return array_slice($statistics, 0, 30);
     }
 
-
     /**
      * Get service statistics
      */
@@ -327,6 +330,7 @@ class StatisticsService
     public function getOrderStatistics($duration = 'thismonth'): array
     {
         $cacheKey = $this->getCacheKey('order', $duration);
+
         return Cache::remember($cacheKey, self::CACHE_TTL, function () use ($duration) {
             return $this->buildOrderStatistics($duration);
         });
@@ -355,17 +359,17 @@ class StatisticsService
             'default' => $orders->where('is_drip_feed', false)->where('type', '!=', 'subscription')->count(),
             'drip_feed' => $orders->where('is_drip_feed', true)->count(),
             'subscription' => $orders->where('type', 'subscription')->count(),
-        ])->filter(fn($count) => $count > 0);
+        ])->filter(fn ($count) => $count > 0);
 
         $busiestHours = $orders
-            ->groupBy(fn($order) => $order->created_at->format('H'))
+            ->groupBy(fn ($order) => $order->created_at->format('H'))
             ->map->count()
             ->sortDesc()
             ->take(5);
 
         $topDays = $orders
-            ->groupBy(fn($order) => $order->created_at->format('Y-m-d'))
-            ->map(fn($dailyOrders) => [
+            ->groupBy(fn ($order) => $order->created_at->format('Y-m-d'))
+            ->map(fn ($dailyOrders) => [
                 'count' => $dailyOrders->count(),
                 'revenue' => $dailyOrders->sum('price'),
             ])
@@ -411,7 +415,7 @@ class StatisticsService
             $cacheKey = $this->getCacheKey($type, $duration);
             Cache::forget($cacheKey);
         } else {
-            // Clear only statistics-related cache keys  
+            // Clear only statistics-related cache keys
             $types = ['provider', 'user', 'service', 'order'];
             $durations = ['yesterday', 'thisweek', 'lastweek', 'thismonth', 'lastmonth', 'thisyear', 'lastyear'];
 
