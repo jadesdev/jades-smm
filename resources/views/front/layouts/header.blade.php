@@ -24,7 +24,7 @@
                 </a>
                 <a href="{{ route('how-it-works') }}" wire:navigate
                     class="text-sm font-medium transition-colors relative group {{ request()->routeIs('how-it-works') ? 'text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400' }}">
-                    How It Works
+                    Features
                     @if (request()->routeIs('how-it-works'))
                         <span
                             class="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
@@ -42,14 +42,6 @@
                     class="text-sm font-medium transition-colors relative group {{ request()->routeIs('api-docs') ? 'text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400' }}">
                     API
                     @if (request()->routeIs('api-docs'))
-                        <span
-                            class="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
-                    @endif
-                </a>
-                <a href="{{ route('terms') }}" wire:navigate
-                    class="text-sm font-medium transition-colors relative group {{ request()->routeIs('terms') ? 'text-primary-600 dark:text-primary-400' : 'text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400' }}">
-                    Terms
-                    @if (request()->routeIs('terms'))
                         <span
                             class="absolute -bottom-1 left-0 w-full h-0.5 bg-primary-600 dark:bg-primary-400 rounded-full"></span>
                     @endif
