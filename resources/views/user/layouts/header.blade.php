@@ -1,5 +1,5 @@
 @php
-$user = Auth::user();
+    $userNav = Auth::user();
 @endphp
 <header class="bg-white dark:bg-gray-700 shadow-sm">
     <div class="px-4 py-4 sm:px-6 lg:px-8 flex justify-between items-center">
@@ -44,7 +44,7 @@ $user = Auth::user();
                 <button id="user-menu-button" type="button"
                     class="flex items-center space-x-2 text-sm rounded-full focus:outline-none focus:ring-2 focus:ring-primary-500 p-1">
                     <img class="h-8 w-8 rounded-full object-cover"
-                        src="{{ $user->image? my_asset($user->image): my_asset('users/default.jpg') }}"
+                        src="{{ $userNav->image? my_asset($userNav->image): my_asset('users/default.jpg') }}"
                         alt="Profile">
                 </button>
 
@@ -52,8 +52,8 @@ $user = Auth::user();
                 <div id="user-dropdown"
                     class="hidden absolute right-0 mt-2 w-56 bg-white dark:bg-gray-800 rounded-md shadow-lg py-1 z-50 border border-gray-200 dark:border-gray-700">
                     <div class="px-4 py-2 border-b border-gray-200 dark:border-gray-700">
-                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $user->name }}</p>
-                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $user->email }}</p>
+                        <p class="text-sm font-medium text-gray-900 dark:text-gray-100">{{ $userNav->name }}</p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400">{{ $userNav->email }}</p>
                     </div>
 
                     <a href="{{ route('user.profile') }}" wire:navigate

@@ -247,6 +247,27 @@
                     </div>
                 </form>
             </x-card>
+
+            {{-- fees --}}
+            <x-card>
+                <x-slot name="header">
+                    <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+                        <i class="fas fa-money-bill-wave mr-2 text-yellow-500"></i>
+                        Fees Settings
+                    </h3>
+                </x-slot>
+
+                <form action="{{ route('admin.settings.store_settings') }}" method="post" class="row">
+                    @csrf
+                    <input type="hidden" name="types[]" value="card_fee_cap">
+                    <x-forms.input name="card_fee_cap" label="Card Payment Capped @({{ get_setting('currency') }})" :value="sys_setting('card_fee_cap')" required />
+                    <input type="hidden" name="types[]" value="card_fee">
+                    <x-forms.input name="card_fee" label="Card Payment (%)" :value="sys_setting('card_fee')" required />
+                    <x-button type="submit" variant="primary" class="w-full">
+                        <i class="fas fa-save mr-2"></i> Save
+                    </x-button>
+                </form>
+            </x-card>
         </div>
     @elseif ($view == 'features')
         <div class="grid grid-cols-3 md:grid-cols-4 gap-4">

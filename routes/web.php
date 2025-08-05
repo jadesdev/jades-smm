@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\CronController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\PaymentController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
@@ -19,7 +20,7 @@ Route::get('/dashboard', function () {
 
 require __DIR__ . '/auth.php';
 
-// cron jobs
+// queue
 Route::get('queue-work', function (Request $request) {
     if ($request->query('key') !== env('CRON_SECRET')) {
         abort(403, 'Unauthorized');
