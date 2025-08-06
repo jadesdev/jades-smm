@@ -153,7 +153,7 @@
                 <x-button variant="info" target="_blank" outline href="{{ route('admin.users.login', $user->id) }}">
                     Login as User
                 </x-button>
-                <x-button variant="blue" outline>
+                <x-button variant="blue" outline x-data @click="$dispatch('open-modal', { name: 'send-email-modal' })">
                     Send Email
                 </x-button>
             </div>
@@ -451,6 +451,17 @@
 
         </div>
     </div>
+
+    {{-- Send Email Modal --}}
+    <x-modal name="send-email-modal" title="Send Email" persistent="true">
+        <form wire:submit.prevent="sendEmail">
+            <x-forms.input type="text" wire:model="subject" name="subject" id="subject" label="Subject" required />
+            <x-forms.rich-editor wire:model="message" name="message" id="message" label="Message" required></x-forms.rich-editor>  
+            <x-slot name="footer">
+                <x-button variant="primary" wire:click="sendEmail" wire:loading.attr="disabled">Send</x-button>
+            </x-slot>
+        </form>
+    </x-modal>
 </div>
 
 @include('layouts.meta')

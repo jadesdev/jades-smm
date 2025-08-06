@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Admin\User;
 
+use App\Mail\SendMail;
 use App\Models\Order;
 use App\Models\SupportTicket;
 use App\Models\Transaction;
@@ -11,6 +12,7 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
+use Mail;
 
 #[Layout('admin.layouts.main')]
 class View extends Component
@@ -47,6 +49,10 @@ class View extends Component
     public string $password = '';
 
     public string $password_confirmation = '';
+
+    public string $subject = '';
+
+    public string $message = '';
 
     // Stats
     public array $stats = [];
@@ -262,6 +268,30 @@ class View extends Component
 
         $this->redirectIntended(default: route('user.dashboard'), navigate: true);
     }
+
+    public function sendEmail()
+    {
+        $this->validate([
+            'subject' => 'required|string|max:255',
+            'message' => 'required|string',
+        ]);
+
+        $data = [
+            'subject' => $this->subject,
+            'message' => $this->message,
+        ];
+
+        try {
+            Mail::to($this->user->email)->queue(new SendMail($data));
+            // reset form and close modal
+            $this->subject = '';
+            $this->message = '';
+            $this->dispatch('close-modal', name: 'send-email-modal');
+            $this->successAlert('Email sent successfully!');
+        } catch (\Exception $e) {
+            $this->errorAlert('Failed to send email: '.$e->getMessage());
+        }
+    } 
 
     public function render()
     {
