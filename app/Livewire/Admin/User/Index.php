@@ -21,7 +21,7 @@ class Index extends Component
 
     public $emailVerifiedFilter = '';
 
-    public $smsVerifiedFilter = '';
+    public $phoneVerifiedFilter = '';
 
     public $sortField = 'created_at';
 
@@ -69,7 +69,7 @@ class Index extends Component
         $this->statusFilter = '';
         $this->countryFilter = '';
         $this->emailVerifiedFilter = '';
-        $this->smsVerifiedFilter = '';
+        $this->phoneVerifiedFilter = '';
         $this->resetPage();
     }
 
@@ -92,13 +92,13 @@ class Index extends Component
             })
             ->when($this->emailVerifiedFilter !== '', function ($query) {
                 if ($this->emailVerifiedFilter == '1') {
-                    $query->whereNotNull('email_verified_at');
+                    $query->whereNotNull('email_verify');
                 } else {
-                    $query->whereNull('email_verified_at');
+                    $query->whereNull('email_verify');
                 }
             })
-            ->when($this->smsVerifiedFilter !== '', function ($query) {
-                $query->where('sms_verify', $this->smsVerifiedFilter);
+            ->when($this->phoneVerifiedFilter !== '', function ($query) {
+                $query->where('sms_verify', $this->phoneVerifiedFilter);
             })
             ->orderBy($this->sortField, $this->sortDirection)
             ->paginate($this->perPage);
