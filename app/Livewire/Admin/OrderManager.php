@@ -45,7 +45,7 @@ class OrderManager extends Component
     // Modal state
     public bool $showResponseModal = false;
 
-    public ?string $selectedOrderResponse = null;
+    public ?array  $selectedOrderResponse = [];
 
     public ?int $selectedOrderId = null;
 
