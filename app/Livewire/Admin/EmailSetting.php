@@ -69,14 +69,17 @@ class EmailSetting extends Component
             'test_email' => 'required|email',
         ]);
 
+        $data = [
+            'subject' => 'Test Email',
+            'message' => 'This is a test email to verify your email configuration is working correctly.',
+        ];
         try {
             Mail::to($this->test_email)->send(new SendMail(
-                'Test Email',
-                'This is a test email to verify your email configuration is working correctly.'
+                $data
             ));
-            $this->toast('success', 'Test email sent successfully!', 'success');
+            $this->successAlert('Test email sent successfully!', 'success');
         } catch (Exception $exception) {
-            $this->toast('error', 'Failed to send test email: '.$exception->getMessage(), 'error');
+            $this->errorAlert('Failed to send test email: ' . $exception->getMessage(), 'error');
         }
     }
 
