@@ -98,7 +98,7 @@ class PayPalService
                 'application_context' => [
                     'return_url' => route('paypal.success'),
                     'cancel_url' => route('checkout'),
-                    'brand_name' => get_setting('title') ?? 'ZenLab',
+                    'brand_name' => get_setting('title') ?? 'Social Rocket',
                     'shipping_preference' => 'NO_SHIPPING',
                     'user_action' => 'PAY_NOW',
                 ],

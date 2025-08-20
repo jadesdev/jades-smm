@@ -9,7 +9,7 @@
     <meta name="robots" content="index, follow">
     <meta name="author" content="Jadesdev">
     <title>@yield('title', 'Dashboard') | @lang(get_setting('title', 'Jades SMM'))</title>
-    <link rel="icon shortcut" href="{{my_asset(get_setting('favicon'))}}">
+    <link rel="icon shortcut" href="{{ my_asset(get_setting('favicon')) }}">
 
     @yield('meta')
     <!-- Canonical URL -->
