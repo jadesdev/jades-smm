@@ -6,6 +6,7 @@ use App\Models\Admin;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -27,7 +28,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Jay Flash',
-                'password' => bcrypt('Password123'),
+                'password' => Hash::make('Password123'),
                 'phone' => '08035852702',
                 'is_active' => true,
                 'type' => 'super',
