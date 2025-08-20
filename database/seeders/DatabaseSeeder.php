@@ -27,7 +27,7 @@ class DatabaseSeeder extends Seeder
             ],
             [
                 'name' => 'Jay Flash',
-                'password' => 'Password123',
+                'password' => bcrypt('Password123'),
                 'phone' => '08035852702',
                 'is_active' => true,
                 'type' => 'super',
