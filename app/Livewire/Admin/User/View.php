@@ -291,7 +291,7 @@ class View extends Component
         } catch (\Exception $e) {
             $this->errorAlert('Failed to send email: '.$e->getMessage());
         }
-    } 
+    }
 
     public function render()
     {

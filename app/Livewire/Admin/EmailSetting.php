@@ -79,7 +79,7 @@ class EmailSetting extends Component
             ));
             $this->successAlert('Test email sent successfully!', 'success');
         } catch (Exception $exception) {
-            $this->errorAlert('Failed to send test email: ' . $exception->getMessage(), 'error');
+            $this->errorAlert('Failed to send test email: '.$exception->getMessage(), 'error');
         }
     }
 
