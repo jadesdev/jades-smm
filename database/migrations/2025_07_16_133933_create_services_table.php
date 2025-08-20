@@ -32,8 +32,8 @@ return new class extends Migration
             $table->boolean('status')->default(1)->index();
             $table->timestamps();
             $table->softDeletes();
-            $table->index(['category_id']);
-            $table->index('api_service_id');
+            $table->index(['category_id', 'status']);
+            $table->index('api_provider_id');
         });
     }
 
