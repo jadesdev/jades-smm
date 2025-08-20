@@ -22,7 +22,7 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         // seed super admin
-        Admin::firstOrCreate(
+        Admin::updateOrCreate(
             [
                 'email' => 'jayflashdev@gmail.com',
             ],
