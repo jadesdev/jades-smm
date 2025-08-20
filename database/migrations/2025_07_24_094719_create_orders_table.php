@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('orders', function (Blueprint $table) {
             $table->id();
             $table->foreignUlid('user_id')->constrained('users')->cascadeOnDelete();
-            $table->unsignedBigInteger('category_id');
-            $table->unsignedBigInteger('service_id');
-            $table->unsignedBigInteger('parent_order_id')->nullable();
 
-            $table->unsignedBigInteger('api_service_id')->nullable();
-            $table->unsignedBigInteger('api_provider_id')->nullable();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->nullOnDelete();
+            $table->foreignId('service_id')->nullable()->constrained('services')->nullOnDelete();
+            $table->foreignId('parent_order_id')->nullable()->constrained('orders')->cascadeOnDelete();
+            $table->foreignId('api_provider_id')->nullable()->constrained('api_providers')->nullOnDelete();
+
+            $table->bigInteger('api_service_id')->nullable();
             $table->bigInteger('api_order_id')->nullable();
             $table->integer('api_refill_id')->nullable();
 
@@ -65,10 +66,8 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
-            $table->foreign('service_id')->references('id')->on('services')->onDelete('set null');
-            $table->foreign('parent_order_id')->references('id')->on('orders')->onDelete('cascade');
-            $table->foreign('api_provider_id')->references('id')->on('api_providers')->onDelete('set null');
+            $table->index(['category_id', 'status']);
+            $table->index('api_provider_id');
         });
     }
 
