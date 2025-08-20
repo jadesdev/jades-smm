@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('services', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete()->index();
-            $table->foreignId('api_provider_id')->nullable()->constrained('api_providers')->nullOnDelete()->index();
+            $table->foreignId('category_id')->nullable()->constrained('categories')->cascadeOnDelete();
+            $table->foreignId('api_provider_id')->nullable()->constrained('api_providers')->nullOnDelete();
             $table->bigInteger('api_service_id')->nullable()->index();
             $table->tinyInteger('manual_order')->default(0);
             $table->string('name');
@@ -32,6 +32,8 @@ return new class extends Migration
             $table->boolean('status')->default(1)->index();
             $table->timestamps();
             $table->softDeletes();
+            $table->index(['category_id', 'status']);
+            $table->index('api_service_id');
         });
     }
 
