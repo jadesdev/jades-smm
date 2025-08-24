@@ -182,7 +182,7 @@ class View extends Component
             $this->successAlert('User updated successfully!');
         } catch (\Exception $e) {
             $this->errorAlert('Failed to update user. Please try again.');
-            \Log::error('User update failed: '.$e->getMessage());
+            \Log::error('User update failed: ' . $e->getMessage());
         }
     }
 
@@ -223,11 +223,11 @@ class View extends Component
 
         if ($type === 'add') {
             creditUser($this->user, $amount);
-            $message = 'Added '.format_price($amount).' to user balance';
+            $message = 'Added ' . format_price($amount) . ' to user balance';
             $newBalance = $oldBalance + $amount;
         } else {
             debitUser($this->user, $amount);
-            $message = 'Deducted '.format_price($amount).' from user balance';
+            $message = 'Deducted ' . format_price($amount) . ' from user balance';
             $newBalance = $oldBalance - $amount;
         }
 
@@ -236,11 +236,11 @@ class View extends Component
             'user_id' => $this->user->id,
             'type' => $type === 'add' ? 'credit' : 'debit',
             'code' => getTrx(),
-            'service' => 'deposit',
+            'service' => $type === 'add' ? 'deposit' : 'system',
             'message' => $message,
             'gateway' => $type === 'add' ? 'deposit' : 'system',
             'amount' => $amount,
-            'image' => 'deposit.png',
+            'image' => $type === 'add' ? 'deposit.png' : 'spent.png',
             'charge' => 0,
             'old_balance' => $oldBalance,
             'new_balance' => $newBalance,
@@ -289,7 +289,7 @@ class View extends Component
             $this->dispatch('close-modal', name: 'send-email-modal');
             $this->successAlert('Email sent successfully!');
         } catch (\Exception $e) {
-            $this->errorAlert('Failed to send email: '.$e->getMessage());
+            $this->errorAlert('Failed to send email: ' . $e->getMessage());
         }
     }
 

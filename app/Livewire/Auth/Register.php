@@ -36,8 +36,8 @@ class Register extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:' . User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
             'terms' => ['accepted'],
             'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
@@ -53,7 +53,9 @@ class Register extends Component
         $user = User::create($validated);
         $user->sendEmailVerification();
         Auth::login($user);
-
+        if (sys_setting('is_welcome_bonus') == 1) {
+            $this->giveWelcomeBonus($user);
+        }
         $this->successAlert('Registration successful! Welcome to our platform.');
         $this->redirect(route('user.dashboard'), navigate: true);
     }
@@ -74,5 +76,31 @@ class Register extends Component
         $this->validateOnly('referral_code', [
             'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
         ]);
+    }
+
+    private function giveWelcomeBinus($user)
+    {
+        $amount = sys_setting('welcome_bonus', 0);
+        if ($amount > 1) {
+            creditUser($user, $amount);
+            // create transaction
+            $transaction = $user->transactions->create([
+                'type' => 'credit',
+                'code' => getTrx(),
+                'service' => 'welcome_bonus',
+                'message' => 'Welcome Bonus ',
+                'gateway' => 'deposit',
+                'amount' => $amount,
+                'image' => 'deposit.png',
+                'charge' => 0,
+                'old_balance' => $user->balance,
+                'new_balance' => $user->balance + $amount,
+                'meta' => [
+                    'gateway' => 'welcome',
+                    'amount' => $amount,
+                ],
+                'status' => 'successful',
+            ]);
+        }
     }
 }

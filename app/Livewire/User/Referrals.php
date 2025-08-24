@@ -18,11 +18,11 @@ class Referrals extends Component
 
     public int $referralCount = 0;
 
-    public int $referralRate = 3; // Default 3%
+    public int $referralRate = 3;
 
     public float $minWithdrawal = 10.00;
 
-    public float $totalEarned = 0;
+    public float $referralBalance = 0;
 
     public Collection $recentReferrals;
 
@@ -51,7 +51,8 @@ class Referrals extends Component
 
             return;
         }
-        $this->referralLink = route('register').'?ref='.urlencode($user->username);
+        $this->referralBalance = $user->bonus;
+        $this->referralLink = route('register') . '?ref=' . urlencode($user->username);
         $this->loadReferrals();
         $this->calculateStats();
         $this->isLoading = false;
@@ -64,8 +65,8 @@ class Referrals extends Component
 
     protected function calculateStats(): void
     {
+        $this->referralRate = sys_setting('referral_bonus', 2);
         $this->referralCount = count($this->recentReferrals);
-        $this->totalEarned = collect($this->recentReferrals)->sum('bonus');
     }
 
     public function render()

@@ -50,8 +50,8 @@
             <div
                 class="bg-yellow-50 dark:bg-yellow-900/30 border border-yellow-100 dark:border-yellow-900 rounded-lg p-6 text-center transition-all hover:shadow-md">
                 <div class="text-3xl font-bold text-yellow-600 dark:text-yellow-400 mb-2">
-                    ${{ number_format($totalEarned, 2) }}</div>
-                <div class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Total Earned</div>
+                    {{ format_price($referralBalance, 2) }}</div>
+                <div class="text-sm font-medium text-yellow-800 dark:text-yellow-200">Referral Balance</div>
             </div>
         </div>
 

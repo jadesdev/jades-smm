@@ -153,14 +153,14 @@ class NotifyTemplateSeeder extends Seeder
                 'message' => 'You just earned {{commission_amount}} from a referral. Your new bonus balance is {{referrer_bonus_balance}}.',
                 'subject' => 'Congratulations! You\'ve Earned a {{commission_amount}} Referral Commission',
                 'content' => '
-                    <p>Hi {{referrer_name}},</p>
-                    <p>Great news! You have earned a commission of <strong>{{commission_amount}}</strong> because your referred user, <strong>{{new_user_name}}</strong>, made a qualifying deposit or purchase.</p>
-                    <p>The commission has been added to your bonus balance, which you can use for services on our platform.</p>
-                    <p>Keep up the great work! Share your referral link with more friends to keep the rewards coming.</p>
+                <p>Hi {{referrer_name}},</p>
+                <p>Great news! You have earned a commission of <strong>{{commission_amount}}</strong> because your referred user, <strong>{{user_name}}</strong>, made a qualifying deposit or purchase.</p>
+                <p>The commission has been added to your bonus balance, which you can use for services on our platform.</p>
+                <p>Keep up the great work! Share your referral link with more friends to keep the rewards coming.</p>
                 ',
                 'shortcodes' => ([
                     'referrer_name' => 'Referrers name.',
-                    'new_user_name' => 'New users name.',
+                    'user_name' => 'User name.',
                     'commission_amount' => 'Commission amount.',
                     'referrer_bonus_balance' => 'Referrer\'s new balance.',
                     'referral_dashboard_link' => 'Link to referral page.',

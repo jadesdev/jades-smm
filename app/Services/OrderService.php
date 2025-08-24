@@ -89,6 +89,8 @@ class OrderService
             // debit user
             debitUser($user, $charge);
             sendTransactionEmail($user, $transaction);
+            // give referral bonus
+            giveReferralBonus($user, $charge);
             DB::commit();
 
             return $order;
@@ -222,6 +224,8 @@ class OrderService
 
             debitUser($user, $totalCharge);
             sendTransactionEmail($user, $transaction);
+            // give referral bonus
+            giveReferralBonus($user, $charge);
 
             DB::commit();
 

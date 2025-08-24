@@ -3,8 +3,8 @@
     <div class="flex flex-col h-full">
         <div class="flex items-center justify-between h-16 px-4 bg-primary-800 dark:bg-gray-900">
             <div class="flex items-center">
-                <i class="fad fa-rocket text-xl mr-2"></i>
-                <span class="text-xl font-bold">SMM Panel</span>
+                <img src="{{ my_asset(get_setting('favicon')) }}" alt="" class="h-6 w-6 mr-2">
+                <span class="text-xl font-bold">{{ get_setting('name') }}</span>
             </div>
             <button id="mobile-sidebar-close"
                 class="p-2 rounded-md text-primary-200 dark:text-gray-300 hover:text-white hover:bg-primary-600 dark:hover:bg-gray-700">
