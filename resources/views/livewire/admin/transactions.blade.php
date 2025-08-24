@@ -127,7 +127,7 @@
         <x-modal name="transaction-details" title=" Transaction #{{ $viewingTransaction->code }}">
 
             <div class="prose dark:prose-invert max-w-none">
-                <ul class="divide-y divide-gray-200 dark:divide-gray-700">
+                <ul class="divide-y divide-gray-200 dark:divide-gray-700 dark:text-gray-300">
                     <li class="py-2 flex justify-between"><span>Status:</span>
                         <span @class([
                             'inline-flex px-2 py-1 text-xs font-semibold rounded-full',
