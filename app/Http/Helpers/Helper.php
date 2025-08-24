@@ -11,10 +11,10 @@ if (! function_exists('static_asset')) {
     function static_asset(string $path, $secure = null)
     {
         if (PHP_SAPI == 'cli-server') {
-            return app('url')->asset('assets/' . $path, $secure);
+            return app('url')->asset('assets/'.$path, $secure);
         }
 
-        return app('url')->asset('public/assets/' . $path, $secure);
+        return app('url')->asset('public/assets/'.$path, $secure);
     }
 }
 
@@ -23,10 +23,10 @@ if (! function_exists('my_asset')) {
     function my_asset(?string $path, $secure = null)
     {
         if (PHP_SAPI == 'cli-server') {
-            return app('url')->asset('uploads/' . $path, $secure);
+            return app('url')->asset('uploads/'.$path, $secure);
         }
 
-        return app('url')->asset('public/uploads/' . $path, $secure);
+        return app('url')->asset('public/uploads/'.$path, $secure);
     }
 }
 
@@ -82,7 +82,7 @@ if (! function_exists('format_price')) {
         $fomated_price = number_format($price, 2);
         $currency = get_setting('currency');
 
-        return $currency . $fomated_price;
+        return $currency.$fomated_price;
     }
 }
 
@@ -93,7 +93,7 @@ if (! function_exists('ngnformat_price')) {
         $fomated_price = number_format($price, 2);
         $currency = '₦';
 
-        return $currency . $fomated_price;
+        return $currency.$fomated_price;
     }
 }
 
@@ -102,7 +102,7 @@ function sym_price($price): string
     $fomated_price = number_format($price, 2);
     $currency = get_setting('currency_code');
 
-    return $currency . ' ' . $fomated_price;
+    return $currency.' '.$fomated_price;
 }
 
 function format_number($price, $place = 2): string
@@ -113,9 +113,9 @@ function format_number($price, $place = 2): string
 function formatNumber($number)
 {
     if ($number >= 1000000) {
-        return number_format($number / 1000000, 1) . 'M';
+        return number_format($number / 1000000, 1).'M';
     } elseif ($number >= 1000) {
-        return number_format($number / 1000, 1) . 'K';
+        return number_format($number / 1000, 1).'K';
     }
 
     return number_format($number);
@@ -159,7 +159,7 @@ function getTrans(string $prefix, $len = 15): string
         $randomString .= $characters[random_int(0, $charactersLength - 1)];
     }
 
-    return $prefix . '_' . $randomString;
+    return $prefix.'_'.$randomString;
 }
 
 function getAmount($amount, $length = 2): float
@@ -242,15 +242,15 @@ function queryBuild(string $key, $value): ?string
         $match = preg_match("/{$pattern}/", $url);
 
         if ($match != 0) {
-            return preg_replace('~(\?|&)' . $key . '[^&]*~', "\?{$key}={$value}", $url);
+            return preg_replace('~(\?|&)'.$key.'[^&]*~', "\?{$key}={$value}", $url);
         }
 
-        $filteredURL = preg_replace('~(\?|&)' . $key . '[^&]*~', '', $url);
+        $filteredURL = preg_replace('~(\?|&)'.$key.'[^&]*~', '', $url);
 
-        return $filteredURL . $delimeter . "{$key}={$value}";
+        return $filteredURL.$delimeter."{$key}={$value}";
     }
 
-    return request()->getRequestUri() . $delimeter . "{$key}={$value}";
+    return request()->getRequestUri().$delimeter."{$key}={$value}";
 }
 
 function getPaymentMethodLabel($method)
@@ -302,7 +302,7 @@ if (! function_exists('render_sortable_header')) {
             ? ($currentSortDirection === 'asc' ? '↑' : '↓')
             : '';
 
-        $iconHtml = $icon ? '<span class="text-primary-500 dark:text-primary-400">' . $icon . '</span>' : '';
+        $iconHtml = $icon ? '<span class="text-primary-500 dark:text-primary-400">'.$icon.'</span>' : '';
 
         return <<<HTML
             <th wire:click="sortBy('$field')" class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-300 uppercase tracking-wider cursor-pointer hover:bg-gray-100 dark:hover:bg-gray-800">
@@ -396,7 +396,7 @@ function giveReferralBonus($user, $amount)
                 'type' => 'credit',
                 'code' => getTrx(),
                 'service' => 'referral',
-                'message' => 'You earned ' . format_price($commission) . " for referring {$user->username}",
+                'message' => 'You earned '.format_price($commission)." for referring {$user->username}",
                 'gateway' => 'referral',
                 'amount' => $commission,
                 'image' => 'referral.png',
@@ -417,8 +417,8 @@ function giveReferralBonus($user, $amount)
                 [
                     'referrer_name' => $user->username,
                     'user_name' => $refer->username,
-                    'commission_amount'         => format_price($commission),
-                    'referrer_bonus_balance'         => format_price($refer->bonus),
+                    'commission_amount' => format_price($commission),
+                    'referrer_bonus_balance' => format_price($refer->bonus),
                     'referral_dashboard_link' => route('user.referrals'),
                 ]
             );

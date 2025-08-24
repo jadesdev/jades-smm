@@ -36,8 +36,8 @@ class Register extends Component
     {
         $validated = $this->validate([
             'name' => ['required', 'string', 'max:255'],
-            'username' => ['required', 'string', 'max:255', 'unique:' . User::class],
-            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:' . User::class],
+            'username' => ['required', 'string', 'max:255', 'unique:'.User::class],
+            'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'string', 'confirmed', Rules\Password::defaults()],
             'terms' => ['accepted'],
             'referral_code' => ['nullable', 'string', 'max:255', 'exists:users,username'],
@@ -78,7 +78,7 @@ class Register extends Component
         ]);
     }
 
-    private function giveWelcomeBinus($user)
+    private function giveWelcomeBonus($user)
     {
         $amount = sys_setting('welcome_bonus', 0);
         if ($amount > 1) {

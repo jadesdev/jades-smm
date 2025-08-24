@@ -52,7 +52,7 @@ class Referrals extends Component
             return;
         }
         $this->referralBalance = $user->bonus;
-        $this->referralLink = route('register') . '?ref=' . urlencode($user->username);
+        $this->referralLink = route('register').'?ref='.urlencode($user->username);
         $this->loadReferrals();
         $this->calculateStats();
         $this->isLoading = false;
