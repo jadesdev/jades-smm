@@ -46,6 +46,7 @@ class CronController extends Controller
     {
         $orders = Order::with('provider')
             ->where('type', 'api')
+            ->where('api_order_id', '<', 0)
             ->where('status', 'pending')
             ->where('error', 0)
             ->where('updated_at', '<', now()->subMinutes(5))
