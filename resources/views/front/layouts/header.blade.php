@@ -5,10 +5,10 @@
         <div class="flex items-center justify-between h-16">
             <div class="flex-shrink-0">
                 <a href="{{ route('home') }}" wire:navigate class="flex items-center space-x-2">
-                    <img src="{{ my_asset(get_setting('logo')) }}" alt="{{ get_setting('name', 'Jades SMM') }}"
+                    <img src="{{ my_asset(get_setting('logo')) }}" alt="{{ get_setting('name', 'Social Rocket') }}"
                         class="w-8 h-8">
                     <span class="text-xl font-bold text-primary-600 dark:text-primary-300">
-                        {{ get_setting('name', 'Jades SMM') }}
+                        {{ get_setting('name', 'Social Rocket') }}
                     </span>
                 </a>
             </div>

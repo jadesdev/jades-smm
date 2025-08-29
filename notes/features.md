@@ -1,4 +1,4 @@
-# Jades SMM
+# Social Rocket
 
 ## Front page
     -   

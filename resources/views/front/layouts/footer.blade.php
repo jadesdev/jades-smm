@@ -15,7 +15,7 @@
         <div
             class="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 border-t border-gray-200 dark:border-gray-700 pt-6">
             <p class="text-sm text-gray-600 dark:text-gray-400">&copy; {{ date('Y') }}
-                {{ $footerSetting->name ?? 'Jades SMM' }}. All rights reserved.</p>
+                {{ $footerSetting->name ?? 'Social Rocket' }}. All rights reserved.</p>
 
             <div class="flex items-center space-x-6 text-sm">
                 <a href="{{ route('how-it-works') }}"

@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Jades SMM'),
+    'name' => env('APP_NAME', 'Social Rocket'),
 
     /*
     |--------------------------------------------------------------------------

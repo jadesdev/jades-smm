@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>@lang(get_setting('title', 'Jades SMM')) - The #1 SMM Panel</title>
+    <title>@lang(get_setting('title', 'Social Rocket')) - The #1 SMM Panel</title>
 
     <!-- Meta Tags for SEO -->
     <meta name="description" content="{{ get_setting('meta_description', 'The ultimate SMM panel for resellers and agencies. Get instant likes, followers, views, and more at unbeatable prices.') }}">

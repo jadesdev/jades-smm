@@ -1,4 +1,4 @@
-name: Deploy Jades SMM
+name: Deploy Social Rocket
 
 on:
   push:

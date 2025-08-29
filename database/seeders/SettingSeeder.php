@@ -13,9 +13,9 @@ class SettingSeeder extends Seeder
     public function run(): void
     {
         Setting::create([
-            'title' => 'Jades SMM',
-            'name' => 'Jades SMM',
-            'description' => 'Default settings for Jades SMM.',
+            'title' => 'Social Rocket',
+            'name' => 'Social Rocket',
+            'description' => 'Default settings for Social Rocket.',
             'phone' => '+1234567890',
             'address' => '123 Main Street, City, Country',
             'admin_email' => 'admin@jades-smm.com',
