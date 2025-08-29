@@ -14,12 +14,14 @@
                 @csrf
                 <x-forms.input name="title" label="Website Name" type="text" :value="$settings->title"
                     placeholder="Enter website name" icon="fas fa-globe" />
+                <x-forms.input name="name" label="Short Name" type="text" :value="$settings->name"
+                    placeholder="Enter short name" />
                 <x-forms.input name="email" label="Website Email" type="email" :value="$settings->email"
-                    placeholder="Enter website email" icon="fas fa-envelope" />
+                    placeholder="Enter website email" />
                 <x-forms.input name="admin_email" label="Admin Email" type="email" :value="$settings->admin_email"
-                    placeholder="Enter admin email" icon="fas fa-user-shield" />
+                    placeholder="Enter admin email" />
                 <x-forms.input name="phone" label="Website Phone" type="tel" :value="$settings->phone"
-                    placeholder="Enter phone number" icon="fas fa-phone" />
+                    placeholder="Enter phone number" />
                 <x-forms.textarea name="description" label="Website About" rows="3" :value="$settings->description"
                     placeholder="Enter website description" class="md:col-span-2" />
                 <x-forms.textarea name="meta_description" label="Meta Description" rows="3" :value="$settings->meta_description"
@@ -260,7 +262,8 @@
                 <form action="{{ route('admin.settings.store_settings') }}" method="post" class="row">
                     @csrf
                     <input type="hidden" name="types[]" value="card_fee_cap">
-                    <x-forms.input name="card_fee_cap" label="Card Payment Capped @({{ get_setting('currency') }})" :value="sys_setting('card_fee_cap')" required />
+                    <x-forms.input name="card_fee_cap" label="Card Payment Capped @({{ get_setting('currency') }})"
+                        :value="sys_setting('card_fee_cap')" required />
                     <input type="hidden" name="types[]" value="card_fee">
                     <x-forms.input name="card_fee" label="Card Payment (%)" :value="sys_setting('card_fee')" required />
                     <x-button type="submit" variant="primary" class="w-full">
