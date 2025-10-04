@@ -55,6 +55,7 @@ class GeneralSettings extends Component
             ['name' => 'Paypal', 'key' => 'paypal_payment'],
             ['name' => 'Paystack', 'key' => 'paystack_payment'],
             ['name' => 'Flutterwave', 'key' => 'flutterwave_payment'],
+            ['name' => 'Korapay', 'key' => 'korapay_payment'],
             // ['name' => 'Cryptomus', 'key' => 'cryptomus_payment'],
             ['name' => 'Manual', 'key' => 'manual_payment'],
         ];

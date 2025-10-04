@@ -6,6 +6,7 @@ use App\Models\Transaction;
 use App\Services\CryptomusService;
 use App\Services\DepositService;
 use App\Services\FlutterwaveService;
+use App\Services\Korapay;
 use App\Services\PayPalService;
 use App\Services\PaystackService;
 use App\Traits\ApiResponse;
@@ -25,6 +26,21 @@ class PaymentController extends Controller
             if (isset($res['data']['authorization_url'])) {
 
                 return redirect($res['data']['authorization_url']);
+            }
+
+            throw new Exception('Unable to initialize payment');
+        } catch (Exception) {
+            throw new Exception('Unable to initialize payment');
+        }
+    }
+
+    public function initKorapay($data)
+    {
+        try {
+            $korapay = app(Korapay::class);
+            $res = $korapay->createPayment($data['amount'], $data);
+            if (isset($res['data']['checkout_url'])) {
+                return redirect($res['data']['checkout_url']);
             }
 
             throw new Exception('Unable to initialize payment');
@@ -113,6 +129,29 @@ class PaymentController extends Controller
         }
     }
 
+    public function korapaySuccess(Request $request)
+    {
+        try {
+            $korapay = app(Korapay::class);
+            $paymentData = $korapay->getTransactionStatus($request->reference);
+
+            if (! empty($paymentData['data']) && $paymentData['data']['status'] == 'success') {
+                $metadata = $paymentData['data']['metadata'];
+                $transaction = Transaction::findOrFail($metadata['trx_id']);
+                $depositService = app(DepositService::class);
+                $depositService->completeDeposit($transaction, $paymentData);
+
+                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
+            }
+
+            return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
+        } catch (Exception $exception) {
+            Log::error('Korapay callback error: '.$exception->getMessage());
+
+            return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
+        }
+    }
+
     public function flutterSuccess(Request $request)
     {
         if ($request->status == 'cancelled') {
@@ -161,6 +200,40 @@ class PaymentController extends Controller
         $depositService->failDeposit($transaction);
 
         return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
+    }
+
+    public function korapayWebhook(Request $request)
+    {
+        Log::info('Korapay webhook: '.json_encode($request->all()));
+        $input = $request->all();
+        $event = $input['event'];
+        try {
+            $korapay = app(Korapay::class);
+            // validate signature
+            // $valid = $korapay->validateWebhookHash($input);
+            // if (!$valid) {
+            //     return $this->callbackResponse('error', 'Invalid signature');
+            // }
+            $paymentData = $korapay->getTransactionStatus($input['data']['reference']);
+
+            if (! empty($paymentData['data']) && $paymentData['data']['status'] == 'success') {
+                $metadata = $paymentData['data']['metadata'];
+                // if event is charge, complete deposit
+                if ($event == 'charge.success') {
+                    $transaction = Transaction::findOrFail($metadata['trx_id']);
+                    $depositService = app(DepositService::class);
+                    $depositService->completeDeposit($transaction, $paymentData);
+                }
+
+                return $this->callbackResponse('success', 'Payment was successful');
+            }
+
+            return $this->callbackResponse('error', 'Payment was not successful');
+        } catch (Exception $exception) {
+            Log::error('Korapay callback error: '.$exception->getMessage());
+
+            return $this->callbackResponse('error', 'Something went wrong with your payment');
+        }
     }
 
     public function callbackResponse($type, $message, $url = null)

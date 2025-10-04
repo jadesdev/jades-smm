@@ -52,7 +52,7 @@ class Wallet extends Component
 
     public bool $processingPayment = false;
 
-    public $gateways = [
+    public $allGateways = [
         'paypal' => [
             'name' => 'PayPal',
             'fee' => '0.00%',
@@ -71,13 +71,21 @@ class Wallet extends Component
             'icon' => 'fa fa-card',
             'image' => 'card.png',
         ],
-        'crypto' => [
-            'name' => 'Crypto',
+        'korapay' => [
+            'name' => 'Korapay',
             'fee' => '0.00%',
-            'icon' => 'fab fa-bitcoin',
-            'image' => 'cryptomus.png',
+            'icon' => 'fa fa-card',
+            'image' => 'card.png',
         ],
+        // 'crypto' => [
+        //     'name' => 'Crypto',
+        //     'fee' => '0.00%',
+        //     'icon' => 'fab fa-bitcoin',
+        //     'image' => 'cryptomus.png',
+        // ],
     ];
+
+    public $gateways = [];
 
     public function getAvailableServicesProperty()
     {
@@ -196,6 +204,21 @@ class Wallet extends Component
         $user = Auth::user();
         $this->balance = $user->balance;
         $this->referralBalance = $user->bonus;
+
+        // Populate active gateways based on system settings
+        $this->gateways = [];
+        $gatewaySettings = [
+            'paypal' => 'paypal_payment',
+            'flutterwave' => 'flutterwave_payment',
+            'paystack' => 'paystack_payment',
+            'korapay' => 'korapay_payment',
+        ];
+
+        foreach ($gatewaySettings as $gateway => $setting) {
+            if (sys_setting($setting) == 1) {
+                $this->gateways[$gateway] = $this->allGateways[$gateway];
+            }
+        }
     }
 
     public function render()

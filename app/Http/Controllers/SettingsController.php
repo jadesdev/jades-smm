@@ -33,6 +33,8 @@ class SettingsController extends Controller
         'PAYPAL_MODE',
         'CRYPTOMUS_KEY',
         'CRYPTOMUS_SECRET_KEY',
+        'KORAPAY_PUBLIC_KEY',
+        'KORAPAY_SECRET_KEY',
     ];
 
     public function update(Request $request)

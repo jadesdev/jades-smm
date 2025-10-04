@@ -73,7 +73,6 @@ class OrderService
                 'code' => getTrx(),
                 'service' => 'order',
                 'message' => 'You place an order of '.format_price($charge)." for {$service->name}",
-                'gateway' => 'order',
                 'amount' => $charge,
                 'image' => 'order.png',
                 'charge' => 0,
@@ -205,7 +204,6 @@ class OrderService
                 'code' => $trxCode,
                 'service' => 'bulk-order',
                 'message' => $trxMessage,
-                'gateway' => 'bulk-order',
                 'amount' => $totalCharge,
                 'image' => 'order.png',
                 'charge' => 0,
@@ -216,6 +214,7 @@ class OrderService
                     'service_name' => $service->name,
                     'order_count' => $orderCount,
                     'total_charge' => $totalCharge,
+                    'gateway' => 'bulk-order',
                 ],
                 'status' => 'successful',
             ]);

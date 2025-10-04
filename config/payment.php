@@ -25,4 +25,8 @@ return [
         'api_key' => env('CRYPTOMUS_API_KEY'),
         'merchant_id' => env('CRYPTOMUS_MERCHANT_ID'),
     ],
+    'korapay' => [
+        'public' => env('KORAPAY_PUBLIC_KEY'),
+        'secret' => env('KORAPAY_SECRET_KEY'),
+    ],
 ];

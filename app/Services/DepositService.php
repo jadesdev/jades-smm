@@ -36,7 +36,6 @@ class DepositService
                 'code' => getTrx(),
                 'service' => 'deposit',
                 'message' => 'Wallet deposit funding',
-                'gateway' => $gateway,
                 'amount' => $amount,
                 'image' => 'deposit.png',
                 'charge' => $fee,
@@ -94,6 +93,7 @@ class DepositService
             'flutterwave' => $this->paymentController->initFlutter($paymentData),
             'paypal' => $this->paymentController->initPaypal($paymentData),
             'crypto' => $this->paymentController->initCryptomus($paymentData),
+            'korapay' => $this->paymentController->initKorapay($paymentData),
             default => throw new Exception('Invalid payment gateway selected'),
         };
     }
@@ -105,33 +105,31 @@ class DepositService
     {
         try {
             $user = $transaction->user;
-
-            // Update user balance
-            creditUser($user, $transaction->amount);
-
             // Update transaction status
             if ($transaction->status != 'successful') {
                 $transaction->update([
                     'status' => 'successful',
-                    'new_balance' => $user->balance,
                     'response' => $paymentData,
                 ]);
+                // Update user balance
+                creditUser($user, $transaction->amount);
+                $user->refresh();
+                $transaction->update(['new_balance' => $user->balance]);
+                // notify user
+                sendNotification('DEPOSIT_SUCCESSFUL', $user, [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'deposit_amount' => format_price($transaction->amount),
+                    'payment_gateway' => $transaction->meta['gateway'],
+                    'deposit_details' => $transaction->message,
+                    'transaction_id' => $transaction->code,
+                    'transaction_code' => $transaction->code,
+                    'new_balance' => format_price($transaction->new_balance),
+                ], [
+                    'link' => route('user.dashboard'),
+                    'link_text' => 'View Dashboard',
+                ]);
             }
-
-            // TODO: Send notification to user
-            sendNotification('DEPOSIT_SUCCESSFUL', $user, [
-                'name' => $user->name,
-                'email' => $user->email,
-                'deposit_amount' => format_price($transaction->amount),
-                'payment_gateway' => $transaction->meta['gateway'],
-                'deposit_details' => $transaction->message,
-                'transaction_id' => $transaction->code,
-                'transaction_code' => $transaction->code,
-                'new_balance' => format_price($transaction->new_balance),
-            ], [
-                'link' => route('user.dashboard'),
-                'link_text' => 'View Dashboard',
-            ]);
         } catch (Exception $e) {
             Log::error('Failed to complete deposit: '.$e->getMessage());
             throw $e;
