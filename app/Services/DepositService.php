@@ -36,7 +36,6 @@ class DepositService
                 'code' => getTrx(),
                 'service' => 'deposit',
                 'message' => 'Wallet deposit funding',
-                // 'gateway' => $gateway,
                 'amount' => $amount,
                 'image' => 'deposit.png',
                 'charge' => $fee,
@@ -108,14 +107,14 @@ class DepositService
             $user = $transaction->user;
             // Update transaction status
             if ($transaction->status != 'successful') {
-                // Update user balance
-                creditUser($user, $transaction->amount);
-
                 $transaction->update([
                     'status' => 'successful',
-                    'new_balance' => $user->balance,
                     'response' => $paymentData,
                 ]);
+                // Update user balance
+                creditUser($user, $transaction->amount);
+                $user->refresh();
+                $transaction->update(['new_balance' => $user->balance]);
                 // notify user
                 sendNotification('DEPOSIT_SUCCESSFUL', $user, [
                     'name' => $user->name,

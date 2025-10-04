@@ -47,7 +47,6 @@ class Korapay
                 'name' => $details['name'],
             ],
             'merchant_bears_cost' => true,
-            'notification_url' => 'https://webhook.site/200263f0-e6d6-4eb3-b5c6-36b23d2c2ae8',
         ];
         $response = $this->request('post', 'charges/initialize', $data);
         \Log::info($response);
