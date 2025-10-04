@@ -39,7 +39,6 @@ class PaymentController extends Controller
         try {
             $korapay = app(Korapay::class);
             $res = $korapay->createPayment($data['amount'], $data);
-            Log::info($res);
             if (isset($res['data']['checkout_url'])) {
                 return redirect($res['data']['checkout_url']);
             }
@@ -49,6 +48,7 @@ class PaymentController extends Controller
             throw new Exception('Unable to initialize payment');
         }
     }
+
     public function initFlutter($data)
     {
         try {
@@ -118,12 +118,12 @@ class PaymentController extends Controller
                 $depositService = app(DepositService::class);
                 $depositService->completeDeposit($transaction, $paymentData);
 
-                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet') . '?tab=transactions');
+                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
             }
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
         } catch (Exception $exception) {
-            Log::error('Paystack callback error: ' . $exception->getMessage());
+            Log::error('Paystack callback error: '.$exception->getMessage());
 
             return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
         }
@@ -141,15 +141,17 @@ class PaymentController extends Controller
                 $depositService = app(DepositService::class);
                 $depositService->completeDeposit($transaction, $paymentData);
 
-                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet') . '?tab=transactions');
+                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
             }
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
         } catch (Exception $exception) {
-            Log::error('Korapay callback error: ' . $exception->getMessage());
+            Log::error('Korapay callback error: '.$exception->getMessage());
+
             return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
         }
     }
+
     public function flutterSuccess(Request $request)
     {
         if ($request->status == 'cancelled') {
@@ -165,7 +167,7 @@ class PaymentController extends Controller
             $depositService = app(DepositService::class);
             $depositService->completeDeposit($transaction, $paymentData);
 
-            return $this->callbackResponse('success', 'Payment was successful', route('user.wallet') . '?tab=transactions');
+            return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
         }
 
         $transaction = Transaction::findOrFail($paymentData['data']['meta']['trx_id']);
@@ -190,7 +192,7 @@ class PaymentController extends Controller
             $depositService = app(DepositService::class);
             $depositService->completeDeposit($transaction, $paymentData);
 
-            return $this->callbackResponse('success', 'Payment was successful', route('user.wallet') . '?tab=transactions');
+            return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
         }
 
         $transaction = Transaction::where('code', $paymentData['purchase_units'][0]['custom_id'])->firstOrFail();
@@ -202,7 +204,7 @@ class PaymentController extends Controller
 
     public function korapayWebhook(Request $request)
     {
-        Log::info('Korapay webhook: ' . json_encode($request->all()));
+        Log::info('Korapay webhook: '.json_encode($request->all()));
         $input = $request->all();
         $event = $input['event'];
         try {
@@ -216,7 +218,7 @@ class PaymentController extends Controller
 
             if (! empty($paymentData['data']) && $paymentData['data']['status'] == 'success') {
                 $metadata = $paymentData['data']['metadata'];
-                // if event is charge, complete deposit 
+                // if event is charge, complete deposit
                 if ($event == 'charge.success') {
                     $transaction = Transaction::findOrFail($metadata['trx_id']);
                     $depositService = app(DepositService::class);
@@ -228,11 +230,11 @@ class PaymentController extends Controller
 
             return $this->callbackResponse('error', 'Payment was not successful');
         } catch (Exception $exception) {
-            Log::error('Korapay callback error: ' . $exception->getMessage());
+            Log::error('Korapay callback error: '.$exception->getMessage());
+
             return $this->callbackResponse('error', 'Something went wrong with your payment');
         }
     }
-
 
     public function callbackResponse($type, $message, $url = null)
     {

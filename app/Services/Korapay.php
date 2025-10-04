@@ -22,7 +22,7 @@ class Korapay
     private function request($method, $url, $data = [])
     {
         return Http::withHeaders([
-            'Authorization' => 'Bearer ' . $this->secretKey,
+            'Authorization' => 'Bearer '.$this->secretKey,
             'Content-Type' => 'application/json',
         ])->$method("{$this->baseUrl}/{$url}", $data);
     }
@@ -47,10 +47,11 @@ class Korapay
                 'name' => $details['name'],
             ],
             'merchant_bears_cost' => true,
-            'notification_url' => "https://webhook.site/200263f0-e6d6-4eb3-b5c6-36b23d2c2ae8",
+            'notification_url' => 'https://webhook.site/200263f0-e6d6-4eb3-b5c6-36b23d2c2ae8',
         ];
         $response = $this->request('post', 'charges/initialize', $data);
         \Log::info($response);
+
         return $response->json();
     }
 

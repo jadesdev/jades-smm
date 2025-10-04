@@ -11,6 +11,5 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('v2', [ApiOrderController::class, 'process'])->middleware(['throttle:api'])->name('api.v2');
 
-
 // Webhook url
 Route::post('korapay/webhook', [PaymentController::class, 'korapayWebhook'])->name('korapay.webhook');
