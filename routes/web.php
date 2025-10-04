@@ -55,4 +55,5 @@ Route::controller(PaymentController::class)->prefix('payment')->group(function (
     Route::post('/cryptomus', 'cryptomusSuccess')->name('cryptomus.success');
     Route::get('/paypal', 'paypalSuccess')->name('paypal.success');
     Route::get('/paypal-cancel', 'paypalError')->name('paypal.cancel');
+    Route::get('/korapay-success', 'korapaySuccess')->name('korapay.success');
 });

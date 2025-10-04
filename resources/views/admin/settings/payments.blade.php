@@ -10,7 +10,17 @@
         </x-card>
     @endforeach
 </div>
-
+<x-card>
+    <x-slot name="header">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-gray-100">
+            <i class="fab fa-cc-stripe mr-2 text-purple-500"></i>
+            Webhook Urls
+        </h3>
+    </x-slot>
+    <div class="space-y-4">
+        <x-forms.input label="Korapay Webhook" value="{{route('korapay.webhook') }}" readonly />
+    </div>
+</x-card>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
     <!-- Paystack Credentials -->
     <x-card>

@@ -59,7 +59,7 @@
                         <div class="space-y-6">
                             <div class="md:flex md:space-x-6 space-y-6 md:space-y-0">
                                 <div class="w-full md:w-1/2">
-                                    <x-forms.input type="number" label="Amount" name="amount" wire:model.live="amount"
+                                    <x-forms.input type="number" label="Amount" name="amount" wire:model.debounce.500ms="amount"
                                         placeholder="0.00" min="1" step="0.01" class="py-4" />
                                 </div>
 
@@ -185,7 +185,7 @@
                                             {{ format_price($transaction->amount, 2) }}
                                         </div>
                                         <div class="text-md text-gray-500 dark:text-gray-300">
-                                            Fee: {{ format_price($transaction->fee, 2) }}</div>
+                                            Fee: {{ format_price($transaction->charge, 2) }}</div>
                                     </div>
                                 </div>
                                 <p class="dark:text-gray-200">{{ $transaction->message }}</p>

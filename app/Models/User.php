@@ -35,6 +35,7 @@ class User extends Authenticatable
         'sms_verify',
         'is_active',
         'api_token',
+        'bonus'
     ];
 
     /**

@@ -36,7 +36,7 @@ class DepositService
                 'code' => getTrx(),
                 'service' => 'deposit',
                 'message' => 'Wallet deposit funding',
-                'gateway' => $gateway,
+                // 'gateway' => $gateway,
                 'amount' => $amount,
                 'image' => 'deposit.png',
                 'charge' => $fee,
@@ -94,6 +94,7 @@ class DepositService
             'flutterwave' => $this->paymentController->initFlutter($paymentData),
             'paypal' => $this->paymentController->initPaypal($paymentData),
             'crypto' => $this->paymentController->initCryptomus($paymentData),
+            'korapay' => $this->paymentController->initKorapay($paymentData),
             default => throw new Exception('Invalid payment gateway selected'),
         };
     }
