@@ -207,6 +207,11 @@ class PaymentController extends Controller
         $event = $input['event'];
         try {
             $korapay = app(Korapay::class);
+            // validate signature
+            // $valid = $korapay->validateWebhookHash($input);
+            // if (!$valid) {
+            //     return $this->callbackResponse('error', 'Invalid signature');
+            // }
             $paymentData = $korapay->getTransactionStatus($input['data']['reference']);
 
             if (! empty($paymentData['data']) && $paymentData['data']['status'] == 'success') {
@@ -218,14 +223,13 @@ class PaymentController extends Controller
                     $depositService->completeDeposit($transaction, $paymentData);
                 }
 
-                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet') . '?tab=transactions');
+                return $this->callbackResponse('success', 'Payment was successful');
             }
 
-            return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
+            return $this->callbackResponse('error', 'Payment was not successful');
         } catch (Exception $exception) {
             Log::error('Korapay callback error: ' . $exception->getMessage());
-            return $request;
-            return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
+            return $this->callbackResponse('error', 'Something went wrong with your payment');
         }
     }
 

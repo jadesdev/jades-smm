@@ -62,7 +62,7 @@ class DepositService
 
             return $this->initiateGatewayPayment($gateway, $paymentData);
         } catch (Exception $exception) {
-            Log::error('Deposit initiation failed: '.$exception->getMessage());
+            Log::error('Deposit initiation failed: ' . $exception->getMessage());
             throw new Exception('Unable to process deposit. Please try again.');
         }
     }
@@ -106,35 +106,33 @@ class DepositService
     {
         try {
             $user = $transaction->user;
-
-            // Update user balance
-            creditUser($user, $transaction->amount);
-
             // Update transaction status
             if ($transaction->status != 'successful') {
+                // Update user balance
+                creditUser($user, $transaction->amount);
+
                 $transaction->update([
                     'status' => 'successful',
                     'new_balance' => $user->balance,
                     'response' => $paymentData,
                 ]);
+                // notify user
+                sendNotification('DEPOSIT_SUCCESSFUL', $user, [
+                    'name' => $user->name,
+                    'email' => $user->email,
+                    'deposit_amount' => format_price($transaction->amount),
+                    'payment_gateway' => $transaction->meta['gateway'],
+                    'deposit_details' => $transaction->message,
+                    'transaction_id' => $transaction->code,
+                    'transaction_code' => $transaction->code,
+                    'new_balance' => format_price($transaction->new_balance),
+                ], [
+                    'link' => route('user.dashboard'),
+                    'link_text' => 'View Dashboard',
+                ]);
             }
-
-            // TODO: Send notification to user
-            sendNotification('DEPOSIT_SUCCESSFUL', $user, [
-                'name' => $user->name,
-                'email' => $user->email,
-                'deposit_amount' => format_price($transaction->amount),
-                'payment_gateway' => $transaction->meta['gateway'],
-                'deposit_details' => $transaction->message,
-                'transaction_id' => $transaction->code,
-                'transaction_code' => $transaction->code,
-                'new_balance' => format_price($transaction->new_balance),
-            ], [
-                'link' => route('user.dashboard'),
-                'link_text' => 'View Dashboard',
-            ]);
         } catch (Exception $e) {
-            Log::error('Failed to complete deposit: '.$e->getMessage());
+            Log::error('Failed to complete deposit: ' . $e->getMessage());
             throw $e;
         }
     }
@@ -155,7 +153,7 @@ class DepositService
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to fail deposit: '.$e->getMessage());
+            Log::error('Failed to fail deposit: ' . $e->getMessage());
             throw $e;
         }
     }

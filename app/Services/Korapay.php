@@ -47,6 +47,7 @@ class Korapay
                 'name' => $details['name'],
             ],
             'merchant_bears_cost' => true,
+            'notification_url' => "https://webhook.site/200263f0-e6d6-4eb3-b5c6-36b23d2c2ae8",
         ];
         $response = $this->request('post', 'charges/initialize', $data);
         \Log::info($response);
@@ -66,10 +67,9 @@ class Korapay
      */
     public function validateWebhookHash(array $payload): bool
     {
-        $receivedHash = request()->header('x-paystack-signature');
-
-        if (! $receivedHash || ($receivedHash !== hash_hmac('sha512', json_encode($payload), (string) $this->secretKey))) {
-            // This request isn't from Paystack; discard
+        $receivedHash = request()->header('x-korapay-signature');
+        if (! $receivedHash || ($receivedHash !== hash_hmac('sha256', json_encode($payload), (string) $this->secretKey))) {
+            // This request isn't from korapay; discard
             return false;
         }
 
