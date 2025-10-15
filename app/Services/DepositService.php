@@ -177,10 +177,10 @@ class DepositService
         if ($user == null) {
             return $this->depositResponse('error', 'Invalid User');
         }
-        $fee = sys_setting('auto_fee') ?? 0;
+        $fee = sys_setting('bank_fee') ?? 0;
         $charge = ($fee * $details['amount']) / 100;
-        if ($charge > sys_setting('auto_cap')) {
-            $charge = sys_setting('auto_cap') ?? 0;
+        if ($charge > sys_setting('bank_fee_cap')) {
+            $charge = sys_setting('bank_fee_cap') ?? 0;
         }
         $amount = $details['amount'] - $charge;
 

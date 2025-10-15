@@ -61,67 +61,69 @@
 
         </div>
         <div class="p-8">
-            <!-- Account Details Section -->
-            <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
-                <div class="flex items-center justify-between mb-4">
-                    <div class="flex items-center space-x-3">
-                        <i class="fad fa-university text-lg text-primary-600 dark:text-primary-400 w-6 h-6"></i>
-                        <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Bank Account</h3>
+            @if (sys_setting('bank_transfer_payment') == 1)
+                <!-- Account Details Section -->
+                <div class="mb-8 p-6 bg-gray-50 dark:bg-gray-700 rounded-xl border border-gray-200 dark:border-gray-600">
+                    <div class="flex items-center justify-between mb-4">
+                        <div class="flex items-center space-x-3">
+                            <i class="fad fa-university text-lg text-primary-600 dark:text-primary-400 w-6 h-6"></i>
+                            <h3 class="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-2">Bank Account</h3>
+                        </div>
+                        @if (!$hasAccount)
+                            <x-button variant="primary" x-data
+                                @click="$dispatch('open-modal', { name: 'create-bankAccount-modal' })">
+                                Add Account
+                            </x-button>
+
+                            {{-- Create Account modal --}}
+                            <x-modal name="create-bankAccount-modal" title="Create Bank Account" persistent="true">
+                                <p class="text-gray-600 dark:text-gray-300">
+                                    Provide your ID (BVN /NIN) as required by CBN
+                                </p>
+                                <form action="" class="mt-4">
+                                    <x-forms.select label="ID Type" name="kyc_type" id="kyc_type" wire:model="kyc_type">
+                                        <option value="bvn">BVN</option>
+                                        {{-- <option value="nin">NIN</option> --}}
+                                    </x-forms.select>
+                                    <x-forms.input type="number" label="ID Number" name="kyc_number" id="kyc_number"
+                                        placeholder="ID Number" wire:model="kyc_number" />
+
+                                    <div class="text-end">
+                                        <x-button variant="primary" wire:click="generateAccount">Generate Account</x-button>
+                                    </div>
+                                </form>
+                            </x-modal>
+                        @endif
                     </div>
-                    @if (!$hasAccount)
-                        <x-button variant="primary" x-data
-                            @click="$dispatch('open-modal', { name: 'create-bankAccount-modal' })">
-                            Add Account
-                        </x-button>
 
-                        {{-- Create Account modal --}}
-                        <x-modal name="create-bankAccount-modal" title="Create Bank Account" persistent="true">
-                            <p class="text-gray-600 dark:text-gray-300">
-                                Provide your ID (BVN /NIN) as required by CBN
-                            </p>
-                            <form action="" class="mt-4">
-                                <x-forms.select label="ID Type" name="kyc_type" id="kyc_type" wire:model="kyc_type">
-                                    <option value="bvn">BVN</option>
-                                    {{-- <option value="nin">NIN</option> --}}
-                                </x-forms.select>
-                                <x-forms.input type="number" label="ID Number" name="kyc_number" id="kyc_number"
-                                    placeholder="ID Number" wire:model="kyc_number" />
-
-                                <div class="text-end">
-                                    <x-button variant="primary" wire:click="generateAccount">Generate Account</x-button>
-                                </div>
-                            </form>
-                        </x-modal>
+                    @if ($hasAccount)
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Bank Name</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                    {{ $bankAccount->bank_name ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Account Number</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                    {{ $bankAccount->number ?? 'N/A' }}
+                                </p>
+                            </div>
+                            <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
+                                <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Account Name</p>
+                                <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
+                                    {{ $bankAccount->name ?? 'N/A' }}
+                                </p>
+                            </div>
+                        </div>
+                    @else
+                        <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
+                            No bank account generated yet. Generate one to receive payments.
+                        </p>
                     @endif
                 </div>
-
-                @if ($hasAccount)
-                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
-                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Bank Name</p>
-                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                {{ $bankAccount->bank_name ?? 'N/A' }}
-                            </p>
-                        </div>
-                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Account Number</p>
-                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                {{ $bankAccount->number ?? 'N/A' }}
-                            </p>
-                        </div>
-                        <div class="p-4 bg-white dark:bg-gray-800 rounded-lg">
-                            <p class="text-xs text-gray-500 dark:text-gray-400 mb-1">Account Name</p>
-                            <p class="text-sm font-semibold text-gray-900 dark:text-gray-100">
-                                {{ $bankAccount->name ?? 'N/A' }}
-                            </p>
-                        </div>
-                    </div>
-                @else
-                    <p class="text-sm text-gray-600 dark:text-gray-400 mt-2">
-                        No bank account generated yet. Generate one to receive payments.
-                    </p>
-                @endif
-            </div>
+            @endif
 
             <!-- Deposit Section -->
             <div class="mx-auto">

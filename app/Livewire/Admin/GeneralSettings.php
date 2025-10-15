@@ -58,6 +58,7 @@ class GeneralSettings extends Component
             ['name' => 'Korapay', 'key' => 'korapay_payment'],
             // ['name' => 'Cryptomus', 'key' => 'cryptomus_payment'],
             ['name' => 'Manual', 'key' => 'manual_payment'],
+            ['name' => 'Bank Transfer', 'key' => 'bank_transfer_payment'],
         ];
 
         foreach ($this->gateways as $gateway) {

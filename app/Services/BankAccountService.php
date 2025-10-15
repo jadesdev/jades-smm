@@ -45,7 +45,7 @@ class BankAccountService
         Log::info($response);
 
         if ($response['status'] != true) {
-            throw new \Exception($response['message'] ?? 'Unable to create virtual account');
+            throw new \Exception('Unable to create account');
         }
 
         return $this->storeAccount([

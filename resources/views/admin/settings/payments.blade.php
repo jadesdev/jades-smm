@@ -18,7 +18,7 @@
         </h3>
     </x-slot>
     <div class="space-y-4">
-        <x-forms.input label="Korapay Webhook" value="{{route('korapay.webhook') }}" readonly />
+        <x-forms.input label="Korapay Webhook" value="{{ route('korapay.webhook') }}" readonly />
     </div>
 </x-card>
 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mt-6">
@@ -180,6 +180,14 @@
                 :value="sys_setting('card_fee_cap')" required />
             <input type="hidden" name="types[]" value="card_fee">
             <x-forms.input name="card_fee" label="Card Payment (%)" :value="sys_setting('card_fee')" required />
+
+            {{-- Bank transfers --}}
+            <input type="hidden" name="types[]" value="bank_fee_cap">
+            <x-forms.input name="bank_fee_cap" label="Bank Transfer Capped @({{ get_setting('currency') }})"
+                :value="sys_setting('bank_fee_cap')" required />
+            <input type="hidden" name="types[]" value="bank_fee">
+            <x-forms.input name="bank_fee" label="Bank Transfer (%)" :value="sys_setting('bank_fee')" required />
+
             <x-button type="submit" variant="primary" class="w-full">
                 <i class="fas fa-save mr-2"></i> Save
             </x-button>
