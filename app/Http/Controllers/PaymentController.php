@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Services\CryptomusService;
 use App\Services\DepositService;
@@ -118,7 +119,7 @@ class PaymentController extends Controller
                 $depositService = app(DepositService::class);
                 $depositService->completeDeposit($transaction, $paymentData);
 
-                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
+                return $this->callbackResponse('success', 'Payment was successful', route('user.transactions'));
             }
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
@@ -141,7 +142,7 @@ class PaymentController extends Controller
                 $depositService = app(DepositService::class);
                 $depositService->completeDeposit($transaction, $paymentData);
 
-                return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
+                return $this->callbackResponse('success', 'Payment was successful', route('user.transactions'));
             }
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
@@ -167,7 +168,7 @@ class PaymentController extends Controller
             $depositService = app(DepositService::class);
             $depositService->completeDeposit($transaction, $paymentData);
 
-            return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
+            return $this->callbackResponse('success', 'Payment was successful', route('user.transactions'));
         }
 
         $transaction = Transaction::findOrFail($paymentData['data']['meta']['trx_id']);
@@ -192,7 +193,7 @@ class PaymentController extends Controller
             $depositService = app(DepositService::class);
             $depositService->completeDeposit($transaction, $paymentData);
 
-            return $this->callbackResponse('success', 'Payment was successful', route('user.wallet').'?tab=transactions');
+            return $this->callbackResponse('success', 'Payment was successful', route('user.transactions'));
         }
 
         $transaction = Transaction::where('code', $paymentData['purchase_units'][0]['custom_id'])->firstOrFail();
@@ -204,8 +205,8 @@ class PaymentController extends Controller
 
     public function korapayWebhook(Request $request)
     {
-        Log::info('Korapay webhook: '.json_encode($request->all()));
         $input = $request->all();
+        $this->logApiResponse($input, 'korapay');
         $event = $input['event'];
         try {
             $korapay = app(Korapay::class);
@@ -214,21 +215,60 @@ class PaymentController extends Controller
             // if (!$valid) {
             //     return $this->callbackResponse('error', 'Invalid signature');
             // }
-            $paymentData = $korapay->getTransactionStatus($input['data']['reference']);
+            $data = $input['data'] ?? [];
+            $reference = $data['reference'] ?? null;
 
-            if (! empty($paymentData['data']) && $paymentData['data']['status'] == 'success') {
-                $metadata = $paymentData['data']['metadata'];
-                // if event is charge, complete deposit
-                if ($event == 'charge.success') {
-                    $transaction = Transaction::findOrFail($metadata['trx_id']);
-                    $depositService = app(DepositService::class);
-                    $depositService->completeDeposit($transaction, $paymentData);
-                }
+            $paymentData = $korapay->getTransactionStatus($reference);
 
-                return $this->callbackResponse('success', 'Payment was successful');
+            if (empty($paymentData['data'])) {
+                return $this->callbackResponse('error', 'Transaction not found or invalid');
             }
 
-            return $this->callbackResponse('error', 'Payment was not successful');
+            $transactionInfo = $paymentData['data'];
+            $status = $transactionInfo['status'] ?? 'failed';
+            if ($status !== 'success') {
+                return $this->callbackResponse('error', 'Payment not successful');
+            }
+
+            // Detect type of payment
+            $isVirtualAccount = isset($data['virtual_bank_account_details']);
+            $metadata = $transactionInfo['metadata'] ?? [];
+
+            $depositService = app(DepositService::class);
+            if ($isVirtualAccount) {
+                // Handle Virtual Account Deposit
+                $accountReference = $transactionInfo['virtual_bank_account']['account_reference'] ?? null;
+
+                $details = [
+                    'amount' => $transactionInfo['amount'] ?? 0,
+                    'code' => $transactionInfo['reference'] ?? null,
+                    'fee' => $transactionInfo['fee'] ?? 0,
+                    'reference' => $accountReference,
+                ];
+                // check if account reference exists
+                $account = BankAccount::where('reference', $accountReference)->first();
+                if (! $account) {
+                    return $this->callbackResponse('error', 'Account not found');
+                }
+                $res = $depositService->completeKorapayWebhook($details, $transactionInfo);
+                Log::info('Korapay Webhook: '.$res);
+            } else {
+                //  Handle Card / Mobile Money Deposit
+                if ($event === 'charge.success') {
+                    $trxId = $metadata['trx_id'] ?? null;
+
+                    if (! $trxId) {
+                        Log::warning('Missing transaction ID in metadata');
+
+                        return $this->callbackResponse('error', 'Missing metadata transaction ID');
+                    }
+
+                    $transaction = Transaction::findOrFail($trxId);
+                    $depositService->completeDeposit($transaction, $paymentData);
+                }
+            }
+
+            return $this->callbackResponse('success', 'Payment processed successfully');
         } catch (Exception $exception) {
             Log::error('Korapay callback error: '.$exception->getMessage());
 
@@ -251,5 +291,20 @@ class PaymentController extends Controller
         }
 
         return redirect($url)->withError($message);
+    }
+
+    private function logApiResponse($response, $filename = 'korapay')
+    {
+        $logDir = public_path('logs');
+        $logFile = $logDir."/{$filename}_webhook.txt";
+
+        if (! file_exists($logDir)) {
+            mkdir($logDir, 0777, true);
+        }
+
+        $timestamp = '['.now()->format('Y-m-d H:i:s').'] ';
+        $logMessage = $timestamp.json_encode($response, JSON_PRETTY_PRINT).PHP_EOL;
+
+        file_put_contents($logFile, $logMessage, FILE_APPEND);
     }
 }

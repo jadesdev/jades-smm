@@ -93,7 +93,7 @@
         <!-- Transactions -->
         <div
             class="min-w-[150px] bg-white dark:bg-gray-800 text-center rounded-xl shadow border border-gray-200 dark:border-gray-700 p-5 flex-shrink-0">
-            <a href="{{ route('user.wallet') }}?tab=transactions" class="flex flex-col items-center">
+            <a href="{{ route('user.transactions') }}" class="flex flex-col items-center">
                 <i class="fa fa-exchange text-xl text-rose-500"></i>
                 <h5 class="mt-2 text-xs font-medium dark:text-white">Transactions</h5>
             </a>

@@ -3,13 +3,17 @@
 namespace App\Services;
 
 use App\Http\Controllers\PaymentController;
+use App\Models\BankAccount;
 use App\Models\Transaction;
 use App\Models\User;
+use App\Traits\ApiResponse;
 use Exception;
 use Illuminate\Support\Facades\Log;
 
 class DepositService
 {
+    use ApiResponse;
+
     protected PaymentController $paymentController;
 
     public function __construct()
@@ -30,11 +34,13 @@ class DepositService
         $total = $amount + $fee;
 
         try {
+            $ref = getTrx();
             $transaction = Transaction::create([
                 'user_id' => $user->id,
                 'type' => 'credit',
-                'code' => getTrx(),
+                'code' => $ref,
                 'service' => 'deposit',
+                'reference' => $ref,
                 'message' => 'Wallet deposit funding',
                 'amount' => $amount,
                 'image' => 'deposit.png',
@@ -55,7 +61,7 @@ class DepositService
                 'usd_amount' => $total,
                 'trx_id' => $transaction->id,
                 'currency' => 'NGN',
-                'reference' => $transaction->code,
+                'reference' => $ref,
                 'description' => $transaction->message,
             ];
 
@@ -155,5 +161,59 @@ class DepositService
             Log::error('Failed to fail deposit: '.$e->getMessage());
             throw $e;
         }
+    }
+
+    /**
+     * Korapay webhook deposit
+     */
+    public function completeKorapayWebhook($details, $response = null)
+    {
+        if (Transaction::where('reference', $details['code'])->whereService('deposit')->first()) {
+            return $this->depositResponse('error', 'Duplicate Deposit');
+        }
+
+        $bankAcc = BankAccount::whereProvider('korapay')->whereReference($details['reference'])->with('user')->first();
+        $user = $bankAcc->user;
+        if ($user == null) {
+            return $this->depositResponse('error', 'Invalid User');
+        }
+        $fee = sys_setting('auto_fee') ?? 0;
+        $charge = ($fee * $details['amount']) / 100;
+        if ($charge > sys_setting('auto_cap')) {
+            $charge = sys_setting('auto_cap') ?? 0;
+        }
+        $amount = $details['amount'] - $charge;
+
+        // create trx and credit user
+        $ref = getTrx();
+        $transaction = Transaction::create([
+            'user_id' => $user->id,
+            'type' => 'credit',
+            'code' => $ref,
+            'service' => 'deposit',
+            'reference' => $ref,
+            'message' => 'Wallet deposit funding',
+            'amount' => $amount,
+            'image' => 'deposit.png',
+            'charge' => $charge,
+            'old_balance' => $user->balance,
+            'meta' => [
+                'gateway' => 'korapay',
+                'amount' => $amount,
+                'fee' => $fee,
+            ],
+            'status' => 'initiated',
+        ]);
+
+        $this->completeDeposit($transaction, $response);
+    }
+
+    public function depositResponse($type, $message)
+    {
+        if ($type == 'success') {
+            return $this->successResponse($message);
+        }
+
+        return $this->errorResponse($message);
     }
 }
