@@ -10,11 +10,13 @@ use App\Livewire\User\Developer;
 use App\Livewire\User\Profile;
 use App\Livewire\User\Referrals;
 use App\Livewire\User\Services;
+use App\Livewire\User\Transactions;
 use App\Livewire\User\Wallet;
 
 Route::get('/', Dashboard::class)->name('index');
 Route::get('dashboard', Dashboard::class)->name('dashboard');
 Route::get('wallet', Wallet::class)->name('wallet');
+Route::get('transactions', Transactions::class)->name('transactions');
 Route::get('referrals', Referrals::class)->name('referrals');
 Route::get('profile', Profile::class)->name('profile');
 

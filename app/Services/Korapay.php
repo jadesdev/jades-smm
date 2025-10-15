@@ -54,6 +54,12 @@ class Korapay
         return $response->json();
     }
 
+    public function createVirtualAccount($data)
+    {
+        $response = $this->request('post', 'virtual-bank-account', $data);
+        return $response->json();
+    }
+
     // Check the status of a payment
     public function getTransactionStatus($reference)
     {

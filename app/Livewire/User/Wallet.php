@@ -4,6 +4,7 @@ namespace App\Livewire\User;
 
 use App\Models\Transaction;
 use App\Models\User;
+use App\Services\BankAccountService;
 use App\Services\DepositService;
 use App\Traits\LivewireToast;
 use Auth;
@@ -16,9 +17,8 @@ use Livewire\WithPagination;
 #[Layout('user.layouts.main')]
 class Wallet extends Component
 {
-    use LivewireToast, WithPagination;
+    use LivewireToast;
 
-    public $tab = 'deposit';
 
     public $amount = '';
 
@@ -30,17 +30,6 @@ class Wallet extends Component
 
     public $referralBalance = 0;
 
-    // Transaction filters
-    public $search = '';
-
-    public $statusFilter = '';
-
-    public $typeFilter = '';
-
-    public $perPage = 30;
-
-    protected $queryString = ['tab'];
-
     // meta
     public string $metaTitle = 'Wallet';
 
@@ -51,6 +40,10 @@ class Wallet extends Component
     public string $metaImage;
 
     public bool $processingPayment = false;
+    public $hasAccount = false;
+    public $kyc_type = 'bvn';
+    public $kyc_number = '';
+    public $bankAccount = null;
 
     public $allGateways = [
         'paypal' => [
@@ -87,45 +80,6 @@ class Wallet extends Component
 
     public $gateways = [];
 
-    public function getAvailableServicesProperty()
-    {
-        $services = Transaction::where('user_id', Auth::id())
-            ->select('service')
-            ->distinct()
-            ->pluck('service')
-            ->mapWithKeys(fn ($service) => [$service => ucfirst($service)])
-            ->toArray();
-
-        return ['' => 'All Services'] + $services;
-    }
-
-    public function getTransactionsProperty()
-    {
-        $filtered = Transaction::where('user_id', Auth::id())->where('status', '!=', 'initiated')->orderBy('updated_at', 'desc');
-
-        // Search filter
-        if ($this->search) {
-            $filtered = $filtered->where(function ($query) {
-                $query->where('code', 'LIKE', "%{$this->search}%")
-                    ->orWhere('message', 'LIKE', "%{$this->search}%")
-                    ->orWhere('id', 'LIKE', "%{$this->search}%")
-                    ->orWhere('gateway', 'LIKE', "%{$this->search}%");
-            });
-        }
-
-        // Type filter
-        if ($this->typeFilter) {
-            $filtered = $filtered->where('service', $this->typeFilter);
-        }
-
-        // Status filter
-        if ($this->statusFilter) {
-            $filtered = $filtered->where('status', $this->statusFilter);
-        }
-
-        return $filtered->paginate($this->perPage);
-    }
-
     public function toggleBalance()
     {
         $this->showBalance = ! $this->showBalance;
@@ -138,16 +92,6 @@ class Wallet extends Component
             $this->addError('selectedGateway', 'Invalid payment gateway selected.');
         }
         $this->selectedGateway = $value;
-    }
-
-    public function clearFilters()
-    {
-        $this->reset(['search', 'statusFilter', 'typeFilter']);
-    }
-
-    public function loadMore()
-    {
-        $this->perPage += 10;
     }
 
     public function updatedAmount()
@@ -175,7 +119,7 @@ class Wallet extends Component
             );
             $this->successAlert('Deposit successful!');
         } catch (Exception $exception) {
-            Log::error('Deposit failed: '.$exception->getMessage());
+            Log::error('Deposit failed: ' . $exception->getMessage());
             $this->errorAlert($exception->getMessage() ?: 'Unable to process your payment at this time. Please try again later.');
         }
     }
@@ -183,10 +127,10 @@ class Wallet extends Component
     public function getDepositButtonTextProperty()
     {
         if ($this->amount) {
-            return 'Deposit '.format_price(floatval($this->amount), 2);
+            return 'Deposit ' . format_price(floatval($this->amount), 2);
         }
 
-        return 'Deposit '.format_price(0, 2);
+        return 'Deposit ' . format_price(0, 2);
     }
 
     public function getIsDepositValidProperty()
@@ -194,10 +138,29 @@ class Wallet extends Component
         return ! empty($this->amount) && ! empty($this->selectedGateway) && floatval($this->amount) > 0;
     }
 
-    public function changeTab($tab)
+    public function generateAccount()
     {
-        $this->tab = $tab;
+        $this->validate([
+            'kyc_type' => 'required|string|in:bvn,nin',
+            'kyc_number' => 'required|string|numeric',
+        ]);
+        $user = Auth::user();
+        $bankAccountService = app(BankAccountService::class);
+        try {
+            $user->update([
+                'kyc_type' => $this->kyc_type,
+                'kyc_number' => encrypt($this->kyc_number),
+            ]);
+            $bankAccountService->generateAccount($user);
+            $this->dispatch('close-modal', name: 'create-bankAccount-modal');
+            return $this->successAlert("Account generated successfully! kyc_number: {$this->kyc_number}, kyc_type: {$this->kyc_type}");
+        } catch (Exception $exception) {
+            Log::error('Failed to generate account: ' . $exception->getMessage());
+            $this->dispatch('close-modal', name: 'create-bankAccount-modal');
+            $this->errorAlert($exception->getMessage() ?: 'Unable to generate account at this time. Please try again later.');
+        }
     }
+
 
     public function mount()
     {
@@ -219,15 +182,15 @@ class Wallet extends Component
                 $this->gateways[$gateway] = $this->allGateways[$gateway];
             }
         }
+
+        // check for bank account
+        $this->hasAccount = $user->bankAccounts()->exists();
+        $this->bankAccount = $user->bankAccounts()->first();
     }
 
     public function render()
     {
         $this->metaTitle = 'Wallet';
-        if ($this->tab === 'transactions') {
-            $this->metaTitle = 'Transactions';
-        }
-
         return view('livewire.user.wallet');
     }
 }

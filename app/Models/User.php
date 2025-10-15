@@ -36,6 +36,8 @@ class User extends Authenticatable
         'is_active',
         'api_token',
         'bonus',
+        'kyc_type',
+        'kyc_number',
     ];
 
     /**
@@ -72,7 +74,7 @@ class User extends Authenticatable
     {
         return Str::of($this->name)
             ->explode(' ')
-            ->map(fn (string $name) => Str::of($name)->substr(0, 1))
+            ->map(fn(string $name) => Str::of($name)->substr(0, 1))
             ->implode('');
     }
 
@@ -134,6 +136,14 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    /**
+     * Get all bank accounts for this user
+     */
+    public function bankAccounts(): HasMany
+    {
+        return $this->hasMany(BankAccount::class);
+    }
+
     public function sendEmailVerification(): void
     {
         $link = URL::temporarySignedRoute(
@@ -153,7 +163,8 @@ class User extends Authenticatable
                 'first_name' => $this->first_name,
                 'email' => $this->email,
                 'verification_link' => $link,
-            ], [
+            ],
+            [
                 'link' => $link,
                 'link_text' => 'Verify Email',
             ]

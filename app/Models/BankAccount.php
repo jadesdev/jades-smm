@@ -4,8 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Concerns\HasUlids;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Transaction extends Model
+class BankAccount extends Model
 {
     use HasUlids;
 
@@ -16,19 +17,14 @@ class Transaction extends Model
      */
     protected $fillable = [
         'user_id',
-        'type',
-        'service',
-        'code',
         'reference',
-        'amount',
-        'charge',
-        'message',
-        'status',
-        'image',
-        'old_balance',
-        'new_balance',
+        'bank_name',
+        'number',
+        'name',
+        'bank_code',
+        'type',
+        'provider',
         'meta',
-        'response',
     ];
 
     /**
@@ -37,7 +33,6 @@ class Transaction extends Model
      * @var array<string, string>
      */
     protected $casts = [
-        'response' => 'array',
         'meta' => 'array',
     ];
 
