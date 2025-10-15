@@ -2,7 +2,6 @@
 
 namespace App\Livewire\User;
 
-use App\Models\Transaction;
 use App\Models\User;
 use App\Services\BankAccountService;
 use App\Services\DepositService;
@@ -12,13 +11,11 @@ use Exception;
 use Illuminate\Support\Facades\Log;
 use Livewire\Attributes\Layout;
 use Livewire\Component;
-use Livewire\WithPagination;
 
 #[Layout('user.layouts.main')]
 class Wallet extends Component
 {
     use LivewireToast;
-
 
     public $amount = '';
 
@@ -40,9 +37,13 @@ class Wallet extends Component
     public string $metaImage;
 
     public bool $processingPayment = false;
+
     public $hasAccount = false;
+
     public $kyc_type = 'bvn';
+
     public $kyc_number = '';
+
     public $bankAccount = null;
 
     public $allGateways = [
@@ -119,7 +120,7 @@ class Wallet extends Component
             );
             $this->successAlert('Deposit successful!');
         } catch (Exception $exception) {
-            Log::error('Deposit failed: ' . $exception->getMessage());
+            Log::error('Deposit failed: '.$exception->getMessage());
             $this->errorAlert($exception->getMessage() ?: 'Unable to process your payment at this time. Please try again later.');
         }
     }
@@ -127,10 +128,10 @@ class Wallet extends Component
     public function getDepositButtonTextProperty()
     {
         if ($this->amount) {
-            return 'Deposit ' . format_price(floatval($this->amount), 2);
+            return 'Deposit '.format_price(floatval($this->amount), 2);
         }
 
-        return 'Deposit ' . format_price(0, 2);
+        return 'Deposit '.format_price(0, 2);
     }
 
     public function getIsDepositValidProperty()
@@ -153,14 +154,14 @@ class Wallet extends Component
             ]);
             $bankAccountService->generateAccount($user);
             $this->dispatch('close-modal', name: 'create-bankAccount-modal');
+
             return $this->successAlert("Account generated successfully! kyc_number: {$this->kyc_number}, kyc_type: {$this->kyc_type}");
         } catch (Exception $exception) {
-            Log::error('Failed to generate account: ' . $exception->getMessage());
+            Log::error('Failed to generate account: '.$exception->getMessage());
             $this->dispatch('close-modal', name: 'create-bankAccount-modal');
             $this->errorAlert($exception->getMessage() ?: 'Unable to generate account at this time. Please try again later.');
         }
     }
-
 
     public function mount()
     {
@@ -191,6 +192,7 @@ class Wallet extends Component
     public function render()
     {
         $this->metaTitle = 'Wallet';
+
         return view('livewire.user.wallet');
     }
 }

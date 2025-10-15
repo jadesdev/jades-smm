@@ -57,6 +57,7 @@ class Korapay
     public function createVirtualAccount($data)
     {
         $response = $this->request('post', 'virtual-bank-account', $data);
+
         return $response->json();
     }
 

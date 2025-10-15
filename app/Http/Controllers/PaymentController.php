@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\BankAccount;
 use App\Models\Transaction;
-use App\Services\BankAccountService;
 use App\Services\CryptomusService;
 use App\Services\DepositService;
 use App\Services\FlutterwaveService;
@@ -125,7 +124,7 @@ class PaymentController extends Controller
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
         } catch (Exception $exception) {
-            Log::error('Paystack callback error: ' . $exception->getMessage());
+            Log::error('Paystack callback error: '.$exception->getMessage());
 
             return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
         }
@@ -148,7 +147,7 @@ class PaymentController extends Controller
 
             return $this->callbackResponse('error', 'Payment was not successful', route('user.wallet'));
         } catch (Exception $exception) {
-            Log::error('Korapay callback error: ' . $exception->getMessage());
+            Log::error('Korapay callback error: '.$exception->getMessage());
 
             return redirect()->route('user.wallet')->with('error', 'Something went wrong with your payment');
         }
@@ -246,13 +245,13 @@ class PaymentController extends Controller
                     'fee' => $transactionInfo['fee'] ?? 0,
                     'reference' => $accountReference,
                 ];
-                //check if account reference exists
+                // check if account reference exists
                 $account = BankAccount::where('reference', $accountReference)->first();
-                if (!$account) {
+                if (! $account) {
                     return $this->callbackResponse('error', 'Account not found');
                 }
                 $res = $depositService->completeKorapayWebhook($details, $transactionInfo);
-                Log::info('Korapay Webhook: ' . $res);
+                Log::info('Korapay Webhook: '.$res);
             } else {
                 //  Handle Card / Mobile Money Deposit
                 if ($event === 'charge.success') {
@@ -260,6 +259,7 @@ class PaymentController extends Controller
 
                     if (! $trxId) {
                         Log::warning('Missing transaction ID in metadata');
+
                         return $this->callbackResponse('error', 'Missing metadata transaction ID');
                     }
 
@@ -268,10 +268,9 @@ class PaymentController extends Controller
                 }
             }
 
-
             return $this->callbackResponse('success', 'Payment processed successfully');
         } catch (Exception $exception) {
-            Log::error('Korapay callback error: ' . $exception->getMessage());
+            Log::error('Korapay callback error: '.$exception->getMessage());
 
             return $this->callbackResponse('error', 'Something went wrong with your payment');
         }
@@ -294,18 +293,17 @@ class PaymentController extends Controller
         return redirect($url)->withError($message);
     }
 
-
     private function logApiResponse($response, $filename = 'korapay')
     {
         $logDir = public_path('logs');
-        $logFile = $logDir . "/{$filename}_webhook.txt";
+        $logFile = $logDir."/{$filename}_webhook.txt";
 
         if (! file_exists($logDir)) {
             mkdir($logDir, 0777, true);
         }
 
-        $timestamp = '[' . now()->format('Y-m-d H:i:s') . '] ';
-        $logMessage = $timestamp . json_encode($response, JSON_PRETTY_PRINT) . PHP_EOL;
+        $timestamp = '['.now()->format('Y-m-d H:i:s').'] ';
+        $logMessage = $timestamp.json_encode($response, JSON_PRETTY_PRINT).PHP_EOL;
 
         file_put_contents($logFile, $logMessage, FILE_APPEND);
     }

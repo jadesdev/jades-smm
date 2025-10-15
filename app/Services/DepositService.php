@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Log;
 class DepositService
 {
     use ApiResponse;
+
     protected PaymentController $paymentController;
 
     public function __construct()
@@ -66,7 +67,7 @@ class DepositService
 
             return $this->initiateGatewayPayment($gateway, $paymentData);
         } catch (Exception $exception) {
-            Log::error('Deposit initiation failed: ' . $exception->getMessage());
+            Log::error('Deposit initiation failed: '.$exception->getMessage());
             throw new Exception('Unable to process deposit. Please try again.');
         }
     }
@@ -136,7 +137,7 @@ class DepositService
                 ]);
             }
         } catch (Exception $e) {
-            Log::error('Failed to complete deposit: ' . $e->getMessage());
+            Log::error('Failed to complete deposit: '.$e->getMessage());
             throw $e;
         }
     }
@@ -157,11 +158,10 @@ class DepositService
             // TODO: Send notification to user
 
         } catch (Exception $e) {
-            Log::error('Failed to fail deposit: ' . $e->getMessage());
+            Log::error('Failed to fail deposit: '.$e->getMessage());
             throw $e;
         }
     }
-
 
     /**
      * Korapay webhook deposit
@@ -207,7 +207,6 @@ class DepositService
 
         $this->completeDeposit($transaction, $response);
     }
-
 
     public function depositResponse($type, $message)
     {

@@ -2,11 +2,8 @@
 
 namespace App\Services;
 
-use App\Http\Controllers\PaymentController;
 use App\Models\BankAccount;
-use App\Models\Transaction;
 use App\Models\User;
-use Exception;
 use Illuminate\Support\Facades\Log;
 use Str;
 
@@ -18,7 +15,6 @@ class BankAccountService
     {
         $this->korapay = app(Korapay::class);
     }
-
 
     public function generateAccount(User $user)
     {
@@ -32,17 +28,17 @@ class BankAccountService
     {
         $ref = Str::random(30);
         $payload = [
-            "account_name" => $user->name,
-            "account_reference" => $ref,
-            "permanent" => true,
-            "bank_code" => "035",
-            "customer" => [
-                "name" => $user->name,
-                "email" => $user->email
+            'account_name' => $user->name,
+            'account_reference' => $ref,
+            'permanent' => true,
+            'bank_code' => '035',
+            'customer' => [
+                'name' => $user->name,
+                'email' => $user->email,
             ],
-            "kyc" => [
-                $user->kyc_type => decrypt($user->kyc_number)
-            ]
+            'kyc' => [
+                $user->kyc_type => decrypt($user->kyc_number),
+            ],
         ];
 
         $response = $this->korapay->createVirtualAccount($payload);
@@ -51,6 +47,7 @@ class BankAccountService
         if ($response['status'] != true) {
             throw new \Exception($response['message'] ?? 'Unable to create virtual account');
         }
+
         return $this->storeAccount([
             'number' => $response['data']['account_number'],
             'bank_code' => $response['data']['bank_code'],
